@@ -1,5 +1,11 @@
 # Terraform Air-gapped Bundle
 
+![Terraform](https://img.shields.io/badge/Terraform-1.9.0+-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Required-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Proxmox](https://img.shields.io/badge/Proxmox-E52F1F?style=for-the-badge&logo=proxmox&logoColor=white)
+![Talos](https://img.shields.io/badge/Talos-Linux-000000?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+
 Bundle de Terraform auto-contenido para entornos sin conexión a internet. Incluye providers de Proxmox, Talos y módulos populares en una imagen Docker portable.
 
 ## Características
@@ -166,3 +172,7 @@ Después puedes usar `terraform` normalmente:
 terraform plan
 terraform apply
 ```
+
+## Licencia
+
+MIT License
