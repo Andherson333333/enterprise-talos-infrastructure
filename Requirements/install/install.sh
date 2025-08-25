@@ -1,5 +1,4 @@
 #!/bin/bash
-
 echo "Iniciando instalación de herramientas..."
 
 # Actualizar repositorios
@@ -21,6 +20,12 @@ echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://
 sudo apt-get update
 sudo apt-get install -y terraform
 
+# Instalar Ansible
+echo "Instalando Ansible..."
+sudo apt-get install -y software-properties-common
+sudo add-apt-repository --yes --update ppa:ansible/ansible
+sudo apt-get install -y ansible
+
 # Instalar Helm
 echo "Instalando Helm..."
 curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -
@@ -31,5 +36,5 @@ sudo apt-get install -y helm
 echo "Instalación completada. Verificando versiones:"
 kubectl version --client
 terraform --version
-aws --version
+ansible --version
 helm version
