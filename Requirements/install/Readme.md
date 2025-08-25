@@ -47,7 +47,6 @@ El script automáticamente verifica las instalaciones mostrando las versiones:
 ```bash
 kubectl version --client
 terraform --version
-aws --version
 ansible --version
 helm version
 ```
