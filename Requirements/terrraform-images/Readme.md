@@ -172,7 +172,3 @@ Después puedes usar `terraform` normalmente:
 terraform plan
 terraform apply
 ```
-
-## Licencia
-
-MIT License
