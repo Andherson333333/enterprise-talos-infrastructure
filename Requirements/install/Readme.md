@@ -15,14 +15,7 @@ Script automatizado para instalar herramientas esenciales de DevOps y Kubernetes
 
 ## Instalación
 
-### 1. Clonar repositorio
-
-```bash
-git clone <tu-repositorio>
-cd enterprise-talos-infrastructure/Requirements/install
-```
-
-### 2. Ejecutar instalador
+### 1. Ejecutar instalador
 
 ```bash
 # Dar permisos de ejecución
