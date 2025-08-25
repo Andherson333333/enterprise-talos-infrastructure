@@ -1,5 +1,10 @@
 # Preparación de Imágenes ISO 
 
+![Proxmox](https://img.shields.io/badge/Proxmox-VE-E52F1F?style=for-the-badge&logo=proxmox&logoColor=white)
+![Debian](https://img.shields.io/badge/Debian-12+-A81D33?style=for-the-badge&logo=debian&logoColor=white)
+![Virtualization](https://img.shields.io/badge/Virtualization-Lab-4B8BBE?style=for-the-badge)
+![Checksums](https://img.shields.io/badge/SHA256-Verified-success?style=for-the-badge&logo=gnu-privacy-guard&logoColor=white)
+
 Guía para descargar y verificar imágenes ISO necesarias para un entorno de virtualización con Proxmox y Debian.
 
 ## Componentes
