@@ -79,6 +79,8 @@ docker compose run --rm terraform init
 docker compose run --rm terraform validate
 ```
 
+![Docker Compose](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/promox-api-2.png)
+
 ## Uso
 
 ### Inicializar Terraform
