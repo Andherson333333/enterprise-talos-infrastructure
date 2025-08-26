@@ -45,8 +45,7 @@ Generación de certificados SSL para Gitea, Harbor y dominios wildcard usando do
 | **Automatización** | Alta | Manual |
 | **Requisitos** | Ansible + Docker | Solo OpenSSL |
 | **Configuración** | Playbook YAML | Comandos directos |
-| **Escalabilidad** | Múltiples hosts | Single host |
-| **Aprendizaje** | Requiere Ansible | Conocimientos básicos |
+
 
 ## Certificados Generados
 
