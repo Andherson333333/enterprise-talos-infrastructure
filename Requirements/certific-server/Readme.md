@@ -32,29 +32,38 @@ mkcert-ca/
 
 ## Requisitos
 
-- Ansible instalado
-- Docker y Docker Compose en hosts destino
-- CA de Harbor en `/opt/harbor/mkcert-ca`
+- Ansible instalado en máquina de control
+- Host destino Linux (Debian/Ubuntu recomendado)
+- Docker y Docker Compose en host destino
+- Imagen Docker `iamluc/mkcert:latest` disponible
+- CA de Harbor en `/opt/harbor/mkcert-ca` en host destino
 
 ## Uso
 
 ### 1. Configurar inventario
 
-Edita el archivo `inventory` con tus hosts:
+Edita el archivo `inventory` con tu host Linux destino:
 
 ```ini
 [certificate_servers]
-your-server ansible_host=192.168.1.100
+linux-server ansible_host=192.168.1.100 ansible_user=root
 ```
 
-### 2. Ejecutar playbook
+### 2. Preparar host destino
+
+```bash
+# En el host Linux destino, asegurar imagen Docker
+docker pull iamluc/mkcert:latest
+```
+
+### 3. Ejecutar playbook
 
 ```bash
 # Ejecutar desde el directorio mkcert-ca/
 ansible-playbook -i inventory mkcer.yml
 ```
 
-### 3. Verificar certificados
+### 4. Verificar certificados
 
 Los certificados se generan en:
 - `/opt/generated_certs/gitea/` (gitea.pem, gitea.key)
