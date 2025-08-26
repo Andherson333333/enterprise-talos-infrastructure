@@ -124,9 +124,6 @@ docker compose run --rm terraform destroy
 | `TF_VAR_proxmox_api_token` | Token de API de Proxmox | `terraform@pam!terraform=1160238f...` | - |
 | `TF_VAR_proxmox_insecure` | Permitir certificados SSL no válidos | `true` o `false` | `true` |
 | `TF_VAR_node_name` | Nombre del nodo Proxmox destino | `pve-1` | `pve-1` |
-| `TF_VAR_cluster_name` | Nombre del cluster a desplegar | `talos-infrastructure` | `talos-infrastructure` |
-| `TF_VAR_control_plane_count` | Número de nodos control plane | `1`, `3`, `5` | `1` |
-| `TF_VAR_worker_count` | Número de nodos worker | `0`, `2`, `5` | `0` |
 
 ## Providers Incluidos
 
