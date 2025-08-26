@@ -8,8 +8,7 @@
 
 Role de Ansible para automatizar la generación de certificados SSL usando mkcert para Gitea, Harbor y dominios wildcard.
 
-## Arquictectura 
-
+## Arquictecura 
 
 ## Características
 
@@ -72,6 +71,10 @@ Los certificados se generan en:
 - `/opt/generated_certs/gitea/` (gitea.pem, gitea.key)
 - `/opt/generated_certs/harbor/` (harbor.pem, harbor.key)
 - `/opt/generated_certs/wildcard-local/` (wildcard-local.pem, wildcard-local.key)
+
+Archivos de CA compartidos:
+- `/opt/harbor/mkcert-ca/rootCA.pem` (Certificado raíz de CA)
+- `/opt/harbor/mkcert-ca/rootCA-key.pem` (Clave privada de CA)
 
 ## Variables
 
