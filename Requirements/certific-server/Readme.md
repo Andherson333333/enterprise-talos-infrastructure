@@ -8,6 +8,9 @@
 
 Role de Ansible para automatizar la generación de certificados SSL usando mkcert para Gitea, Harbor y dominios wildcard.
 
+## Arquictectura 
+
+
 ## Características
 
 - **Certificados para Gitea**: `gitea.server.local`, IPs locales
