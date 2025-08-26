@@ -71,6 +71,9 @@ ansible-playbook -i inventory mkcer.yml
 
 ### 4. Verificar certificados
 
+![Gitea](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/certificado-2.png)
+
+
 Los certificados se generan en:
 - `/opt/generated_certs/gitea/` (gitea.pem, gitea.key)
 - `/opt/generated_certs/harbor/` (harbor.pem, harbor.key)
