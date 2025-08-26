@@ -11,6 +11,7 @@ Este módulo maneja la **conexión base** entre Terraform y Proxmox VE vía Dock
 
 ## Arquitectura 
 
+![Docker Compose](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/promox-api.png)
 
 ## Características
 
@@ -27,9 +28,6 @@ terraform/
 ├── .env                        # Variables de entorno para conexión
 ├── provider.tf                 # Providers y versiones requeridas
 ├── variables.tf                # Definición de variables
-├── main.tf                     # Configuración principal VMs
-├── outputs.tf                  # Outputs de Terraform
-└── Readme.md                   # Esta guía
 ```
 
 ## Requisitos
