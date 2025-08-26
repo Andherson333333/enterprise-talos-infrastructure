@@ -10,6 +10,10 @@ Role de Ansible para automatizar la generación de certificados SSL usando mkcer
 
 ## Arquictecura 
 
+
+![Gitea](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/certificado-1.png)
+
+
 ## Características
 
 - **Certificados para Gitea**: `gitea.server.local`, IPs locales
