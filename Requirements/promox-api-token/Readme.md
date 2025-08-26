@@ -112,6 +112,16 @@ pveum user token permissions terraform@pam terraform
 # Listar tokens
 pveum user token list terraform@pam
 ```
+Tambien puedes verificar via web con promox
+
+Verificacion de usuario 
+![Terraform](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/config-token-1.png)
+
+Verificacion permisos usarios
+![Terraform](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/config-token-2.png)
+
+Verificacion permisos token
+![Terraform](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/config-token-3.png)
 
 ## Datos de Conexión
 
