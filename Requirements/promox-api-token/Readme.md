@@ -12,8 +12,6 @@ Comandos para crear usuario y token API en Proxmox para automatización con Terr
 # Crear usuario terraform en dominio PAM
 pveum user add terraform@pam
 
-# Configurar contraseña (opcional)
-pveum passwd terraform@pam
 ```
 
 ## 2. Crear Rol con Permisos
