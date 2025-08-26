@@ -66,7 +66,7 @@ docker pull iamluc/mkcert:latest
 
 ```bash
 # Ejecutar desde el directorio mkcert-ca/
-ansible-playbook -i inventory mkcer.yml
+ansible-playbook -i inventory mkcert-ca/mkcer.yml
 ```
 
 ### 4. Verificar certificados
