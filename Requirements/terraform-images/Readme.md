@@ -172,3 +172,6 @@ Después puedes usar `terraform` normalmente:
 terraform plan
 terraform apply
 ```
+
+## Nota : si no quieres hacer este proceso puedes descargar la imagen desde docker hub andherson1039/terraform-complete-airgap:2.0
+
