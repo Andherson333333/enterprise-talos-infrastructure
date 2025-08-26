@@ -1,0 +1,3 @@
+---
+cert_base_dir: "/opt/generated_certs"
+mkcert_ca_path: "/opt/mkcert-ca"

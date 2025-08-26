@@ -1,0 +1,6 @@
+---
+- name: "Certificados"
+  hosts: mkcert
+  become: yes
+  roles:
+    - mkcert-ca

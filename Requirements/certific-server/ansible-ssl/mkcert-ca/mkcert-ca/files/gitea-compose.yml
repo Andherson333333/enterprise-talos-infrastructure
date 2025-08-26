@@ -1,0 +1,13 @@
+services:
+  gitea-cert-generator:
+    image: iamluc/mkcert:latest
+    container_name: gitea-cert-generator
+    volumes:
+      - /opt/harbor/mkcert-ca:/root/.local/share/mkcert:ro
+      - /opt/generated_certs/gitea:/certs
+    command: >
+      sh -c "
+        echo 'Generando certificados para Gitea usando la CA de Harbor...';
+        mkcert -cert-file /certs/gitea.pem -key-file /certs/gitea.key 'gitea.server.local' 'localhost' '127.0.0.1' '192.168.253.11';
+        chmod 644 /certs/gitea.pem && chmod 600 /certs/gitea.key;
+      "

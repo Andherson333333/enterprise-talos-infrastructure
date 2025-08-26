@@ -1,0 +1,14 @@
+services:
+  harbor-cert-generator:
+    image: iamluc/mkcert:latest
+    container_name: harbor-cert-generator
+    volumes:
+      - /opt/harbor/mkcert-ca:/root/.local/share/mkcert:ro
+      - /opt/generated_certs/harbor:/certs
+    command: >
+      sh -c "
+        echo 'Generando certificados ';
+        mkcert -cert-file /certs/harbor.pem -key-file /certs/harbor.key 'registry.harbor.local' 'harbor.server.local' 'harbor.local' 'localhost' '127.0.0.1' '192.168.133.20' '192.168.253.12' '192.168.253.7';
+        chmod 644 /certs/harbor.pem && chmod 600 /certs/harbor.key;
+        echo 'Certificados Generados';
+      "

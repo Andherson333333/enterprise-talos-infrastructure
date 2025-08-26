@@ -1,0 +1,14 @@
+# wildcard-local-cert-compose.yml
+services:
+  wildcard-local-cert-generator:
+    image: iamluc/mkcert:latest
+    container_name: wildcard-local-cert-generator
+    volumes:
+      - /opt/harbor/mkcert-ca:/root/.local/share/mkcert:ro
+      - /opt/generated_certs/wildcard-local:/certs
+    command: >
+      sh -c "
+        echo 'Generando certificado WILDCARD *.local usando la CA de Harbor...';
+        mkcert -cert-file /certs/wildcard-local.pem -key-file /certs/wildcard-local.key '*.local' 'local' 'localhost';
+        chmod 644 /certs/wildcard-local.pem && chmod 600 /certs/wildcard-local.key;
+      "

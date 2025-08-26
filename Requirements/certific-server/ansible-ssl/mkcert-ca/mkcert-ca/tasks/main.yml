@@ -1,0 +1,71 @@
+---
+# tasks file for cert-generator
+- name: "Crear directorio base de certificados"
+  file:
+    path: "{{ cert_base_dir }}"
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: "Crear directorio para certificados de Gitea"
+  file:
+    path: "{{ cert_base_dir }}/gitea"
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: "Crear directorio para certificados de Harbor"
+  file:
+    path: "{{ cert_base_dir }}/harbor"
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: "Crear directorio para certificados Wildcard"
+  file:
+    path: "{{ cert_base_dir }}/wildcard-local"
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: "Copiar docker-compose de Gitea"
+  copy:
+    src: gitea-compose.yml
+    dest: "{{ cert_base_dir }}/gitea/docker-compose.yml"
+    mode: '0644'
+  become: yes
+
+- name: "Copiar docker-compose de Harbor"
+  copy:
+    src: harbor-compose.yml
+    dest: "{{ cert_base_dir }}/harbor/docker-compose.yml"
+    mode: '0644'
+  become: yes
+
+- name: "Copiar docker-compose de Wildcard"
+  copy:
+    src: wildcard-local-compose.yml
+    dest: "{{ cert_base_dir }}/wildcard-local/docker-compose.yml"
+    mode: '0644'
+  become: yes
+
+- name: "Generar certificados de Gitea"
+  shell: |
+    cd {{ cert_base_dir }}/gitea
+    docker compose up
+  become: yes
+  register: gitea_cert_result
+
+- name: "Generar certificados de Harbor"
+  shell: |
+    cd {{ cert_base_dir }}/harbor
+    docker compose up
+  become: yes
+  register: harbor_cert_result
+
+- name: "Generar certificados Wildcard"
+  shell: |
+    cd {{ cert_base_dir }}/wildcard-local
+    docker compose up
+  become: yes
+  register: wildcard_cert_result
