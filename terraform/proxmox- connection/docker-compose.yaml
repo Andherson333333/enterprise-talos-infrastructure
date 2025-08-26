@@ -1,0 +1,8 @@
+services:
+  terraform:
+    image: andherson1039/terraform-complete-airgap:2.0
+    volumes:
+      - .:/terraform
+    working_dir: /terraform
+    env_file:
+      - .env
