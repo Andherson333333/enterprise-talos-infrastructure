@@ -10,7 +10,7 @@ Configuración manual de template Debian para Proxmox con volúmenes Docker LVM 
 
 ## Arquitectura 
 
-
+![Terraform](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/templates-4.png)
 
 
 ## Arquitectura y Flujo de Trabajo
