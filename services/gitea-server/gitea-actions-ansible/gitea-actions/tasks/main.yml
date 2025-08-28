@@ -1,12 +1,12 @@
 ---
-- name: "Crear directorio para actions"
+- name: "Create directory for actions"
   file:
     path: "{{ gitea_actions_dir }}"
     state: directory
     owner: "{{ gitea_user }}"
     group: "{{ gitea_group }}"
 
-- name: "Descomprimir actions directamente"
+- name: "Unarchive actions directly"
   unarchive:
     src: "{{ actions_tar_file }}"
     dest: "{{ gitea_actions_dir }}"
