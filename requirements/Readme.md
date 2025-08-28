@@ -71,7 +71,7 @@ cd certific-server/
 ```
 
 ### 6. Crear template debian 12
-**Carpeta**: [`templates-debian12/`](./templates-debian12/)
+**Carpeta**: [`debian12-templates/`](./debian12-templates/)
 
 Crear Template para debian12 
 - **Storage**: Docker sdb para guardar la data
