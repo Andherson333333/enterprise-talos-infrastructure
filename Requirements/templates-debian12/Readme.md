@@ -81,7 +81,7 @@ Logical Volume (docker_data) → Auto-extend
 - **Machine**: Default (i440fx)
 - **BIOS**: Default (SeaBIOS)
 - **SCSI Controller**: VirtIO SCSI single
-- **Qemu Agent**: ✅ **ACTIVAR** (importante para integración)
+- **Qemu Agent**:  **ACTIVAR** (importante para integración)
 
 #### Configuración de Discos
 ```bash
@@ -90,15 +90,15 @@ Bus/Device: SCSI 0
 Storage: local-lvm (o el storage que uses)
 Disk size: 20 GB (suficiente para el template)
 Cache: Write back
-Discard: ✅ Activar
-SSD emulation: ✅ Activar (opcional)
+Discard:  Activar
+SSD emulation:  Activar (opcional)
 
 # Disco adicional (para Docker LVM)
 Bus/Device: SCSI 1  
 Storage: local-lvm (o el storage que uses)
 Disk size: 10 GB (tamaño base, se redimensionará después)
 Cache: Write back
-Discard: ✅ Activar
+Discard:  Activar
 ```
 
 #### Configuración de CPU
@@ -108,12 +108,12 @@ Discard: ✅ Activar
 
 #### Configuración de Memoria
 - **Memory**: 2048 MB (2GB mínimo)
-- **Ballooning Device**: ✅ Activar
+- **Ballooning Device**:  Activar
 
 #### Configuración de Red
 - **Bridge**: vmbr0 (o el bridge configurado)
 - **VLAN Tag**: Dejar vacío (a menos que uses VLANs)
-- **Firewall**: ✅ Activar (opcional)
+- **Firewall**:  Activar (opcional)
 - **Model**: VirtIO (paravirtualized)
 
 ### 2. Confirmar configuración
