@@ -1,11 +1,10 @@
----
-- name: Crear directorio certificados
+- name: Create certificates directory
   file:
     path: /usr/local/share/ca-certificates
     state: directory
     mode: '0755'
 
-- name: Copiar certificados
+- name: Copy certificates
   copy:
     src: "{{ item }}"
     dest: "/usr/local/share/ca-certificates/{{ item }}"
@@ -14,11 +13,11 @@
     - harbor-ca.crt
     - gitea-ca.crt
 
-- name: Actualizar certificados del sistema
+- name: Update system certificates
   command: update-ca-certificates
 
-# Certificados para Docker
-- name: Crear directorios Docker certs.d
+# Certificates for Docker
+- name: Create Docker certs.d directories
   file:
     path: "/etc/docker/certs.d/{{ item }}"
     state: directory
@@ -27,16 +26,17 @@
     - "192.168.253.12"
     - "registry.harbor.local"
 
-- name: Copiar certificados para Docker
+- name: Copy certificates for Docker
   copy:
     src: "ca.crt"
     dest: "/etc/docker/certs.d/{{ item }}/ca.crt"
     mode: '0644'
   loop:
     - "192.168.253.11"
-    - "registry.harbor.local"
+    - "gitea.server.local"
 
 - name: Restart Docker
   service:
     name: docker
     state: restarted
+
