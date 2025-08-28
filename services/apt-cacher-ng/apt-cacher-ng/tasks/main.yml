@@ -1,5 +1,3 @@
----
-# tasks file for apt-cacher-ng
 - name: "Create apt-cacher-ng directory"
   file:
     path: /opt/apt-cacher-ng
