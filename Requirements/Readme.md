@@ -70,6 +70,13 @@ cd certific-server/
 # Elegir: ansible-ssl/ o open-ssl/
 ```
 
+### 6. Crear template debian 12
+**Carpeta**: [`templates-debian12/`](./templates-debian12/)
+
+Crear Template para debian12 
+- **Storage**: Docker sdb para guardar la data
+- **Automatizado**: sdb automatico en funcion al tamaño
+
 ## Estado de Preparación
 
 Al completar todos los pasos tendrás:
@@ -79,6 +86,7 @@ Al completar todos los pasos tendrás:
 -  **Bundle Terraform** listo para entornos air-gapped
 -  **API Token** configurado para Terraform
 -  **Certificados SSL** para todos los servicios
+-  **Template debia12** templates para vm
 
 ## Siguiente Paso
 
