@@ -1,0 +1,22 @@
+services:
+  gitea-runner:
+    image: registry.harbor.local/proxy-docker/gitea/act_runner:latest
+    container_name: gitea-runner
+    restart: always
+    environment:
+      - CONFIG_FILE=/config.yaml
+      - GITEA_INSTANCE_URL=https://gitea.server.local
+      - GITEA_RUNNER_REGISTRATION_TOKEN=huYiXQ41nzCZkTCKV3SkHK5V4Arltok6tawLRsNN
+      - GITEA_RUNNER_NAME=gitea-runner-docker
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - ./config.yaml:/config.yaml:ro
+      - gitea-runner-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
+    extra_hosts:
+      - "gitea.server.local:192.168.253.11"
+      - "registry.harbor.local:192.168.253.12"
+
+volumes:
+  gitea-runner-data:

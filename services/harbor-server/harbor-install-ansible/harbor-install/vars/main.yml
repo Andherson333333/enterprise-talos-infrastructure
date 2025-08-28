@@ -1,0 +1,3 @@
+---
+# vars file for harbor-install
+harbor_install_dir: "/opt/harbor"

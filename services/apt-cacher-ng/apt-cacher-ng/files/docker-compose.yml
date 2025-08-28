@@ -1,0 +1,16 @@
+services:
+  apt-cacher-ng:
+    image: sameersbn/apt-cacher-ng
+    container_name: apt-cacher-ng
+    ports:
+      - "80:3142"
+    volumes:
+      - apt-cacher-ng:/var/cache/apt-cacher-ng
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3142/acng-report.html"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+volumes:
+  apt-cacher-ng:

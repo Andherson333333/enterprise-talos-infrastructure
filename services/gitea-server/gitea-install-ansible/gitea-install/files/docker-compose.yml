@@ -1,0 +1,77 @@
+services:
+  traefik:
+    image: registry.harbor.local/proxy-docker/library/traefik:v3.0
+    container_name: gitea-traefik
+    restart: always
+    command:
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.ssh.address=:2222"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--providers.file.filename=/etc/traefik/tls.yml"
+      - "--providers.file.watch=true"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "2222:2222"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./gitea.key:/certs/gitea.key:ro
+      - ./gitea.pem:/certs/gitea.pem:ro
+      - ./rootCA.pem:/certs/rootCA.pem:ro
+      - ./tls.yml:/etc/traefik/tls.yml:ro
+    networks:
+      - gitea
+
+  gitea:
+    image: registry.harbor.local/proxy-docker/gitea/gitea:1.24.2
+    container_name: gitea-server
+    restart: always
+    depends_on:
+      - traefik
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__server__DOMAIN=gitea.server.local
+      - GITEA__server__ROOT_URL=https://gitea.server.local
+      - GITEA__server__SSH_PORT=2222
+      - GITEA__server__SSH_DOMAIN=gitea.server.local
+      - GITEA__database__DB_TYPE=sqlite3
+      - GITEA__actions__ENABLED=true
+      - GITEA__security__INSTALL_LOCK=true
+    expose:
+      - "3000"
+      - "2222"
+    volumes:
+      - gitea-data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - gitea
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gitea.rule=Host(`gitea.server.local`) || Host(`192.168.253.11`)"
+      - "traefik.http.routers.gitea.entrypoints=websecure"
+      - "traefik.http.routers.gitea.tls=true"
+      - "traefik.http.services.gitea.loadbalancer.server.port=3000"
+      - "traefik.tcp.routers.gitea-ssh.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.gitea-ssh.entrypoints=ssh"
+      - "traefik.tcp.routers.gitea-ssh.service=gitea-ssh-svc"
+      - "traefik.tcp.services.gitea-ssh-svc.loadbalancer.server.port=2222"
+
+networks:
+  gitea:
+    driver: bridge
+
+volumes:
+  gitea-data:

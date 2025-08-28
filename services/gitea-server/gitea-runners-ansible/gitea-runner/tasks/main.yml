@@ -1,0 +1,24 @@
+---
+- name: "Create runner directory"
+  file:
+    path: /opt/gitea-runner
+    state: directory
+  become: yes
+
+- name: "Copy docker-compose.yml"
+  copy:
+    src: docker-compose.yml
+    dest: /opt/gitea-runner/docker-compose.yml
+  become: yes
+
+- name: "Copy config.yaml"
+  copy:
+    src: config.yaml
+    dest: /opt/gitea-runner/config.yaml
+  become: yes
+
+- name: "Start runner"
+  shell: |
+    cd /opt/gitea-runner
+    docker compose up -d
+  become: yes

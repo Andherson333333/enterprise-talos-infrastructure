@@ -1,0 +1,37 @@
+---
+log:
+  level: info
+
+runner:
+  file: .runner
+  capacity: 1
+  timeout: 3h
+  shutdown_timeout: 0s
+  insecure: false
+  fetch_timeout: 5s
+  fetch_interval: 2s
+
+cache:
+  enabled: true
+  dir: ""
+  host: ""
+  port: 0
+
+container:
+  options: >-
+    --add-host=gitea.server.local:192.168.253.11
+    --add-host=registry.harbor.local:192.168.253.12
+    -v /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
+    -e NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+    -e GIT_SSL_NO_VERIFY=false
+
+  valid_volumes:
+    - "/etc/ssl/certs/ca-certificates.crt"
+
+  network: ""
+  privileged: false
+  force_pull: true
+  force_rebuild: false
+
+host:
+  workdir_parent: /tmp/act_runner

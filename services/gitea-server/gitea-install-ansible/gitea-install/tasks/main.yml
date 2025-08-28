@@ -1,0 +1,34 @@
+---
+- name: "Create gitea directory"
+  file:
+    path: /opt/gitea
+    state: directory
+  become: yes
+
+- name: "Copy docker-compose.yml"
+  copy:
+    src: docker-compose.yml
+    dest: /opt/gitea/docker-compose.yml
+  become: yes
+
+- name: "Copy tls.yml"
+  copy:
+    src: tls.yml
+    dest: /opt/gitea/tls.yml
+  become: yes
+
+- name: "Copy certificates"
+  copy:
+    src: "{{ item }}"
+    dest: "/opt/gitea/{{ item }}"
+  loop:
+    - gitea.key
+    - gitea.pem
+    - rootCA.pem
+  become: yes
+
+- name: "Start gitea stack"
+  shell: |
+    cd /opt/gitea
+    docker compose up -d
+  become: yes

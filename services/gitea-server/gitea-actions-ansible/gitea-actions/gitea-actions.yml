@@ -1,0 +1,6 @@
+- name:  gitea-actions
+  hosts: gitea
+  become: yes
+  roles:
+    -  gitea-actions
+

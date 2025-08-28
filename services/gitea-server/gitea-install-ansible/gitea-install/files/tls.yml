@@ -1,0 +1,9 @@
+tls:
+  certificates:
+    - certFile: /certs/gitea.pem
+      keyFile: /certs/gitea.key
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /certs/gitea.pem
+        keyFile: /certs/gitea.key

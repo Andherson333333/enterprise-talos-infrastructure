@@ -1,0 +1,6 @@
+- name:  gitea-runner
+  hosts: gitea
+  become: yes
+  roles:
+    -  gitea-runner
+

@@ -1,0 +1,5 @@
+- name: certificados
+  hosts: gitea
+  become: yes
+  roles:
+    - certificados

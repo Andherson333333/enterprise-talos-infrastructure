@@ -1,0 +1,5 @@
+- name: apt-cacher-ng
+  hosts: apt_ng
+  become: yes
+  roles:
+    - apt-cacher-ng

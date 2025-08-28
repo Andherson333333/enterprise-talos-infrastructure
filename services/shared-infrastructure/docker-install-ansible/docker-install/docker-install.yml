@@ -1,0 +1,5 @@
+- name: Instalar Docker
+  hosts: gitea
+  become: yes
+  roles:
+    - docker-install

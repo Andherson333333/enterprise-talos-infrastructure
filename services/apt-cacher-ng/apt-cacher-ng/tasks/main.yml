@@ -1,0 +1,21 @@
+---
+# tasks file for apt-cacher-ng
+- name: "Create apt-cacher-ng directory"
+  file:
+    path: /opt/apt-cacher-ng
+    state: directory
+  become: yes
+
+- name: "Copy docker-compose.yml"
+  copy:
+    src: docker-compose.yml
+    dest: /opt/apt-cacher-ng/docker-compose.yml
+  become: yes
+
+- name: "Start apt-cacher-ng service"
+  shell: |
+    cd /opt/apt-cacher-ng
+    docker compose up -d
+  become: yes
+  register: apt_cacher_start
+  changed_when: "'Creating' in apt_cacher_start.stdout or 'Starting' in apt_cacher_start.stdout"

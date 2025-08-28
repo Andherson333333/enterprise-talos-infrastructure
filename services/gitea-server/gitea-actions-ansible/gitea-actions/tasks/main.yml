@@ -1,0 +1,16 @@
+---
+- name: "Crear directorio para actions"
+  file:
+    path: "{{ gitea_actions_dir }}"
+    state: directory
+    owner: "{{ gitea_user }}"
+    group: "{{ gitea_group }}"
+
+- name: "Descomprimir actions directamente"
+  unarchive:
+    src: "{{ actions_tar_file }}"
+    dest: "{{ gitea_actions_dir }}"
+    owner: "{{ gitea_user }}"
+    group: "{{ gitea_group }}"
+
+- include_tasks: push.yml

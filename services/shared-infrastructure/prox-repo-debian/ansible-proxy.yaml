@@ -1,0 +1,12 @@
+---
+- name: Configure APT Proxy
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create apt proxy configuration
+      copy:
+        content: 'Acquire::http::Proxy "http://192.168.253.10";'
+        dest: /etc/apt/apt.conf.d/02proxy
+        owner: root
+        group: root
+        mode: '0644'

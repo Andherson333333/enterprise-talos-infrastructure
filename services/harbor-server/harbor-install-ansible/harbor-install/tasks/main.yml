@@ -1,0 +1,84 @@
+---
+# tasks file for harbor-install
+
+- name: "Create Harbor directories"
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ harbor_install_dir }}"
+    - "{{ harbor_install_dir }}/certs"
+  become: yes
+
+- name: "Copy Harbor offline installer"
+  copy:
+    src: "harbor-offline-installer-v2.13.1.tgz"
+    dest: "{{ harbor_install_dir }}/harbor-offline-installer-v2.13.1.tgz"
+    mode: '0644'
+  become: yes
+
+- name: "Copy Harbor configuration and certificates"
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - { src: "harbor.yml", dest: "{{ harbor_install_dir }}/harbor.yml", mode: "0644" }
+    - { src: "harbor.pem", dest: "{{ harbor_install_dir }}/certs/harbor.pem", mode: "0644" }
+    - { src: "harbor.key", dest: "{{ harbor_install_dir }}/certs/harbor.key", mode: "0600" }
+  become: yes
+
+- name: "Extract Harbor installer"
+  unarchive:
+    src: "{{ harbor_install_dir }}/harbor-offline-installer-v2.13.1.tgz"
+    dest: "{{ harbor_install_dir }}"
+    remote_src: yes
+    creates: "{{ harbor_install_dir }}/harbor"
+  become: yes
+
+- name: "Move harbor.yml to harbor directory"
+  copy:
+    src: "{{ harbor_install_dir }}/harbor.yml"
+    dest: "{{ harbor_install_dir }}/harbor/harbor.yml"
+    remote_src: yes
+    mode: '0644'
+  become: yes
+
+- name: "Run Harbor prepare script"
+  command: ./prepare
+  args:
+    chdir: "{{ harbor_install_dir }}/harbor"
+  become: yes
+  register: harbor_prepare
+  changed_when: "'Generated configuration file' in harbor_prepare.stdout"
+
+- name: "Check if Harbor is already running"
+  command: docker compose ps -q
+  args:
+    chdir: "{{ harbor_install_dir }}/harbor"
+  register: harbor_running
+  changed_when: false
+  failed_when: false
+  become: yes
+
+- name: "Install Harbor with Trivy"
+  command: ./install.sh --with-trivy
+  args:
+    chdir: "{{ harbor_install_dir }}/harbor"
+  become: yes
+  when: harbor_running.stdout == ""
+  register: harbor_install
+
+- name: "Start Harbor services (if not running)"
+  command: docker compose up -d
+  args:
+    chdir: "{{ harbor_install_dir }}/harbor"
+  become: yes
+  when: harbor_running.stdout == "" and harbor_install.changed
+
+- name: "Clean up installer archive"
+  file:
+    path: "{{ harbor_install_dir }}/harbor-offline-installer-v2.13.1.tgz"
+    state: absent
+  become: yes

@@ -1,0 +1,22 @@
+---
+# Variables principales
+gitea_url: "https://192.168.253.11"
+gitea_admin_user: "Andherson"
+gitea_admin_password: "43f3a05bfca8e2133da80064531d40b9e22b97b0"
+gitea_actions_org: "actions"
+gitea_token_name: "ansible-deploy-token"
+
+# Directorios y archivos
+gitea_actions_dir: "/opt/gitea-actions-source"
+gitea_user: "gitea"
+gitea_group: "gitea"
+actions_tar_file: "github-actions-airgap-full-repos.tar.gz"
+
+# 🎯 OPCIONAL: Solo subir estas actions (comenta para subir todas)
+# selected_actions:
+#   - checkout
+#   - cache
+#   - setup-node
+#   - setup-python
+#   - upload-artifact
+#   - download-artifact

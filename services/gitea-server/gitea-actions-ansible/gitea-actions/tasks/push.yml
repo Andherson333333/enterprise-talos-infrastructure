@@ -1,0 +1,66 @@
+---
+# Push con git instalado y rutas corregidas
+- name: "Instalar git"
+  package:
+    name: git
+    state: present
+
+- name: "Usar token existente"
+  set_fact:
+    api_token: "{{ gitea_admin_password }}"
+
+- name: "Crear organización via API"
+  uri:
+    url: "{{ gitea_url }}/api/v1/orgs"
+    method: POST
+    headers:
+      Authorization: "token {{ api_token }}"
+    validate_certs: no
+    body_format: json
+    body:
+      username: "{{ gitea_actions_org }}"
+      full_name: "GitHub Actions"
+    status_code: [201, 422]
+
+- name: "Obtener actions (ruta corregida)"
+  find:
+    paths: "{{ gitea_actions_dir }}/github-actions-airgap-full-repos"
+    file_type: directory
+    depth: 1
+  register: actions
+
+- name: "Debug - mostrar actions encontradas"
+  debug:
+    msg: "Actions: {{ actions.files | map(attribute='path') | map('basename') | list }}"
+
+- name: "Crear repositorios via API"
+  uri:
+    url: "{{ gitea_url }}/api/v1/orgs/{{ gitea_actions_org }}/repos"
+    method: POST
+    headers:
+      Authorization: "token {{ api_token }}"
+    validate_certs: no
+    body_format: json
+    body:
+      name: "{{ item | basename }}"
+     # private: false
+    status_code: [201, 409]
+  loop: "{{ actions.files | map(attribute='path') | list }}"
+  loop_control:
+    label: "{{ item | basename }}"
+
+- name: "Push código de cada action"
+  become_user: "{{ gitea_user }}"
+  shell: |
+    cd "{{ item }}"
+    git init
+    git config user.name "Ansible Deploy"
+    git config user.email "ansible@local"
+    git add .
+    git commit -m "Initial commit" || true
+    git remote remove origin || true
+    git remote add origin {{ gitea_url }}/{{ gitea_actions_org }}/{{ item | basename }}.git
+    GIT_SSL_NO_VERIFY=true git push https://{{ api_token }}@{{ gitea_url | replace('https://', '') }}/{{ gitea_actions_org }}/{{ item | basename }}.git --all --force
+  loop: "{{ actions.files | map(attribute='path') | list }}"
+  loop_control:
+    label: "{{ item | basename }}"

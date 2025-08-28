@@ -1,0 +1,60 @@
+---
+# tasks file for docker-install
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Copy Docker .deb packages to remote host
+  copy:
+    src: "{{ item }}"
+    dest: "/tmp/{{ item }}"
+    mode: '0644'
+  loop: "{{ docker_deb_packages }}"
+
+- name: "1. Install containerd.io"
+  apt:
+    deb: "/tmp/containerd.io_1.7.27-1_amd64.deb"
+
+- name: "2. Install docker-ce-cli"
+  apt:
+    deb: "/tmp/docker-ce-cli_5%3a28.3.2-1~debian.12~bookworm_amd64.deb"
+
+- name: "3. Install docker-ce"
+  apt:
+    deb: "/tmp/docker-ce_5%3a28.3.2-1~debian.12~bookworm_amd64.deb"
+
+- name: "4. Install docker-buildx-plugin v0.25.0"
+  apt:
+    deb: "/tmp/docker-buildx-plugin_0.25.0-1~debian.12~bookworm_amd64.deb"
+
+- name: "5. Install docker-compose-plugin"
+  apt:
+    deb: "/tmp/docker-compose-plugin_2.38.2-1~debian.12~bookworm_amd64.deb"
+
+- name: Clean up temporary .deb files
+  file:
+    path: "/tmp/{{ item }}"
+    state: absent
+  loop: "{{ docker_deb_packages }}"
+
+- name: Habilitar y arrancar servicio Docker
+  systemd:
+    name: docker
+    enabled: yes
+    state: started
+
+- name: Añadir usuario root al grupo docker
+  user:
+    name: root
+    groups: docker
+    append: yes
+
+- name: Verificar instalación
+  command: "{{ item }}"
+  register: version_check
+  changed_when: false
+  loop:
+    - "docker --version"
+    - "docker compose --version"
+
+
