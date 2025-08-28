@@ -140,6 +140,12 @@ Hacer la instalacion con GUI o grafico
 
 Se explica procoeso manual si quiere realizarlo mas rapido puede ejecutar esto 4 scrip
 
+```
+install-packages.sh
+lvm-setup.sh
+create-resize-script.sh
+setup-autostart.sh
+```
 
 
 ### 4. Configuración inicial post-instalación
