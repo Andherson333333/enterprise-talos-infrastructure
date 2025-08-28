@@ -1,5 +1,3 @@
----
-# tasks file for docker-install
 - name: Update apt cache
   apt:
     update_cache: yes
@@ -37,19 +35,19 @@
     state: absent
   loop: "{{ docker_deb_packages }}"
 
-- name: Habilitar y arrancar servicio Docker
+- name: Enable and start Docker service
   systemd:
     name: docker
     enabled: yes
     state: started
 
-- name: Añadir usuario root al grupo docker
+- name: Add root user to docker group
   user:
     name: root
     groups: docker
     append: yes
 
-- name: Verificar instalación
+- name: Verify installation
   command: "{{ item }}"
   register: version_check
   changed_when: false
