@@ -1,5 +1,5 @@
 ---
-- name: "Create gitea directory"
+- name: "Create Gitea directory"
   file:
     path: /opt/gitea
     state: directory
@@ -27,8 +27,9 @@
     - rootCA.pem
   become: yes
 
-- name: "Start gitea stack"
+- name: "Start Gitea stack"
   shell: |
     cd /opt/gitea
     docker compose up -d
   become: yes
+
