@@ -10,7 +10,7 @@ Guía paso a paso para preparar todos los requisitos necesarios antes del despli
 ## Orden de Despliegue
 
 ### 1. Preparar Imágenes Base
-**Carpeta**: [`Iso/`](./Iso/)
+**Carpeta**: [`iso/`](./iso/)
 
 Descargar y verificar imágenes ISO para instalación base:
 - Proxmox VE (hipervisor)
