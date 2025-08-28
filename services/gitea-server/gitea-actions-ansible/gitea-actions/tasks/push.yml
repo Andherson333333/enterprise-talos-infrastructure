@@ -1,15 +1,13 @@
----
-# Push con git instalado y rutas corregidas
-- name: "Instalar git"
+- name: "Install git"
   package:
     name: git
     state: present
 
-- name: "Usar token existente"
+- name: "Use existing token"
   set_fact:
     api_token: "{{ gitea_admin_password }}"
 
-- name: "Crear organización via API"
+- name: "Create organization via API"
   uri:
     url: "{{ gitea_url }}/api/v1/orgs"
     method: POST
@@ -22,18 +20,18 @@
       full_name: "GitHub Actions"
     status_code: [201, 422]
 
-- name: "Obtener actions (ruta corregida)"
+- name: "Get actions (corrected path)"
   find:
     paths: "{{ gitea_actions_dir }}/github-actions-airgap-full-repos"
     file_type: directory
     depth: 1
   register: actions
 
-- name: "Debug - mostrar actions encontradas"
+- name: "Debug - show found actions"
   debug:
     msg: "Actions: {{ actions.files | map(attribute='path') | map('basename') | list }}"
 
-- name: "Crear repositorios via API"
+- name: "Create repositories via API"
   uri:
     url: "{{ gitea_url }}/api/v1/orgs/{{ gitea_actions_org }}/repos"
     method: POST
@@ -43,13 +41,13 @@
     body_format: json
     body:
       name: "{{ item | basename }}"
-     # private: false
+      # private: false
     status_code: [201, 409]
   loop: "{{ actions.files | map(attribute='path') | list }}"
   loop_control:
     label: "{{ item | basename }}"
 
-- name: "Push código de cada action"
+- name: "Push code for each action"
   become_user: "{{ gitea_user }}"
   shell: |
     cd "{{ item }}"
