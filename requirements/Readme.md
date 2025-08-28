@@ -59,7 +59,7 @@ Crear usuario y token API para automatización con Terraform:
 ```
 
 ### 5. Generar Certificados SSL
-**Carpeta**: [`certific-server/`](./certific-server/)
+**Carpeta**: [`certificate-server-config/`](./certificate-server-config/)
 
 Crear certificados SSL para servicios (elegir un método):
 - **Automatizado**: Ansible + mkcert containers
