@@ -47,7 +47,7 @@ cd terraform-images/
 ```
 
 ### 4. Configurar API de Proxmox
-**Carpeta**: [`promox-api-token/`](./promox-api-token/)
+**Carpeta**: [`proxmox-api-token/`](./proxmox-api-token/)
 
 Crear usuario y token API para automatización con Terraform:
 - Usuario `terraform@pam`
