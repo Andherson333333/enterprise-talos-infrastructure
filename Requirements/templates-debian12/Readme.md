@@ -1,4 +1,4 @@
-# Docker Volumes LVM Template para Proxmox
+# Template para Proxmox debian 12
 
 ![Proxmox](https://img.shields.io/badge/Proxmox-Template-E57000?style=for-the-badge&logo=proxmox&logoColor=white)
 ![Terraform](https://img.shields.io/badge/Terraform-Compatible-623CE4?style=for-the-badge&logo=terraform&logoColor=white)
