@@ -8,6 +8,11 @@
 
 Configuración manual de template Debian para Proxmox con volúmenes Docker LVM y redimensionamiento automático.
 
+## Arquitectura 
+
+
+
+
 ## Arquitectura y Flujo de Trabajo
 
 ```
