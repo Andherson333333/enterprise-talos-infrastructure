@@ -246,7 +246,7 @@ https://gitea.server.local/actions/docker-build-push-action
 En entornos air-gapped, las actions deben referenciar repositorios locales de Gitea en lugar de GitHub.com:
 
 ```yaml
-#  NO FUNCIONA en air-gapped (requiere internet)
+# NO FUNCIONA en air-gapped (requiere internet)
 - uses: actions/checkout@v4
 
 # CORRECTO para air-gapped (repositorio local)  
