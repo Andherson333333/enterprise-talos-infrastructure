@@ -7,9 +7,6 @@
 
 Despliegue automatizado de Gitea Runner con Ansible en infraestructura Proxmox multi-capa con registro Harbor privado.
 
-## Arquitectura
-![Architecture](URL_DE_TU_IMAGEN_AQUI)
-
 ## Flujo de Trabajo
 ```
 DESPLIEGUE: Ansible Role → Docker Compose → Gitea Runner Container
