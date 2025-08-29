@@ -4,6 +4,7 @@
 ![GitHub](https://img.shields.io/badge/GitHub-Actions-181717?style=for-the-badge&logo=github&logoColor=white)
 ![Air-Gapped](https://img.shields.io/badge/Air_Gapped-Environment-FF6B35?style=for-the-badge)
 
+
 Solución automatizada para desplegar GitHub Actions en entornos air-gapped usando Gitea con Ansible. Diseñado para infraestructuras sin acceso a internet donde las actions deben residir localmente.
 
 ## El Problema
@@ -51,6 +52,8 @@ gitea_actions_org: "actions"
 #   - upload-artifact
 ```
 
+![Gitea](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner-5.png)
+
 ## Despliegue
 
 ### Método Completo
@@ -64,6 +67,7 @@ scp /tmp/github-actions-airgap-full-repos.tar.gz root@192.168.253.11:/opt/
 # 3. Ejecutar ansible
 ansible-playbook -i inventory gitea-actions.yml
 ```
+![Gitea](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner-4.png)
 
 ### Verificación
 ```bash
@@ -74,6 +78,9 @@ curl -k https://192.168.253.11/api/v1/orgs/actions \
 # Ver actions en web
 https://192.168.253.11/actions
 ```
+
+![Gitea](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner-11.png)
+
 
 ## Uso en Pipelines
 
