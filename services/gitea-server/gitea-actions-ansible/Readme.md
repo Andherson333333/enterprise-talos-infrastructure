@@ -9,6 +9,16 @@ Solución automatizada para desplegar GitHub Actions en entornos air-gapped usan
 ## El Problema
 En entornos air-gapped, `uses: actions/checkout@v4` falla porque no puede acceder a GitHub.com. Esta solución pre-descarga las actions y las despliega como repositorios locales en Gitea.
 
+## Estructura del Proyecto
+```
+gitea-actions/
+├── vars/main.yml              # Variables principales
+├── files/github-actions-airgap-full-repos.tar.gz
+├── tasks/main.yml             # Extracción y setup
+├── tasks/push.yml             # Push a Gitea
+└── gitea-actions.yml          # Playbook principal
+```
+
 ## Arquitectura
 ```
 Internet → GitHub Repos → tar.gz → Air-Gapped Server → Gitea Local Repos
@@ -108,34 +118,6 @@ jobs:
 ### Utilities
 - `github-script v7`, `release-action v1.13.0`, `codeql-action v3`
 
-## Troubleshooting
 
-### Errores Comunes
-```bash
-# Verificar token
-curl -k https://192.168.253.11/api/v1/user \
-  -H "Authorization: token TU_TOKEN"
 
-# Verificar permisos
-sudo chown -R gitea:gitea /opt/gitea-actions-source/
 
-# Verificar extracción
-ls -la /opt/gitea-actions-source/github-actions-airgap-full-repos/
-```
-
-### Reconfiguración
-```bash
-# Limpiar y redesplegar
-ansible-playbook -i inventory gitea-actions.yml --tags "cleanup"
-ansible-playbook -i inventory gitea-actions.yml
-```
-
-## Estructura del Proyecto
-```
-gitea-actions/
-├── vars/main.yml              # Variables principales
-├── files/github-actions-airgap-full-repos.tar.gz
-├── tasks/main.yml             # Extracción y setup
-├── tasks/push.yml             # Push a Gitea
-└── gitea-actions.yml          # Playbook principal
-```
