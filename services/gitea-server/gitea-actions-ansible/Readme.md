@@ -249,7 +249,7 @@ En entornos air-gapped, las actions deben referenciar repositorios locales de Gi
 #  NO FUNCIONA en air-gapped (requiere internet)
 - uses: actions/checkout@v4
 
-# ✓ CORRECTO para air-gapped (repositorio local)  
+# CORRECTO para air-gapped (repositorio local)  
 - uses: https://gitea.server.local/actions/checkout@v4
 ```
 
