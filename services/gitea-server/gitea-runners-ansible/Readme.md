@@ -114,6 +114,8 @@ Sustituir el token de su gitea en el compose
 docker-compose.yaml
 ```
 
+![Proxmox](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner-7.png)
+
 #### 3. Ejecutar despliegue
 ```bash
 # Despliegue con tags específicos
@@ -122,6 +124,8 @@ ansible-playbook -i inventory gitea-runner.yml --tags "docker,runner"
 # Despliegue completo con verbose
 ansible-playbook -i inventory gitea-runner.yml -v
 ```
+
+![Proxmox](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner-9.png)
 
 #### 4. Verificar servicios
 ```bash
@@ -206,3 +210,6 @@ docker pull registry.harbor.local/proxy-docker/hello-world
 # Test pipeline básico
 git push origin main  # Trigger pipeline
 ```
+
+![Proxmox](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner-8.png)
+
