@@ -99,9 +99,9 @@ cd /opt/harbor/harbor && docker compose ps
 curl -k https://harbor.server.local
 
 ```
-![Trivy](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/harbor-server-8.png)
 
-![Trivy](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/harbor-server-9.png)
+
+![Trivy](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/harbor-server-14.png)
 
 ### Acceso Web
 
@@ -111,8 +111,7 @@ Usuario: admin
 Password: [tu harbor_admin_password]
 ```
 
-![Trivy](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/harbor-server-9.png)
-
+![Trivy](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/harbor-server-13.png)
 
 ### Servicios Esperados
 
