@@ -85,6 +85,8 @@ ansible-playbook -i inventory harbor-install.yml \
   -e "harbor_hostname=registry.company.com"
 ```
 
+![Trivy](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/harbor-server-7.png)
+
 ## Verificación
 
 ### Comprobar Estado
@@ -94,11 +96,12 @@ ansible-playbook -i inventory harbor-install.yml \
 cd /opt/harbor/harbor && docker compose ps
 
 # Acceso web
-curl -k https://harbor.company.local
+curl -k https://harbor.server.local
 
-# API funcionando
-curl -k https://harbor.company.local/api/v2.0/systeminfo
 ```
+![Trivy](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/harbor-server-8.png)
+
+![Trivy](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/harbor-server-9.png)
 
 ### Acceso Web
 
@@ -107,6 +110,9 @@ URL: https://harbor.server.local
 Usuario: admin
 Password: [tu harbor_admin_password]
 ```
+
+![Trivy](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/harbor-server-9.png)
+
 
 ### Servicios Esperados
 
@@ -117,28 +123,6 @@ Password: [tu harbor_admin_password]
  harbor-db          (PostgreSQL)
  redis              (Cache)
  trivy-adapter      (Scanner)
-```
-
-## Troubleshooting
-
-### Harbor no inicia
-
-```bash
-# Ver logs
-cd /opt/harbor/harbor && docker compose logs
-
-# Reiniciar servicios
-docker compose down && docker compose up -d
-```
-
-### Problemas de certificados
-
-```bash
-# Verificar certificado
-openssl x509 -in /opt/harbor/certs/harbor.pem -text -noout
-
-# Verificar clave privada
-openssl rsa -in /opt/harbor/certs/harbor.key -check
 ```
 
 ### Puertos ocupados
