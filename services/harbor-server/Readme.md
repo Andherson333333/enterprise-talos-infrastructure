@@ -1,4 +1,4 @@
-# Harbor Ansible Installation Role
+# Harbor Ansible Installation 
 
 ![Ansible](https://img.shields.io/badge/Ansible-Role-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 ![Harbor](https://img.shields.io/badge/Harbor-v2.13.1-60B932?style=for-the-badge&logo=harbor&logoColor=white)
