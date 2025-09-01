@@ -8,7 +8,7 @@
 Suite completa de automatización para desplegar y gestionar infraestructura Gitea empresarial con soporte para entornos air-gapped. Incluye servidor, runners y actions locales.
 
 ## Arquitectura General
-![Architecture](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/templates-4.png)
+![Architecture](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner.png)
 
 ## Componentes de la Suite
 
