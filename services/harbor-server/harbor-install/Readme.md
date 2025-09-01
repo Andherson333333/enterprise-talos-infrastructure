@@ -5,7 +5,7 @@
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Trivy](https://img.shields.io/badge/Trivy-Scanner-1904DA?style=for-the-badge&logo=aqua&logoColor=white)
 
-Role de Ansible para instalación automatizada de Harbor Registry con certificados SSL y scanner Trivy.
+Guia para instalacion de harbor mediante ansible plaubook de forma automatizada con certificados SSL y scanner Trivy.
 
 ## Características
 
