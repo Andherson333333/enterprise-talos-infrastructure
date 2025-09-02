@@ -7,19 +7,19 @@
 ![SBOM](https://img.shields.io/badge/SBOM-Enabled-4CAF50?style=for-the-badge)
 ![Air-Gapped](https://img.shields.io/badge/Air_Gapped-Ready-FF6B35?style=for-the-badge)
 
-Complete automation suite for deploying and managing enterprise Harbor infrastructure with proxy cache, security scanning, and SBOM generation. Includes automated installation and operational usage guide.
+Suite completa de automatización para desplegar y gestionar infraestructura Harbor empresarial con proxy cache, escaneo de seguridad y generación de SBOM. Incluye instalación automatizada y guía de uso operacional.
 
-## Operation Modes
+## Modos de Operación
 
 ### Modo 1: Acceso a Internet (proxy)
 
-**Capabilities**:
+**Capacidades**:
 - Proxy cache activo para 4 registries externos
 - Descargas automáticas desde Docker Hub, Quay, Kubernetes y GitHub
 - Actualizaciones automáticas de la base de datos Trivy
 - Requiere acceso permanente a internet
 
-**Use Cases**:
+**Casos de Uso**:
 - Entornos de desarrollo con conectividad a internet
 - Reducción de ancho de banda y mitigación de límites de tasa
 - Aceleración de pulls recurrentes
@@ -28,111 +28,111 @@ Complete automation suite for deploying and managing enterprise Harbor infrastru
 ![Air-Gapped](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Arquitectura%20general%20-1.png)
 
 
-### Mode 2: Completamente Air-Gapped (Sin Internet)
+### Modo 2: Completamente Air-Gapped (Sin Internet)
 
-**Capabilities**:
+**Capacidades**:
 - Solo repositorios locales (docker-images, helm-charts)
 - Push manual de imágenes previamente descargadas
 - Base de datos Trivy offline (requiere actualizaciones manuales)
 - Operación completamente interna sin acceso externo
 
-**Use Cases**:
+**Casos de Uso**:
 - Entornos de producción completamente aislados
 - Sectores de alta seguridad (finanzas, gobierno, defensa)
 - Requisitos estrictos de cumplimiento sin conectividad externa
 
 ![Air-Gapped](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Arquitectura%20general%20-2.png)
 
-## Arquictectura 
+## Arquitectura 
 
 ![Air-Gapped](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Harbor-server.png)
 
 
-## Overview
+## Descripción General
 
-Harbor Enterprise Suite provides a comprehensive solution for private container registry management with advanced security features. The suite includes automated installation procedures and operational guidelines for enterprise-grade container management.
+Harbor Enterprise Suite proporciona una solución integral para la gestión de registries privados de contenedores con características avanzadas de seguridad. La suite incluye procedimientos de instalación automatizados y pautas operacionales para gestión de contenedores de nivel empresarial.
 
-### Key Features
+### Características Principales
 
-- **Harbor 2.11.0** - Enterprise-grade private container registry
-- **Trivy Integration** - Automated vulnerability scanning
-- **SBOM Generation** - Software Bill of Materials compliance
-- **Proxy Cache** - Support for multiple external registries
-- **Air-Gapped Operations** - Complete offline functionality
-- **Enterprise Security** - SSL/TLS with corporate certificates
+- **Harbor 2.11.0** - Registry privado de contenedores de nivel empresarial
+- **Integración Trivy** - Escaneo automatizado de vulnerabilidades
+- **Generación SBOM** - Cumplimiento de Software Bill of Materials
+- **Proxy Cache** - Soporte para múltiples registries externos
+- **Operaciones Air-Gapped** - Funcionalidad completa offline
+- **Seguridad Empresarial** - SSL/TLS con certificados corporativos
 
-## Architecture
+## Arquitectura
 
-The Harbor Enterprise Suite follows a distributed architecture designed for enterprise scalability and security requirements.
+Harbor Enterprise Suite sigue una arquitectura distribuida diseñada para escalabilidad empresarial y requisitos de seguridad.
 
-## Core Components
+## Componentes Principales
 
 ### Harbor Registry
 
-Harbor is an open-source private container registry developed by VMware. It serves as a centralized repository for storing, managing, and distributing Docker/OCI images with advanced enterprise features:
+Harbor es un registry privado de contenedores open-source desarrollado por VMware. Sirve como repositorio centralizado para almacenar, gestionar y distribuir imágenes Docker/OCI con características empresariales avanzadas:
 
-- Proxy cache support for multiple external registries (Docker Hub, Quay, Kubernetes, GitHub)
-- Role-based access control (RBAC)
-- Integrated vulnerability scanning with Trivy
-- Automatic SBOM generation
-- Multi-project organization
-- API-first architecture
+- Soporte de proxy cache para múltiples registries externos (Docker Hub, Quay, Kubernetes, GitHub)
+- Control de acceso basado en roles (RBAC)
+- Escaneo integrado de vulnerabilidades con Trivy
+- Generación automática de SBOM
+- Organización multi-proyecto
+- Arquitectura API-first
 
 ### Trivy Security Scanner
 
-Trivy is an open-source vulnerability scanner developed by Aqua Security. Integration with Harbor provides:
+Trivy es un escáner de vulnerabilidades open-source desarrollado por Aqua Security. La integración con Harbor proporciona:
 
-- Detection of known vulnerabilities (CVEs) in container images
-- Analysis of dependencies and libraries within images
-- Vulnerability classification by severity (Critical, High, Medium, Low)
-- Blocking deployment of images with critical vulnerabilities
-- Real-time security reporting
+- Detección de vulnerabilidades conocidas (CVEs) en imágenes de contenedores
+- Análisis de dependencias y bibliotecas dentro de las imágenes
+- Clasificación de vulnerabilidades por severidad (Critical, High, Medium, Low)
+- Bloqueo de despliegue de imágenes con vulnerabilidades críticas
+- Reportes de seguridad en tiempo real
 
 ### Software Bill of Materials (SBOM)
 
-SBOM provides a detailed inventory of all software components contained in an application or image:
+SBOM proporciona un inventario detallado de todos los componentes de software contenidos en una aplicación o imagen:
 
-- Complete list of dependencies and libraries
-- Exact versions of each component
-- Software licenses information
-- Associated vulnerability information
-- Standard formats: SPDX (Linux Foundation) and CycloneDX (OWASP)
+- Lista completa de dependencias y bibliotecas
+- Versiones exactas de cada componente
+- Información de licencias de software
+- Información de vulnerabilidades asociadas
+- Formatos estándar: SPDX (Linux Foundation) y CycloneDX (OWASP)
 
-## Suite Structure
+## Estructura de la Suite
 
-### 1. Harbor Install Module
+### 1. Módulo Harbor Install
 
-**Location**: `harbor-install/`
+**Ubicación**: `harbor-install/`
 
-Automated Harbor installation with Trivy and enterprise configurations.
+Instalación automatizada de Harbor con Trivy y configuraciones empresariales.
 
-**Features**:
-- Harbor 2.11.0 deployment with Docker Compose
-- Integrated Trivy scanner for vulnerability assessment
-- Proxy cache configuration for 4 external registries
-- SSL/TLS configuration with corporate certificates
-- Automatic SBOM generation enablement
+**Características**:
+- Despliegue Harbor 2.11.0 con Docker Compose
+- Escáner Trivy integrado para evaluación de vulnerabilidades
+- Configuración de proxy cache para 4 registries externos
+- Configuración SSL/TLS con certificados corporativos
+- Habilitación de generación automática de SBOM
 
-**Output**: Complete Harbor installation at `https://registry.harbor.local`
+**Resultado**: Instalación completa de Harbor en `https://registry.harbor.local`
 
-### 2. Harbor Use Module
+### 2. Módulo Harbor Use
 
-**Location**: `harbor-use/`
+**Ubicación**: `harbor-use/`
 
-Comprehensive operational guide for daily Harbor usage.
+Guía operacional integral para uso diario de Harbor.
 
-**Features**:
-- Proxy cache operations (Docker Hub, Quay, Kubernetes, GitHub)
-- Repository and project management
-- Security scan interpretation
-- SBOM generation and download procedures
-- Administration scripts and troubleshooting guides
+**Características**:
+- Operaciones de proxy cache (Docker Hub, Quay, Kubernetes, GitHub)
+- Gestión de repositorios y proyectos
+- Interpretación de escaneos de seguridad
+- Procedimientos de generación y descarga de SBOM
+- Scripts de administración y guías de resolución de problemas
 
-## Deployment Process
+## Proceso de Despliegue
 
-### Prerequisites
+### Prerequisitos
 
-Execute the following playbooks in order to prepare the base infrastructure:
+Ejecutar los siguientes playbooks en orden para preparar la infraestructura base:
 
 ```bash
 ansible-playbook host-network-1ip.yml
@@ -141,94 +141,92 @@ ansible-playbook ansible-proxy.yaml
 ansible-playbook certificados.yml
 ```
 
-### Harbor Installation
+### Instalación de Harbor
 
 ```bash
-# 1. Deploy Harbor with Trivy integration
+# 1. Desplegar Harbor con integración Trivy
 cd harbor-install/
 ansible-playbook -i inventory harbor-install.yml
 
-# 2. Verify installation
+# 2. Verificar instalación
 curl -k https://registry.harbor.local/api/v2.0/health
 
-# 3. Follow operational guide
-# Reference harbor-use/README.md for daily operations
+# 3. Seguir guía operacional
+# Referencia harbor-use/README.md para operaciones diarias
 ```
 
-## Network Configuration
+## Configuración de Red
 
-### Services and Ports
+### Servicios y Puertos
 
 **Harbor Registry**:
 - Web UI: `https://registry.harbor.local` (443)
 - Docker API: `https://registry.harbor.local/v2/` (443)
 - Notary: `https://registry.harbor.local:4443`
 
-**Proxy Cache Endpoints**:
+**Endpoints Proxy Cache**:
 - Docker Hub: `registry.harbor.local/proxy-docker/*`
 - Quay.io: `registry.harbor.local/proxy-quay/*`
 - Kubernetes: `registry.harbor.local/proxy-k8s/*`
 - GitHub: `registry.harbor.local/proxy-ghcr/*`
 
-### Host Configuration
+### Configuración de Hosts
 
-Add the following entries to `/etc/hosts` on all nodes:
+Agregar las siguientes entradas a `/etc/hosts` en todos los nodos:
 
 ```
 192.168.253.12    registry.harbor.local harbor.local
 ```
 
-## Enterprise Features
+## Características Empresariales
 
-### Security
+### Seguridad
 
-- **Trivy Integration**: Automatic vulnerability scanning on every image push
-- **SBOM Generation**: Complete component inventory for compliance requirements
-- **CVE Blocking**: Prevention of vulnerable image deployments
-- **Certificate Management**: Integration with corporate PKI infrastructure
-- **Air-Gapped Support**: Complete operation without internet connectivity
+- **Integración Trivy**: Escaneo automático de vulnerabilidades en cada push de imagen
+- **Generación SBOM**: Inventario completo de componentes para requisitos de cumplimiento
+- **Bloqueo CVE**: Prevención de despliegue de imágenes vulnerables
+- **Gestión de Certificados**: Integración con infraestructura PKI corporativa
+- **Soporte Air-Gapped**: Operación completa sin conectividad a internet
 
-### Performance and Availability
+### Rendimiento y Disponibilidad
 
-- **Proxy Cache**: Local caching for 4 major registries
-- **Rate Limit Bypass**: Avoids Docker Hub and other registry limitations
-- **High Availability**: Persistent storage and comprehensive health checks
-- **Load Distribution**: Integration with load balancer layer
+- **Proxy Cache**: Cache local para 4 registries principales
+- **Bypass de Límites de Tasa**: Evita limitaciones de Docker Hub y otros registries
+- **Alta Disponibilidad**: Almacenamiento persistente y verificaciones integrales de salud
+- **Distribución de Carga**: Integración con capa de balanceador de carga
 
-### DevOps Integration
+### Integración DevOps
 
-- **API First**: Complete integration via REST API
-- **Webhook Support**: Automatic scan result notifications
-- **Multi-Project**: Organization by teams and applications
-- **Registry Replication**: Synchronization between Harbor instances
+- **API First**: Integración completa vía REST API
+- **Soporte Webhook**: Notificaciones automáticas de resultados de escaneo
+- **Multi-Proyecto**: Organización por equipos y aplicaciones
+- **Replicación de Registry**: Sincronización entre instancias Harbor
 
+### Modo 3: Híbrido (Configuración Inicial → Air-Gapped)
 
+**Proceso**:
+1. Instalación inicial con acceso a internet para descarga de imágenes base
+2. Configuración de proxy cache y pre-población de repositorios
+3. Desconexión completa de internet
+4. Operación exclusivamente con cache local y repositorios manuales
 
-### Mode 3: Hybrid (Initial Setup → Air-Gapped)
+**Casos de Uso**:
+- Migración gradual a entornos air-gapped
+- Escenarios con conectividad intermitente
+- Instalación inicial eficiente con operación posterior segura
 
-**Process**:
-1. Initial installation with internet access for base image downloads
-2. Proxy cache configuration and repository pre-population
-3. Complete internet disconnection
-4. Operation exclusively with local cache and manual repositories
+## Soporte y Documentación
 
-**Use Cases**:
-- Gradual migration to air-gapped environments
-- Scenarios with intermittent connectivity
-- Efficient initial installation with subsequent secure operation
+Para procedimientos operacionales detallados, guías de resolución de problemas y opciones de configuración avanzadas, consulte la documentación respectiva de cada módulo:
 
-## Support and Documentation
+- Procedimientos de instalación: `harbor-install/README.md`
+- Pautas operacionales: `harbor-use/README.md`
+- Resolución de problemas: `harbor-use/troubleshooting.md`
 
-For detailed operational procedures, troubleshooting guides, and advanced configuration options, refer to the respective module documentation:
+## Requisitos
 
-- Installation procedures: `harbor-install/README.md`
-- Operational guidelines: `harbor-use/README.md`
-- Troubleshooting: `harbor-use/troubleshooting.md`
-
-## Requirements
-
-- Docker and Docker Compose
-- Ansible automation platform
-- Corporate certificate infrastructure
-- Network connectivity (varies by operation mode)
-- Sufficient storage for image caching and repositories
+- Docker y Docker Compose
+- Plataforma de automatización Ansible
+- Infraestructura de certificados corporativos
+- Conectividad de red (varía según el modo de operación)
+- Almacenamiento suficiente para cache de imágenes y repositorios
