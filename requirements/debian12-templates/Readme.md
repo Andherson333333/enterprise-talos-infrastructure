@@ -48,13 +48,13 @@ Type: Linux 6.x - 2.6 Kernel
 
 # Sistema
 SCSI Controller: VirtIO SCSI single
-Qemu Agent: ✅ ACTIVAR
+Qemu Agent:  ACTIVAR
 
 # Discos
 SCSI 0: 20GB (Sistema)
 SCSI 1: 10GB (Docker LVM)
 Cache: Write back
-Discard: ✅ Activar
+Discard:  Activar
 
 # Hardware  
 CPU: 2 cores, type host
