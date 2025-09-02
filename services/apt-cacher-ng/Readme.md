@@ -30,6 +30,8 @@ APT-Cacher-NG cachea paquetes APT localmente. Los clientes descargan una vez des
 # Ejecutar playbook
 ansible-playbook -i inventory apt-cacher-ng.yml
 ```
+![APT](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/apt-cacher-ng%20server-2.png)
+
 
 ## Configuración
 
