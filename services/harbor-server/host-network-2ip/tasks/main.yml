@@ -1,0 +1,36 @@
+---
+- name: Cambiar hostname a harbor-server
+  hostname:
+    name: harbor-server
+
+- name: Actualizar /etc/hostname
+  copy:
+    content: "harbor-server\n"
+    dest: /etc/hostname
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+
+- name: Copiar archivo hosts con backup
+  copy:
+    src: files/hosts
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+
+- name: Copiar configuración de interfaces con backup
+  copy:
+    src: files/interfaces
+    dest: /etc/network/interfaces
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+
+- name: Reiniciar networking si hay cambios
+  systemd:
+    name: networking
+    state: restarted

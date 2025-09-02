@@ -1,0 +1,6 @@
+---
+- name: Configurar la red con 2 IPs
+  hosts: apt_ng
+#  become: yes
+  roles:
+    - host-network-2ip
