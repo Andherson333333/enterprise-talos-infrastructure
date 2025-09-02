@@ -48,6 +48,7 @@ ansible all -i inventory -m shell -a "docker compose --version"
 # Verificar servicio
 ansible all -i inventory -m shell -a "systemctl status docker"
 ```
+![Docker](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner-1.png)
 
 ## Actualización
 
