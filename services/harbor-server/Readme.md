@@ -11,35 +11,35 @@ Complete automation suite for deploying and managing enterprise Harbor infrastru
 
 ## Operation Modes
 
-### Mode 1: Internet Access (proxy)
+### Modo 1: Acceso a Internet (proxy)
 
 **Capabilities**:
-- Active proxy cache for 4 external registries
-- Automatic downloads from Docker Hub, Quay, Kubernetes, and GitHub
-- Automatic Trivy database updates
-- Requires permanent internet access
+- Proxy cache activo para 4 registries externos
+- Descargas automáticas desde Docker Hub, Quay, Kubernetes y GitHub
+- Actualizaciones automáticas de la base de datos Trivy
+- Requiere acceso permanente a internet
 
 **Use Cases**:
-- Development environments with internet connectivity
-- Bandwidth reduction and rate limit mitigation
-- Acceleration of recurring pulls
+- Entornos de desarrollo con conectividad a internet
+- Reducción de ancho de banda y mitigación de límites de tasa
+- Aceleración de pulls recurrentes
 
 
 ![Air-Gapped](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Arquitectura%20general%20-1.png)
 
 
-### Mode 2: Complete Air-Gapped (No Internet)
+### Mode 2: Completamente Air-Gapped (Sin Internet)
 
 **Capabilities**:
-- Local repositories only (docker-images, helm-charts)
-- Manual push of pre-downloaded images
-- Offline Trivy database (requires manual updates)
-- Complete internal operation without external access
+- Solo repositorios locales (docker-images, helm-charts)
+- Push manual de imágenes previamente descargadas
+- Base de datos Trivy offline (requiere actualizaciones manuales)
+- Operación completamente interna sin acceso externo
 
 **Use Cases**:
-- Completely isolated production environments
-- High-security sectors (finance, government, defense)
-- Strict compliance requirements without external connectivity
+- Entornos de producción completamente aislados
+- Sectores de alta seguridad (finanzas, gobierno, defensa)
+- Requisitos estrictos de cumplimiento sin conectividad externa
 
 ![Air-Gapped](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Arquitectura%20general%20-2.png)
 
