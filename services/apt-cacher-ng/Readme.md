@@ -66,6 +66,7 @@ apt install nginx
 ```
 http://CACHE_IP:3142/acng-report.html
 ```
+![APT](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/apt-cacher-ng%20server-1.png)
 
 ## Verificación
 
