@@ -11,7 +11,7 @@ Complete automation suite for deploying and managing enterprise Harbor infrastru
 
 ## Operation Modes
 
-### Mode 1: Connected with Proxy (Internet Access)
+### Mode 1: Internet Access (proxy)
 
 **Capabilities**:
 - Active proxy cache for 4 external registries
@@ -23,6 +23,10 @@ Complete automation suite for deploying and managing enterprise Harbor infrastru
 - Development environments with internet connectivity
 - Bandwidth reduction and rate limit mitigation
 - Acceleration of recurring pulls
+
+
+![Air-Gapped](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Arquitectura%20general%20-1.png)
+
 
 ### Mode 2: Complete Air-Gapped (No Internet)
 
@@ -36,6 +40,8 @@ Complete automation suite for deploying and managing enterprise Harbor infrastru
 - Completely isolated production environments
 - High-security sectors (finance, government, defense)
 - Strict compliance requirements without external connectivity
+
+![Air-Gapped](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Arquitectura%20general%20-2.png)
 
 ## Arquictectura 
 
