@@ -1,38 +1,60 @@
-Role Name
-=========
+# Host Network Configuration
 
-A brief description of the role goes here.
+![Ansible](https://img.shields.io/badge/Ansible-Automation-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
+![Network](https://img.shields.io/badge/Network-Static_IP-FF6B35?style=for-the-badge&logo=cisco&logoColor=white)
 
-Requirements
-------------
+Configuración automática de red estática y resolución DNS local mediante playbook de Ansible.
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## ¿Qué hace?
 
-Role Variables
---------------
+Configura IP estática y hostnames locales para servicios. Establece red fija y resolución DNS interna.
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+### Configuración incluida
 
-Dependencies
-------------
+- **IP estática**: 192.168.253.11/24
+- **Gateway**: 192.168.253.1  
+- **DNS local**: Harbor Registry y Gitea Server
+- **Hostname**: gitea-server
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Uso
 
-Example Playbook
-----------------
+```bash
+# Ejecutar configuración
+ansible-playbook -i inventory host-network-1ip.yml
+```
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+## Archivos de configuración
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```
+host-network-1ip/
+├── files/
+│   ├── hosts                        # Resolución DNS local
+│   └── interfaces                   # Configuración de red estática
+└── tasks/main.yml                   # Tareas de configuración
+```
 
-License
--------
+### Hosts configurados
 
-BSD
+```
+192.168.253.12 registry.harbor.local
+192.168.253.11 gitea.server.local
+```
 
-Author Information
-------------------
+## Verificación
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```bash
+# Verificar IP configurada
+ansible all -i inventory -m shell -a "ip addr show ens18"
+
+# Verificar resolución DNS
+ansible all -i inventory -m shell -a "cat /etc/hosts"
+
+# Probar conectividad
+ansible all -i inventory -m shell -a "ping -c 2 registry.harbor.local"
+```
+
+## Personalización
+
+Para cambiar configuración, editar:
+- `files/interfaces` - Cambiar IP, gateway, netmask
+- `files/hosts` - Agregar/modificar hostnames
