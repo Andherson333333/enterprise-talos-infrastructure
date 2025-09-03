@@ -3,7 +3,7 @@
 ![Ansible](https://img.shields.io/badge/Ansible-Automation-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 ![Services](https://img.shields.io/badge/Services-Enterprise-4CAF50?style=for-the-badge&logo=kubernetes&logoColor=white)
 
-Suite de servicios empresariales automatizados para infraestructura Talos mediante playbooks de Ansible.
+Suite de servicios empresariales automatizados para infraestructura mediante playbooks de Ansible.
 
 **Características**:
 - **Automatización completa**: Despliegue sin intervención manual
