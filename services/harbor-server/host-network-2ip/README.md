@@ -1,38 +1,53 @@
-Role Name
-=========
+# Host Network 2IP Configuration
 
-A brief description of the role goes here.
+![Ansible](https://img.shields.io/badge/Ansible-Automation-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
+![Network](https://img.shields.io/badge/Network-Dual_IP-FF6B35?style=for-the-badge&logo=cisco&logoColor=white)
 
-Requirements
-------------
+Configuración automática de red dual IP y resolución DNS para Harbor server mediante playbook de Ansible.
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## ¿Qué hace?
 
-Role Variables
---------------
+Configura dos interfaces de red estáticas y hostnames locales para servicios. Establece conectividad dual y resolución DNS interna.
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+### Configuración incluida
 
-Dependencies
-------------
+- **Interface ens18**: 192.168.133.20/24 (gateway 192.168.133.2)
+- **Interface ens19**: 192.168.253.12/24 (sin gateway)
+- **DNS local**: Harbor Registry (doble IP) y Gitea Server
+- **Hostname**: harbor-server
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Uso
 
-Example Playbook
-----------------
+```bash
+# Ejecutar configuración
+ansible-playbook -i inventory network.yml
+```
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+### Hosts configurados
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```
+192.168.133.20 registry.harbor.local
+192.168.253.12 registry.harbor.local  
+192.168.253.11 gitea.server.local
+```
 
-License
--------
+## Verificación
 
-BSD
+```bash
+# Verificar ambas interfaces
+ansible all -i inventory -m shell -a "ip addr show ens18"
+ansible all -i inventory -m shell -a "ip addr show ens19"
 
-Author Information
-------------------
+# Verificar resolución DNS
+ansible all -i inventory -m shell -a "cat /etc/hosts"
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+# Probar conectividad dual
+ansible all -i inventory -m shell -a "ping -c 2 192.168.133.20"
+ansible all -i inventory -m shell -a "ping -c 2 192.168.253.12"
+```
+
+## Personalización
+
+Para cambiar configuración, editar:
+- `files/interfaces` - Modificar IPs, gateway, netmask
+- `files/hosts` - Agregar/cambiar hostnames
