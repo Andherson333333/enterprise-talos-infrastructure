@@ -42,5 +42,5 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
   }
 
   started = true
-  tags    = ["talos", "worker"]
+  tags    = [terraform", "talos", "worker", "infrastructure"]
 }
