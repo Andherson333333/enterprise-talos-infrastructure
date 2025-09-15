@@ -13,16 +13,17 @@ Despliega automáticamente una infraestructura de 3 capas en Proxmox: servicios 
 
 ## Arquitectura
 
-![Infraestructura completa](path/to/architecture-diagram.png)
+![Infraestructura completa](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Arquitectura%20general%20-1.png)
 
 **Capas de la infraestructura:**
 - **Layer Proxy**: apt-cacher-ng + harbor-server (acceso internet)
 - **Layer Git+Runner**: gitea-server + runners (CI/CD)
 - **Layer Kubernetes**: cluster Talos (1 CP + workers variables)
 
-![Infraestructura completa](path/to/architecture-diagram.png)
-![Infraestructura completa](path/to/architecture-diagram.png)
-![Infraestructura completa](path/to/architecture-diagram.png)
+![Infraestructura completa](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/apt-cacher-ng%20server.png)
+![Infraestructura completa](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Harbor-server.png)
+
+![Infraestructura completa](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/talos-linux-vm.png)
 
 **Características principales:**
 - **Automatización completa**: Deploy con un solo comando
