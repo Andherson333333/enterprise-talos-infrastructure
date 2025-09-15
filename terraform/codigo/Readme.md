@@ -22,7 +22,6 @@ Despliega automáticamente una infraestructura de 3 capas en Proxmox: servicios 
 
 ![Infraestructura completa](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/apt-cacher-ng%20server.png)
 ![Infraestructura completa](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Harbor-server.png)
-
 ![Infraestructura completa](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner.png)
 ![Infraestructura completa](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/talos-linux-vm.png)
 
