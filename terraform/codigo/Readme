@@ -1,9 +1,9 @@
 # Terraform Proxmox Infrastructure
 
-![Terraform](https://img.shields.io/badge/Terraform-Infrastructure-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)
-![Proxmox](https://img.shields.io/badge/Proxmox-Virtualization-E57000?style=for-the-badge&logo=proxmox&logoColor=white)
-![Talos](https://img.shields.io/badge/Talos-Kubernetes_OS-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
-![Ansible](https://img.shields.io/badge/Ansible-Ready-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform-844FBA?style=for-the-badge&logo=terraform&logoColor=white)
+![Proxmox](https://img.shields.io/badge/Proxmox-E57000?style=for-the-badge&logo=proxmox&logoColor=white)
+![Talos](https://img.shields.io/badge/Talos-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
+![Ansible](https://img.shields.io/badge/Ansible-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 
 Infraestructura completa en Proxmox con Terraform para cluster Talos Kubernetes y servicios de soporte.
 
