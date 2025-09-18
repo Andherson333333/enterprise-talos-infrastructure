@@ -2,6 +2,10 @@ resource "proxmox_virtual_environment_vm" "apt_cacher_ng_server_server" {
   node_name = var.node_name
   name      = "apt-cacher-ng-server-server"
 
+  agent {
+  enabled = false
+  }
+
   clone {
     vm_id = 8001
     full  = true

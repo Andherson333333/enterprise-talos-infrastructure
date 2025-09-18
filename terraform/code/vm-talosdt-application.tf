@@ -2,7 +2,11 @@ resource "proxmox_virtual_environment_vm" "talos_worker_application" {
   count     = var.app_worker_count
   node_name = var.node_name
   name      = "${var.app_node_prefix}-dt-${format("%02d", count.index + 1)}"
-
+  
+  agent {
+  enabled = false
+  }
+  
   clone {
     vm_id = 9000
     full  = true

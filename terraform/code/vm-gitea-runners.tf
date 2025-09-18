@@ -3,6 +3,10 @@ resource "proxmox_virtual_environment_vm" "gitea_runner" {
   node_name = var.node_name
   name      = "${var.gitea_runners}-${format("%02d", count.index + 1)}"
 
+  agent {
+  enabled = false
+  }
+  
   clone {
     vm_id = 8000
     full  = true

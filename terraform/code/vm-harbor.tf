@@ -1,6 +1,10 @@
 resource "proxmox_virtual_environment_vm" "harbor_server" {
   node_name = var.node_name
   name      = "harbor-server"
+  
+  agent {
+  enabled = false
+  } 
 
   clone {
     vm_id = 8001
