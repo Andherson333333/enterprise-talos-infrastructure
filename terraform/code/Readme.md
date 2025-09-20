@@ -166,4 +166,4 @@ terraform output
 |-----------|-----|-----------|
 | **vmbr0** | Externa | Acceso internet (proxy layer) |
 | **vmbr1** | Interna | Comunicación servicios |
-| **vmbr2** | Cluster | Red Kubernetes Talos |
+| **vmbr2** | Cluster | Red Kubernetes Talos | 
