@@ -1,0 +1,26 @@
+machine:
+  network:
+    hostname: talos-infrastructure-dt-03
+    interfaces:
+      - interface: ens18
+        addresses:
+          - 192.168.253.113/24
+        dhcp: false
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.253.1
+      - interface: ens19
+        addresses:
+          - 192.168.141.13/24
+        dhcp: false
+        mtu: 1500
+  nodeLabels:
+    workload-type: "infrastructure"
+    node.talos.dev/type: "worker"
+    node.talos.dev/tier: "infrastructure"
+  kubelet:
+    nodeIP:
+      validSubnets:
+        - 192.168.253.0/24
+    extraArgs:
+      register-with-taints: "workload-type=infrastructure:PreferNoSchedule"

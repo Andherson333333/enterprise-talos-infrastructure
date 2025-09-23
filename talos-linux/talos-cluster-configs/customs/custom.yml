@@ -1,0 +1,32 @@
+machine:
+  network:
+    extraHostEntries:
+      - ip: 192.168.253.12
+        aliases:
+          - registry.harbor.local
+          - harbor.local
+      - ip: 192.168.253.11
+        aliases:
+          - gitea.server.local
+  features:
+    imageCache:
+      localEnabled: true
+  time:
+    disabled: true
+---
+apiVersion: v1alpha1
+kind: TrustedRootsConfig
+name: harbor-ca
+certificates: |
+  -----BEGIN CERTIFICATE-----
+
+  -----END CERTIFICATE-----
+---
+apiVersion: v1alpha1
+kind: VolumeConfig
+name: IMAGECACHE
+provisioning:
+  diskSelector:
+    match: "system_disk"
+  minSize: 1GB
+  maxSize: 1GB

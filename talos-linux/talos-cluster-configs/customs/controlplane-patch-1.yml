@@ -1,0 +1,84 @@
+# controlplane-patch-1.yml - Con CoreDNS automático + kubelet validSubnets + Prometheus metrics
+machine:
+  network:
+    hostname: talos-cp-01
+    interfaces:
+      - interface: ens18
+        addresses:
+          - 192.168.253.101/24
+        dhcp: false
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.253.1
+        vip:
+          ip: 192.168.253.100
+      - interface: ens19
+        addresses:
+          - 192.168.141.10/24  # ← AGREGADO
+        dhcp: false
+        mtu: 1500
+  nodeLabels:
+    workload-type: "infrastructure"
+    node.talos.dev/type: "control-plane"
+    node.talos.dev/tier: "system"
+  nodeTaints:
+    workload-type: "infrastructure:PreferNoSchedule"
+  kubelet:
+    nodeIP:
+      validSubnets:
+        - 192.168.253.0/24
+
+cluster:
+  # CoreDNS automático con inlineManifests (Tier 1)
+  inlineManifests:
+    - name: coredns-air-gapped-config
+      contents: |
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: coredns
+          namespace: kube-system
+          labels:
+            managed-by: talos-bootstrap
+            k8s-app: kube-dns
+        data:
+          Corefile: |-
+            .:53 {
+                errors
+                health {
+                    lameduck 5s
+                }
+                hosts {
+                  192.168.253.6   gitea.aerr.com
+                  192.168.253.7   registry.harbor.local harbor.local
+                  fallthrough
+                }
+                ready
+                log . {
+                    class error
+                }
+                prometheus :9153
+                kubernetes cluster.local in-addr.arpa ip6.arpa {
+                    pods insecure
+                    fallthrough in-addr.arpa ip6.arpa
+                    ttl 30
+                }
+                forward . /etc/resolv.conf {
+                   max_concurrent 1000
+                }
+                cache 30 {
+                   disable success cluster.local
+                   disable denial cluster.local
+                }
+                loop
+                reload
+                loadbalance
+            }
+
+  # ✅ AGREGAR ESTAS LÍNEAS PARA PROMETHEUS METRICS:
+  controllerManager:
+    extraArgs:
+      bind-address: 0.0.0.0
+  scheduler:
+    extraArgs:
+      bind-address: 0.0.0.0

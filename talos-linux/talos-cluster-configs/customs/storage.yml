@@ -1,0 +1,11 @@
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: sdb-storage
+provisioning:
+  diskSelector:
+    match: "'/dev/sdb' in disk.symlinks && !system_disk"
+  minSize: 18GB
+  maxSize: 19GB
+filesystem:
+  type: xfs
+

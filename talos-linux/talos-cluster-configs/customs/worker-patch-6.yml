@@ -1,0 +1,27 @@
+machine:
+  network:
+    hostname: talos-application-dt-02
+    interfaces:
+      - interface: ens18
+        addresses:
+          - 192.168.253.121/24
+        dhcp: false
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.253.1
+      - interface: ens19
+        addresses:
+          - 192.168.141.21/24
+        dhcp: false
+        mtu: 1500
+  nodeLabels:
+    workload-type: "application"
+    node.talos.dev/type: "worker"
+    node.talos.dev/tier: "application"
+
+  kubelet:
+    nodeIP:
+      validSubnets:
+        - 192.168.253.0/24
+    extraArgs:
+      register-with-taints: "workload-type=application:PreferNoSchedule"
