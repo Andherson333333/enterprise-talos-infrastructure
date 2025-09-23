@@ -23,4 +23,4 @@ machine:
       validSubnets:
         - 192.168.253.0/24
     extraArgs:
-      register-with-taints: "workload-type=infrastructure:PreferNoSchedule"
+      register-with-taints: "workload-type=infrastructure:PreferNoSchedule" 
