@@ -69,10 +69,7 @@ cat images.txt | talosctl images cache-create --image-cache-path ./image-cache.o
 ```
 ```
 # Generar cache OCI
-docker run --rm -v $PWD/image-cache.oci:/image-cache.oci \
-  ghcr.io/siderolabs/imager:v1.10.6 image-cache \
-  --images @images.txt \
-  --output /image-cache.oci
+docker run --rm -t -v $PWD/_out:/secureboot:ro -v $PWD/_out:/out -v $PWD/image-cache.oci:/image-cache.oci:ro -v /dev:/dev --privileged ghcr.io/siderolabs/imager:v1.10.6 iso --image-cache /image-cache.oci
 ```
 
 ### 3. Generar Installer Custom
