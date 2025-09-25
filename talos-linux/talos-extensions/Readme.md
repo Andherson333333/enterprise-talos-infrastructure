@@ -65,6 +65,9 @@ ghcr.io/siderolabs/iscsi-tools:v0.2.0@sha256:f2d78a7f19d301f2bf88ec99d948ffc6377
 EOF
 ```
 ```
+cat images.txt | talosctl images cache-create --image-cache-path ./image-cache.oci --images=-
+```
+```
 # Generar cache OCI
 docker run --rm -v $PWD/image-cache.oci:/image-cache.oci \
   ghcr.io/siderolabs/imager:v1.10.6 image-cache \
