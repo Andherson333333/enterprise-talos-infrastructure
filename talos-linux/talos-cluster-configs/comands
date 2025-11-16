@@ -1,0 +1,71 @@
+talosctl gen config promox-cluster https://192.168.253.100:6443 -f --with-docs=false --install-disk /dev/sda --output-dir _out
+
+talosctl apply-config \
+  --insecure \
+  --nodes 192.168.253.236 \
+  --config-patch @customs/custom.yml \
+  --config-patch @customs/controlplane-patch-1.yml \
+  --config-patch @customs/storage.yml \
+  --file _out/controlplane.yaml
+
+talosctl apply-config \
+  --insecure \
+  --nodes 192.168.253.239 \
+  --config-patch @customs/custom.yml \
+  --config-patch @customs/worker-patch-1.yml \
+  --config-patch @customs/storage.yml \
+  --file _out/worker.yaml
+
+talosctl apply-config \
+  --insecure \
+  --nodes 192.168.253.238 \
+  --config-patch @customs/custom.yml \
+  --config-patch @customs/worker-patch-2.yml \
+  --config-patch @customs/storage.yml \
+  --file _out/worker.yaml
+
+
+export TALOSCONFIG=_out/talosconfig
+talosctl config endpoint 192.168.253.101
+talosctl config endpoint 192.168.253.100,192.168.253.101
+talosctl config endpoint 192.168.253.101,192.168.253.100
+talosctl bootstrap -n 192.168.253.101
+
+---------------------------------------------------------
+
+talosctl kubeconfig -n 192.168.253.100
+talosctl kubeconfig -n 192.168.253.101
+
+
+talosctl upgrade --nodes 192.168.253.111,192.168.253.112 \
+  --image registry.harbor.local/docker-images/installer-base:v1.10.6-sin-qemu
+
+talosctl upgrade --nodes 192.168.253.111,192.168.253.112 \
+  --image registry.harbor.local/docker-images/installer-base:v1.10.6-sin-qemu
+
+----------------------------------------------------------
+talosctl apply-config \
+  --nodes 192.168.253.101 \
+  --config-patch @customs/custom.yml \
+  --config-patch @customs/controlplane-patch-1.yml \
+  --config-patch @customs/registry-mirrors.yml \
+  --config-patch @customs/storage.yml \
+  --file _out/controlplane.yaml
+
+talosctl apply-config \
+  --nodes 192.168.253.111 \
+  --config-patch @customs/custom.yml \
+  --config-patch @customs/worker-patch-1.yml \
+  --config-patch @customs/registry-mirrors.yml \
+  --config-patch @customs/storage.yml \
+  --file _out/worker.yaml
+
+
+talosctl apply-config \
+  --nodes 192.168.253.112 \
+  --config-patch @customs/custom.yml \
+  --config-patch @customs/worker-patch-2.yml \
+  --config-patch @customs/registry-mirrors.yml \
+  --config-patch @customs/storage.yml \
+  --file _out/worker.yaml
+
