@@ -12,14 +12,15 @@ machine:
     imageCache:
       localEnabled: true
   time:
-    disabled: true
+    disabled: false
+    servers:
+      - 192.168.253.2
 ---
 apiVersion: v1alpha1
 kind: TrustedRootsConfig
 name: harbor-ca
 certificates: |
   -----BEGIN CERTIFICATE-----
-
   -----END CERTIFICATE-----
 ---
 apiVersion: v1alpha1

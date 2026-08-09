@@ -1,4 +1,3 @@
-# controlplane-patch-1.yml - Con CoreDNS automático + kubelet validSubnets + Prometheus metrics
 machine:
   network:
     hostname: talos-cp-01
@@ -14,7 +13,7 @@ machine:
           ip: 192.168.253.100
       - interface: ens19
         addresses:
-          - 192.168.141.10/24  # ← AGREGADO
+          - 192.168.141.10/24
         dhcp: false
         mtu: 1500
   nodeLabels:
@@ -27,9 +26,7 @@ machine:
     nodeIP:
       validSubnets:
         - 192.168.253.0/24
-
 cluster:
-  # CoreDNS automático con inlineManifests (Tier 1)
   inlineManifests:
     - name: coredns-air-gapped-config
       contents: |
@@ -74,8 +71,6 @@ cluster:
                 reload
                 loadbalance
             }
-
-  # ✅ AGREGAR ESTAS LÍNEAS PARA PROMETHEUS METRICS:
   controllerManager:
     extraArgs:
       bind-address: 0.0.0.0

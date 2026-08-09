@@ -1,0 +1,7 @@
+# cni-none.yml
+cluster:
+  network:
+    cni:
+      name: none
+  proxy:
+    disabled: true

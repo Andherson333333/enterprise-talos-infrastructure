@@ -5,13 +5,15 @@ machine:
         endpoints:
           - https://registry.harbor.local/v2/proxy-docker
         overridePath: true
-        
       ghcr.io:
         endpoints:
           - https://registry.harbor.local/v2/proxy-ghcr
         overridePath: true
-        
       registry.k8s.io:
         endpoints:
           - https://registry.harbor.local/v2/proxy-k8s
+        overridePath: true
+      quay.io:
+        endpoints:
+          - https://registry.harbor.local/v2/proxy-quay
         overridePath: true

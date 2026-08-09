@@ -3,9 +3,9 @@ kind: UserVolumeConfig
 name: sdb-storage
 provisioning:
   diskSelector:
-    match: "'/dev/sdb' in disk.symlinks && !system_disk"
+    match: "disk.dev_path == '/dev/sdb'"
   minSize: 18GB
-  maxSize: 19GB
+  maxSize: 32GB
+  grow: true
 filesystem:
   type: xfs
-
