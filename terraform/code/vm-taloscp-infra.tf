@@ -2,10 +2,10 @@ resource "proxmox_virtual_environment_vm" "talos_cp" {
   count     = var.control_plane_count
   node_name = "pve-1"
   name      = "${var.cluster_name}-cp-${format("%02d", count.index + 1)}"
-
+  
   agent {
   enabled = false
-  } 
+  }
 
   clone {
     vm_id = 9000

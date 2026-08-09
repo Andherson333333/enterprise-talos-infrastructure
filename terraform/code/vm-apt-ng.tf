@@ -1,16 +1,18 @@
 resource "proxmox_virtual_environment_vm" "apt_cacher_ng_server_server" {
   node_name = var.node_name
   name      = "apt-cacher-ng-server-server"
-
+  
   agent {
   enabled = false
   }
 
+  # Clonar desde template
   clone {
     vm_id = 8001
     full  = true
   }
 
+  # CPU y Memoria
   cpu {
     cores   = 2
     sockets = 1
@@ -21,13 +23,14 @@ resource "proxmox_virtual_environment_vm" "apt_cacher_ng_server_server" {
     dedicated = 2048
   }
 
+  # Disco con discard habilitado (para SSD/thin provisioning)
   disk {
-    interface    = "scsi0"
-    datastore_id = "local-lvm"
-    size         = 20
-    discard      = "on"
+    interface      = "scsi0"
+    datastore_id   = "local-lvm"
+    size           = 20
+    discard        = "on"
   }
-
+  
   disk {
     interface    = "scsi1"
     datastore_id = "local-lvm"
@@ -35,8 +38,10 @@ resource "proxmox_virtual_environment_vm" "apt_cacher_ng_server_server" {
     discard      = "on"
   }
 
+  # Configuración de arranque
   boot_order = ["scsi0"]
 
+  # Red
   network_device {
     bridge = "vmbr0"
     model  = "virtio"
@@ -47,8 +52,10 @@ resource "proxmox_virtual_environment_vm" "apt_cacher_ng_server_server" {
     model  = "virtio"
   }
 
-  started         = true
+  # Configuración adicional
+  started = true
   stop_on_destroy = true
 
-  tags = ["terraform", "infrastructure"]
-}
+  # Tags para organización (lowercase consistente)
+  tags = ["terraform","infrastructure"]
+ }

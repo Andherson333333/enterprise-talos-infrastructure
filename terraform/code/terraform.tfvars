@@ -2,18 +2,18 @@
 # Cluster Talos
 #######################################################
 cluster_name = "talos-infrastructure"
-control_plane_count = 0
+control_plane_count = 1
 
 #######################################################
 # Workers de INFRAESTRUCTURA
 #######################################################
-infra_worker_count = 0
+infra_worker_count = 3
 infra_node_prefix = "talos-infrastructure"
 
 #######################################################
 # Workers de APLICACIÓN
 #######################################################
-app_worker_count = 0
+app_worker_count = 2
 app_node_prefix = "talos-application"
 
 #######################################################

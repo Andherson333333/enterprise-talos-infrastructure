@@ -2,11 +2,11 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
   count     = var.infra_worker_count
   node_name = "pve-1"
   name      = "${var.infra_node_prefix}-dt-${format("%02d", count.index + 1)}"
-
+  
   agent {
   enabled = false
   }
-   
+
   clone {
     vm_id = 9000
     full  = true
@@ -46,5 +46,5 @@ resource "proxmox_virtual_environment_vm" "talos_worker" {
   }
 
   started = true
-  tags    = [terraform", "talos", "worker", "infrastructure"]
+  tags    = ["talos", "worker"]
 }

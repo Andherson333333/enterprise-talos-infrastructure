@@ -1,3 +1,4 @@
+# Variables de conexión Proxmox - SIN defaults (valores críticos)
 variable "proxmox_endpoint" {
   description = "Proxmox VE endpoint"
   type        = string
@@ -9,6 +10,7 @@ variable "proxmox_api_token" {
   sensitive   = true
 }
 
+# Variables con defaults sensatos - raramente cambian
 variable "proxmox_insecure" {
   description = "Skip TLS verification"
   type        = bool
@@ -21,6 +23,7 @@ variable "node_name" {
   default     = "pve-1"
 }
 
+# Variables de cluster - SIN defaults (configuración consciente)
 variable "cluster_name" {
   description = "Cluster name"
   type        = string
@@ -31,6 +34,7 @@ variable "control_plane_count" {
   type        = number
 }
 
+# Variables de workers - SIN defaults (decisión consciente)
 variable "infra_worker_count" {
   description = "Number of infrastructure worker nodes"
   type        = number
@@ -51,6 +55,7 @@ variable "app_node_prefix" {
   type        = string
 }
 
+# Variables de Gitea - SIN defaults (configuración explícita)
 variable "gitea_runners" {
   description = "Gitea runners name prefix"
   type        = string
