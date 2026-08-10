@@ -1,9 +1,6 @@
 #!/bin/bash
 set -e
 
-# Instalación base de FRR — idéntica en frr-01 y frr-02
-# Prerequisito: Debian 12 (Bookworm) con IP estática ya configurada en /etc/network/interfaces
-
 # Repo oficial de FRR
 apt install -y curl gnupg lsb-release
 curl -s https://deb.frrouting.org/frr/keys.gpg | tee /usr/share/keyrings/frrouting.gpg > /dev/null
