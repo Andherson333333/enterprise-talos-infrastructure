@@ -1,0 +1,14 @@
+services:
+  proxy-cert-generator:
+    image: iamluc/mkcert:latest
+    container_name: proxy-cert-generator
+    volumes:
+      - /opt/harbor/mkcert-ca:/root/.local/share/mkcert:ro
+      - /opt/generated_certs/proxy-openbao:/certs
+    command: >
+      sh -c "
+        echo 'Generando certificado para proxy-open-bao...';
+        mkcert -cert-file /certs/proxy.pem -key-file /certs/proxy.key 'proxy-open-bao.local' 'localhost' '127.0.0.1' '192.168.253.34';
+        chmod 644 /certs/proxy.pem && chmod 600 /certs/proxy.key;
+        echo 'EXITO! Certificado del proxy generado';
+      "

@@ -1,0 +1,14 @@
+services:
+  openbao-cert-generator:
+    image: iamluc/mkcert:latest
+    container_name: openbao-cert-generator
+    volumes:
+      - /opt/harbor/mkcert-ca:/root/.local/share/mkcert:ro
+      - /opt/generated_certs/openbao:/certs
+    command: >
+      sh -c "
+        echo 'Generando certificado para OpenBao usando la CA de Harbor...';
+        mkcert -cert-file /certs/openbao.pem -key-file /certs/openbao.key 'open-bao-1.local' 'open-bao-2.local' 'open-bao-3.local' 'proxy-open-bao.local' 'localhost' '127.0.0.1' '192.168.253.30' '192.168.253.31' '192.168.253.32' '192.168.253.34';
+        chmod 644 /certs/openbao.pem && chmod 600 /certs/openbao.key;
+        echo 'EXITO! Certificado para OpenBao generado en /opt/generated_certs/openbao';
+      "
