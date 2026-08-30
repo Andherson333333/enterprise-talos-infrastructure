@@ -1,0 +1,10 @@
+apiVersion: v2
+name: argocd
+description: ArgoCD personalizado desde Harbor
+type: application
+version: 0.2.0
+appVersion: v3.5.2
+dependencies:
+  - name: argo-cd
+    version: "10.4.2"
+    repository: "oci://registry.harbor.local/helm-charts"

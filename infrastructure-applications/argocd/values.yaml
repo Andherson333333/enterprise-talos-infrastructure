@@ -1,0 +1,135 @@
+argo-cd:
+  global:
+    image:
+      repository: registry.harbor.local/docker-images/argocd
+      tag: v3.5.2-custom
+    nodeSelector:
+      workload-type: "infrastructure"
+    tolerations:
+      - key: "workload-type"
+        value: "infrastructure"
+        operator: "Equal"
+        effect: "PreferNoSchedule"
+
+  redis:
+    enabled: false
+
+  redis-ha:
+    enabled: true
+    image:
+      repository: registry.harbor.local/proxy-docker/library/redis
+      tag: 8.2.3-alpine
+    haproxy:
+      image:
+        repository: registry.harbor.local/proxy-docker/library/haproxy
+        tag: "2.6-alpine"
+    nodeSelector:
+      workload-type: "infrastructure"
+    tolerations:
+      - key: "workload-type"
+        value: "infrastructure"
+        operator: "Equal"
+        effect: "PreferNoSchedule"
+
+  dex:
+    image:
+      repository: registry.harbor.local/proxy-ghcr/dexidp/dex
+      tag: v2.45.1
+
+  controller:
+    replicas: 2
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: argocd-application-controller
+              topologyKey: "kubernetes.io/hostname"
+
+  server:
+    replicas: 2
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: argocd-server
+              topologyKey: "kubernetes.io/hostname"
+
+  repoServer:
+    replicas: 2
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: argocd-repo-server
+              topologyKey: "kubernetes.io/hostname"
+    env:
+      - name: ARGOCD_REPO_SERVER_PLAINTEXT
+        value: "true"
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 8084
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+      periodSeconds: 10
+      failureThreshold: 3
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: 8084
+      initialDelaySeconds: 10
+      timeoutSeconds: 5
+      periodSeconds: 10
+      failureThreshold: 3
+    extraContainers:
+      - name: avp
+        command: ["/var/run/argocd/argocd-cmp-server"]
+        image: registry.harbor.local/docker-images/argocd:v3.5.2-custom
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 999
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          seccompProfile:
+            type: RuntimeDefault
+        envFrom:
+          - secretRef:
+              name: vault-configuration
+        volumeMounts:
+          - mountPath: /var/run/argocd
+            name: var-files
+          - mountPath: /home/argocd/cmp-server/plugins
+            name: plugins
+          - mountPath: /tmp
+            name: cmp-tmp
+          - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+            subPath: avp.yaml
+            name: cmp-plugin
+          - mountPath: /vault/tls
+            name: openbao-ca
+    volumes:
+      - configMap:
+          name: cmp-plugin
+        name: cmp-plugin
+      - configMap:
+          name: openbao-ca-cert
+        name: openbao-ca
+      - emptyDir: {}
+        name: cmp-tmp
+
+  configs:
+    params:
+      server.insecure: true
+      controller.repo.server.plaintext: "true"
+      server.repo.server.plaintext: "true"
