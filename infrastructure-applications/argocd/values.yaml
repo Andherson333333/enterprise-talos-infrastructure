@@ -132,4 +132,4 @@ argo-cd:
     params:
       server.insecure: true
       controller.repo.server.plaintext: "true"
-      server.repo.server.plaintext: "true"
+      server.repo.server.plaintext: "true" 
