@@ -44,6 +44,10 @@ Al completar todos los pasos tendrás:
 - **AppRole** configurado para consumo desde ArgoCD
 - **HAProxy** dando HA transparente ante cambios de líder
 
+![TLS](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/open-bao-1.png)
+![TLS](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/open-bao-2.png)
+
+
 ## Siguiente Paso
 
 Una vez el cluster está unsealed y el AppRole configurado, dirigirse a:
