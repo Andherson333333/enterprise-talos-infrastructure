@@ -78,7 +78,9 @@ argocd-vault-plugin generate .
 
 ## Evidencia de Funcionamiento
 
-![AVP Secret Resolution](../../images/argocd-avp-1.png)
+![AVP Secret Resolution](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/argocd-vaul-1.png)
+
+![AVP Secret Resolution](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/argocd-vaul-3.png)
 
 *Resolución exitosa de `<path:secret/data/test#hello>` → `world` desde el sidecar AVP del repo-server, confirmando el pipeline completo: ArgoCD → HAProxy → OpenBao líder.*
 
