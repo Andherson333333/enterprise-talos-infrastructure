@@ -20,7 +20,7 @@ Script automatizado para instalar herramientas esenciales de DevOps, Kubernetes 
 ### 1. Clonar repositorio
 
 ```bash
-git clone <tu-repositorio>
+git clone 
 cd enterprise-talos-infrastructure/Requirements/install
 ```
 
@@ -29,6 +29,9 @@ cd enterprise-talos-infrastructure/Requirements/install
 ```bash
 # Dar permisos de ejecución
 chmod +x install.sh
+chmod +x install-argocd-cli.sh
+chmod +x install-k9s.sh
+
 
 # Ejecutar script
 ./install.sh
@@ -49,6 +52,8 @@ kubectl version --client
 terraform --version
 ansible --version
 helm version
+argocd-cli
+k9s
 ```
 
 ## Compatibilidad
