@@ -1,0 +1,23 @@
+apiVersion: cilium.io/v2
+kind: CiliumBGPClusterConfig
+metadata:
+  name: cilium-bgp-app
+spec:
+  nodeSelector:
+    matchLabels:
+      workload-type: application
+      node.talos.dev/tier: application
+  bgpInstances:
+    - name: "instance-65001"
+      localASN: 65001
+      peers:
+        - name: "frr-01"
+          peerASN: 65000
+          peerAddress: "192.168.253.20"
+          peerConfigRef:
+            name: frr-peer-config-app
+        - name: "frr-02"
+          peerASN: 65000
+          peerAddress: "192.168.253.21"
+          peerConfigRef:
+            name: frr-peer-config-app

@@ -1,0 +1,10 @@
+apiVersion: v2
+name: cilium-custom
+description: Cilium CNI Installation
+version: 0.1.0
+appVersion: 1.19.1
+
+dependencies:
+  - name: cilium
+    version: 1.19.1
+    repository: oci://registry.harbor.local/helm-charts

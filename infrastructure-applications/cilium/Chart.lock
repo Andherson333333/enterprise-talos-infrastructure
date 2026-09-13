@@ -1,0 +1,6 @@
+dependencies:
+- name: cilium
+  repository: oci://registry.harbor.local/helm-charts
+  version: 1.19.1
+digest: sha256:e6839b1d3ca923123e2bc533ac986fa3c1a00b7e44f9054e70ee53496a7eb160
+generated: "2026-03-06T23:43:10.631132681-04:00"
