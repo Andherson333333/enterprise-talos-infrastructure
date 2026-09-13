@@ -76,12 +76,13 @@ vtysh -c "show bgp ipv4 unicast neighbors 192.168.253.111 received-routes"
 
 ## Evidencia de Funcionamiento
 
-![FRR BGP Summary](../../images/frr-server-1.png)
+![FRR BGP Summary](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/frr-04.png)
 
+![FRR Received Routes](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/frr-01.png)
 
+![FRR BGP Summary](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/frr-02.png)
 
-![FRR Received Routes](../../images/frr-server-2.png)
-
+![FRR Received Routes](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/frr-03.png)
 
 
 ## Siguiente Paso
