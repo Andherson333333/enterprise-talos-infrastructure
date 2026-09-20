@@ -1,0 +1,62 @@
+---
+# tasks file for frr-install
+
+- name: "Instalar gnupg (requerido para el repo de FRR)"
+  apt:
+    name: gnupg
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: "Agregar GPG key del repo FRRouting"
+  get_url:
+    url: https://deb.frrouting.org/frr/keys.gpg
+    dest: /usr/share/keyrings/frrouting.gpg
+  become: yes
+
+- name: "Agregar repositorio FRRouting"
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/frrouting.gpg] https://deb.frrouting.org/frr {{ ansible_distribution_release }} frr-stable"
+    filename: frr
+  become: yes
+
+- name: "Instalar FRR"
+  apt:
+    name: [frr, frr-pythontools]
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: "Habilitar daemon bgpd"
+  lineinfile:
+    path: /etc/frr/daemons
+    regexp: '^bgpd='
+    line: 'bgpd=yes'
+  become: yes
+
+- name: "Habilitar IP forwarding"
+  lineinfile:
+    path: /etc/sysctl.conf
+    create: yes
+    line: "net.ipv4.ip_forward=1"
+  become: yes
+
+- name: "Copiar frr.conf del nodo"
+  copy:
+    src: "{{ inventory_hostname }}.conf"
+    dest: /etc/frr/frr.conf
+    owner: frr
+    group: frr
+    mode: '0640'
+  become: yes
+
+- name: "Habilitar y arrancar FRR"
+  systemd:
+    name: frr
+    enabled: yes
+    state: restarted
+  become: yes
+
+- name: "Aplicar config"
+  command: vtysh -f /etc/frr/frr.conf
+  become: yes

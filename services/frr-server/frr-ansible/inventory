@@ -1,0 +1,6 @@
+[frr_servers]
+frr-01 ansible_host=192.168.253.20
+frr-02 ansible_host=192.168.253.21
+
+[frr_servers:vars]
+ansible_user=root

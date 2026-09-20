@@ -1,0 +1,6 @@
+---
+- name: Install FRR
+  hosts: frr_servers
+  become: yes
+  roles:
+    - frr-install
