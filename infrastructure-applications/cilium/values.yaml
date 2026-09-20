@@ -39,7 +39,7 @@ cilium:
     replicas: 1
     rollOutPods: true
     image:
-      override: "registry.harbor.local/proxy-quay/cilium/operator-generic:v1.19.1"
+      override: "registry.harbor.local/proxy-quay/cilium/operator-generic:v1.20.1"
       useDigest: false
 
   hubble:
