@@ -1,0 +1,7 @@
+apiVersion: cilium.io/v2
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: syslog-pool
+spec:
+  blocks:
+    - cidr: "192.168.141.52/32"
