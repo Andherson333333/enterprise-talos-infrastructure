@@ -61,6 +61,6 @@ Ejecutar esta infraestructura base antes de desplegar:
 
 | Componente | README | Propósito |
 |------------|--------|-----------|
-| prox-repo-debian | [`prox-repo-debian/README.md`](./prox-repo-debian/README.md) | Proxy cache APT |
-| docker-install-ansible | [`docker-install-ansible/README.md`](./docker-install-ansible/README.md) | Instalación Docker offline |
-| certificate-ansible | [`certificate-ansible/README.md`](./certificate-ansible/README.md) | Certificados SSL/TLS |
+| prox-repo-debian | [`prox-repo-debian/README.md`](./prox-repo-debian/Readme.md) | Proxy cache APT |
+| docker-install-ansible | [`docker-install-ansible/README.md`](./docker-install-ansible/Readme.md) | Instalación Docker offline |
+| certificate-ansible | [`certificate-ansible/README.md`](./certificate-ansible/Readme.md) | Certificados SSL/TLS |

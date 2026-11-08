@@ -22,8 +22,8 @@ Suite completa de automatización para desplegar y gestionar infraestructura Har
 **¿Nuevo en Harbor Enterprise Suite?** Sigue este flujo:
 
 1. **Lee esta introducción** (estás aquí)
-2. **Instala Harbor** → Ve a [`harbor-install/README.md`](./harbor-install/README.md)
-3. **Aprende a usarlo** → Ve a [`harbor-use/README.md`](./harbor-use/README.md)
+2. **Instala Harbor** → Ve a [`harbor-install/README.md`](./harbor-install/Readme.md)
+3. **Aprende a usarlo** → Ve a [`harbor-use/README.md`](./harbor-use/Readme.md)
 
 ## Estructura del Proyecto
 
@@ -45,8 +45,8 @@ harbor-enterprise-suite/
 | Módulo | Propósito | Documentación |
 |--------|-----------|---------------|
 | **Principal** | Introducción y arquitectura | `README.md` (este archivo) |
-| **harbor-install** | Instalación automatizada | [`harbor-install/README.md`](./harbor-install/README.md) |
-| **harbor-use** | Uso operacional diario | [`harbor-use/README.md`](./harbor-use/README.md) |
+| **harbor-install** | Instalación automatizada | [`harbor-install/README.md`](./harbor-install/Readme.md) |
+| **harbor-use** | Uso operacional diario | [`harbor-use/README.md`](./harbor-use/Readme.md) |
 
 ## Arquitectura y Modos de Operación
 
@@ -105,7 +105,7 @@ ansible-playbook certificados.yml
 
 ### Fase 2: Instalación de Harbor
 
-**Documentación completa**: [`harbor-install/README.md`](./harbor-install/README.md)
+**Documentación completa**: [`harbor-install/README.md`](./harbor-install/Readme.md)
 
 ```bash
 # 1. Ir al módulo de instalación
@@ -120,7 +120,7 @@ ansible-playbook -i inventory harbor-install.yml
 
 ### Fase 3: Configuración y Uso Operacional
 
-**Documentación completa**: [`harbor-use/README.md`](./harbor-use/README.md)
+**Documentación completa**: [`harbor-use/README.md`](./harbor-use/Readme.md)
 
 ```bash
 # 1. Verificar instalación
@@ -166,7 +166,7 @@ Inventario detallado de componentes de software con cumplimiento de estándares 
 ## Documentación Específica
 
 ### Instalación Automatizada
-**Archivo**: [`harbor-install/README.md`](./harbor-install/README.md)
+**Archivo**: [`harbor-install/README.md`](./harbor-install/Readme.md)
 
 **Contiene**:
 - Preparación e instalación completa
@@ -176,7 +176,7 @@ Inventario detallado de componentes de software con cumplimiento de estándares 
 - Backup y actualización
 
 ### Uso Operacional Diario
-**Archivo**: [`harbor-use/README.md`](./harbor-use/README.md)
+**Archivo**: [`harbor-use/README.md`](./harbor-use/Readme.md)
 
 **Contiene**:
 - Proxy cache para 4 registries

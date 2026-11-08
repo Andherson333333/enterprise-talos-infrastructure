@@ -17,15 +17,15 @@ Suite de servicios empresariales automatizados para infraestructura mediante pla
 
 | Servicio | Propósito | README |
 |----------|-----------|--------|
-| **shared-infrastructure** | Prerequisitos base (proxy, Docker, certificados) | [`shared-infrastructure/README.md`](./shared-infrastructure/README.md) |
+| **shared-infrastructure** | Prerequisitos base (proxy, Docker, certificados) | [`shared-infrastructure/README.md`](./shared-infrastructure/Readme.md) |
 
 ### Servicios de Aplicación
 
 | Servicio | Propósito | README |
 |----------|-----------|--------|
-| **harbor-server** | Registry privado de contenedores | [`harbor-server/README.md`](./harbor-server/README.md) |
-| **gitea-server** | Git server empresarial | [`gitea-server/README.md`](./gitea-server/README.md) |
-| **apt-cacher-ng** | Proxy cache para paquetes APT | [`apt-cacher-ng/README.md`](./apt-cacher-ng/README.md) |
+| **harbor-server** | Registry privado de contenedores | [`harbor-server/README.md`](./harbor-server/Readme.md) |
+| **gitea-server** | Git server empresarial | [`gitea-server/README.md`](./gitea-server/Readme.md) |
+| **apt-cacher-ng** | Proxy cache para paquetes APT | [`apt-cacher-ng/README.md`](./apt-cacher-ng/Readme.md) |
 
 ## Orden de Implementación
 

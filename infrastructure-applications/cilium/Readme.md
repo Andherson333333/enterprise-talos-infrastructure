@@ -57,7 +57,17 @@ Al completar el despliegue tendrás:
 - **BGP Control Plane** anunciando IPs de LoadBalancer vía ECMP hacia FRR
 - **Hubble UI** accesible en `hubble.local` vía Gateway API
 
-<!-- TODO: agregar capturas de evidencia (cilium bgp peers, Hubble UI) -->
+### Evidencia
+
+Cada FRR con 6 peers `Established`: el otro FRR (AS 65000) y los 5 nodos Cilium (AS 65001):
+
+![frr-01 bgp summary](../../images/frr-04.png)
+![frr-02 bgp summary](../../images/frr-03.png)
+
+Rutas ECMP instaladas en FRR: `192.168.141.51` (infra-gateway, 3 nexthops infra) y `192.168.141.60` (apps-gateway, 2 nexthops app):
+
+![frr-01 ip route](../../images/frr-01.png)
+![frr-02 ip route](../../images/frr-02.png)
 
 ## Verificación
 
