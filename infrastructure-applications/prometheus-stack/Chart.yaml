@@ -1,0 +1,11 @@
+apiVersion: v2
+name: prometheus-custom
+description: kube-prometheus-stack - Prometheus + Grafana + Alertmanager
+type: application
+version: 0.2.0
+appVersion: "v0.94.1"
+
+dependencies:
+  - name: kube-prometheus-stack
+    version: "92.3.0"
+    repository: oci://registry.harbor.local/helm-charts

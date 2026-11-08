@@ -1,0 +1,105 @@
+kube-prometheus-stack:
+  # --- Prometheus ---
+  prometheus:
+    prometheusSpec:
+      retention: "4h"
+      enableRemoteWriteReceiver: true  # receives metrics via remote write (Alloy / Tempo)
+      nodeSelector:
+        workload-type: "infrastructure"
+        node.talos.dev/tier: "infrastructure"
+      tolerations:
+        - key: "workload-type"
+          value: "infrastructure"
+          effect: "PreferNoSchedule"
+          operator: "Equal"
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: prometheus-longhorn
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 2Gi
+    service:
+      type: ClusterIP
+      port: 9090
+
+  # --- Grafana ---
+  grafana:
+    adminPassword: CHANGE_ME
+    nodeSelector:
+      workload-type: "infrastructure"
+      node.talos.dev/tier: "infrastructure"
+    tolerations:
+      - key: "workload-type"
+        value: "infrastructure"
+        effect: "PreferNoSchedule"
+        operator: "Equal"
+    persistence:
+      enabled: true
+      storageClassName: grafana-longhorn
+      size: 2Gi
+    service:
+      type: ClusterIP
+      port: 80
+    sidecar:
+      datasources:
+        enabled: true
+        label: grafana_datasource  # picks up datasource ConfigMaps (Loki, Tempo)
+        labelValue: "1"
+    grafana.ini:
+      feature_toggles:
+        enable: metricsExplore lokiExploreApp traceExplore  # Drilldown apps
+
+  # --- Alertmanager ---
+  alertmanager:
+    alertmanagerSpec:
+      retention: 4h
+      nodeSelector:
+        workload-type: "infrastructure"
+        node.talos.dev/tier: "infrastructure"
+      tolerations:
+        - key: "workload-type"
+          value: "infrastructure"
+          effect: "PreferNoSchedule"
+          operator: "Equal"
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: longhorn
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 1Gi
+    service:
+      type: ClusterIP
+      port: 9093
+
+  # --- Prometheus Operator ---
+  prometheusOperator:
+    nodeSelector:
+      workload-type: "infrastructure"
+      node.talos.dev/tier: "infrastructure"
+    tolerations:
+      - key: "workload-type"
+        value: "infrastructure"
+        effect: "PreferNoSchedule"
+        operator: "Equal"
+
+  # --- kube-state-metrics ---
+  kube-state-metrics:
+    nodeSelector:
+      workload-type: "infrastructure"
+      node.talos.dev/tier: "infrastructure"
+    tolerations:
+      - key: "workload-type"
+        value: "infrastructure"
+        effect: "PreferNoSchedule"
+        operator: "Equal"
+
+  # --- Node Exporter (runs on all nodes) ---
+  prometheus-node-exporter:
+    tolerations:
+      - operator: "Exists"
+  nodeExporter:
+    enabled: true
