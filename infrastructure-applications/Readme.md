@@ -9,8 +9,8 @@ Aplicaciones de plataforma que corren dentro del cluster Talos. Los charts e im√
 
 | Orden | App | Prop√≥sito | README |
 |-------|-----|-----------|--------|
-| 1 | Gateway API | CRDs de Gateway API, requeridas por Cilium | [`gateway-api/`](./gateway-api/Readme.md) |
-| 2 | Cilium | CNI sin kube-proxy, BGP Control Plane, Gateway API, Hubble | [`cilium/`](./cilium/Readme.md) |
+| 1 | Cilium | CNI sin kube-proxy, BGP Control Plane, Gateway API, Hubble | [`cilium/`](./cilium/Readme.md) |
+| 2 | Gateway API | Gateways `infra-gateway`/`apps-gateway`, IP pools y TLS (requiere Cilium) | [`gateway-api/`](./gateway-api/Readme.md) |
 | 3 | Longhorn | Storage distribuido (PVs) | [`longhorn/`](./longhorn/Readme.md) |
 | 3 | Metrics Server | API `metrics.k8s.io` (`kubectl top`, HPA) | [`metrics-server/`](./metrics-server/Readme.md) |
 | 4 | ArgoCD (imagen) | Imagen custom con `argocd-vault-plugin` | [`argocd-docker-build/`](./argocd-docker-build/Readme.md) |
@@ -25,7 +25,7 @@ Aplicaciones de plataforma que corren dentro del cluster Talos. Los charts e im√
 ## Orden de Despliegue
 
 ### 1. Red (obligatorio)
-Gateway API ‚Üí Cilium. Hasta instalar Cilium los nodos quedan `NotReady` (el cluster arranca sin CNI).
+Cilium ‚Üí Gateway API (Gateways e IP pools). Hasta instalar Cilium los nodos quedan `NotReady` (el cluster arranca sin CNI).
 
 ### 2. Storage
 Longhorn (antes de cualquier app que use PVCs) y Metrics Server.

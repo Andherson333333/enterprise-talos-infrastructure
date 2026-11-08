@@ -122,9 +122,12 @@ kubectl get nodes
 
 | Nodo | IP | Rol | Patches |
 |------|-------|-------------|---------|
-| **control-plane-1** | 192.168.253.101 | Control Plane | custom, controlplane-patch-1, storage |
-| **worker-1** | 192.168.253.111 | Worker | custom, worker-patch-1, storage |
-| **worker-2** | 192.168.253.112 | Worker | custom, worker-patch-2, storage |
+| **talos-cp-01** | 192.168.253.101 | Control Plane | custom, controlplane-patch-1, storage |
+| **talos-infrastructure-dt-01** | 192.168.253.111 | Worker infra | custom, worker-patch-1, storage |
+| **talos-infrastructure-dt-02** | 192.168.253.112 | Worker infra | custom, worker-patch-2, storage |
+| **talos-infrastructure-dt-03** | 192.168.253.113 | Worker infra | custom, worker-patch-3, storage |
+| **talos-application-dt-01** | 192.168.253.120 | Worker app | custom, worker-patch-5, storage |
+| **talos-application-dt-02** | 192.168.253.121 | Worker app | custom, worker-patch-6, storage |
 
 ### Patches Disponibles
 
