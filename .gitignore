@@ -1,0 +1,15 @@
+# Talos: configs generadas (CAs, llaves, tokens)
+talos-linux/talos-cluster-configs/_out/
+talosconfig
+kubeconfig
+secrets.yaml
+
+# Llaves privadas
+*.key
+*-key.pem
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.env

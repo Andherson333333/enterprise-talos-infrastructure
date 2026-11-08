@@ -52,7 +52,7 @@ gitea-runner/
 ```yaml
 # Gitea Configuration
 gitea_instance_url: "https://gitea.server.local"
-gitea_runner_token: "huYiXQ41nzCZkTCKV3SkHK5V4Arltok6tawLRsNN"
+gitea_runner_token: "CHANGE_ME"
 gitea_runner_name: "gitea-runner-docker"
 
 # Harbor Registry

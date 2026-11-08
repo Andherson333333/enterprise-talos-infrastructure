@@ -2,7 +2,7 @@
 # Variables principales
 gitea_url: "https://192.168.253.11"
 gitea_admin_user: "Andherson"
-gitea_admin_password: "43f3a05bfca8e2133da80064531d40b9e22b97b0"
+gitea_admin_password: "CHANGE_ME"
 gitea_actions_org: "actions"
 gitea_token_name: "ansible-deploy-token"
 

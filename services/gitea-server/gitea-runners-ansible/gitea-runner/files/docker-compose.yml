@@ -6,7 +6,7 @@ services:
     environment:
       - CONFIG_FILE=/config.yaml
       - GITEA_INSTANCE_URL=https://gitea.server.local
-      - GITEA_RUNNER_REGISTRATION_TOKEN=huYiXQ41nzCZkTCKV3SkHK5V4Arltok6tawLRsNN
+      - GITEA_RUNNER_REGISTRATION_TOKEN=CHANGE_ME
       - GITEA_RUNNER_NAME=gitea-runner-docker
       - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
