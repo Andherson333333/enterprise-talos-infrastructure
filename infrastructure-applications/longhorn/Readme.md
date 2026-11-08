@@ -71,7 +71,7 @@ kubectl get storageclass
 
 ## Siguiente Paso
 
-Crear las StorageClasses custom (`prometheus-longhorn`, `grafana-longhorn`, `loki-longhorn`) usadas por el stack de observabilidad.
+Aplicar las StorageClasses custom de [`storage-classes/`](./storage-classes/Readme.md) (`prometheus-longhorn`, `grafana-longhorn`, `loki-longhorn`, `tempo-longhorn`) usadas por el stack de observabilidad.
 
 ## Dependencias
 
