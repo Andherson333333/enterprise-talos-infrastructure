@@ -1,0 +1,52 @@
+tetragon:
+  image:
+    repository: registry.harbor.local/proxy-ghcr/cilium/tetragon
+
+  tolerations:
+    - operator: "Exists"
+
+  exportFilename: ""
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  prometheus:
+    enabled: true
+    port: 2112
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: kube-prometheus-stack
+
+tetragonOperator:
+  image:
+    repository: registry.harbor.local/proxy-ghcr/cilium/tetragon-operator
+
+  nodeSelector:
+    workload-type: "infrastructure"
+
+  tolerations:
+    - key: "workload-type"
+      value: "infrastructure"
+      effect: "PreferNoSchedule"
+      operator: "Equal"
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: kube-prometheus-stack

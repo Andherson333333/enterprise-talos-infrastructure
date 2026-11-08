@@ -1,0 +1,11 @@
+apiVersion: v2
+name: tetragon-custom
+description: Tetragon eBPF security observability for Talos Infrastructure
+type: application
+version: 0.1.1
+appVersion: "1.7.1"
+
+dependencies:
+  - name: tetragon
+    version: "1.7.1"
+    repository: oci://registry.harbor.local/helm-charts
