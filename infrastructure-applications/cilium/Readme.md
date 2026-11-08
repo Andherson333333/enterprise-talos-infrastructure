@@ -41,7 +41,7 @@ Peers BGP (ASN 65000):
 
 ### 1. Requisitos previos
 - FRR (`frr-01`/`frr-02`) desplegado y configurado como peer BGP en AS 65000
-- Gateway API CRDs y `infra-gateway`/`apps-gateway` desplegados
+- Gateway API CRDs instalados (los Gateways e IP pools se crean después, ver `../gateway-api/`)
 
 ### 2. Instalar/Actualizar el Release
 ```bash
