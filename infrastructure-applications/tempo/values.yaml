@@ -1,0 +1,94 @@
+# grafana-community/tempo 2.0.0
+# Double nesting: tempo.* = subchart top-level, tempo.tempo.* = subchart's .Values.tempo.*
+tempo:
+  # --- Subchart top-level ---
+  replicas: 1
+
+  nodeSelector:
+    workload-type: infrastructure
+    node.talos.dev/tier: infrastructure
+
+  tolerations:
+    - key: "workload-type"
+      value: "infrastructure"
+      effect: "PreferNoSchedule"
+      operator: "Equal"
+
+  service:
+    type: ClusterIP
+
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      release: prometheus-stack
+
+  persistence:
+    enabled: true
+    storageClassName: tempo-longhorn
+    accessModes:
+      - ReadWriteOnce
+    size: 4Gi
+
+  # --- Subchart internal key (.Values.tempo.*) ---
+  tempo:
+    registry: docker.io
+    repository: grafana/tempo
+    tag: "2.10.1"
+    pullPolicy: IfNotPresent
+
+    server:
+      http_listen_port: 3200
+
+    retention: 168h
+
+    storage:
+      trace:
+        backend: local
+        local:
+          path: /var/tempo/traces
+        wal:
+          path: /var/tempo/wal
+
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+      jaeger:
+        protocols:
+          thrift_http:
+            endpoint: 0.0.0.0:14268
+          grpc:
+            endpoint: 0.0.0.0:14250
+
+    metricsGenerator:
+      enabled: true
+      remoteWriteUrl: "http://prometheus-stack-kube-prom-prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
+      storage:
+        path: /tmp/tempo
+      traces_storage:
+        path: /var/tempo/traces
+      processor:
+        service_graphs:
+          dimensions:
+            - k8s.namespace.name
+            - k8s.deployment.name
+        span_metrics:
+          dimensions:
+            - k8s.namespace.name
+            - k8s.deployment.name
+            - service.name
+        local_blocks:
+          filter_server_spans: false
+
+    overrides:
+      defaults:
+        metrics_generator:
+          processors:
+            - service-graphs
+            - span-metrics
+            - local-blocks
+          max_active_series: 100000
+      per_tenant_override_config: /conf/overrides.yaml
