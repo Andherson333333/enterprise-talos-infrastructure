@@ -1,0 +1,28 @@
+---
+# ClusterIP: in-cluster access (OTLP + UI)
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-alloy
+  namespace: grafana-alloy
+  labels:
+    app.kubernetes.io/name: alloy
+    app.kubernetes.io/instance: grafana-alloy
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: alloy
+    app.kubernetes.io/instance: grafana-alloy
+  ports:
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+      protocol: TCP
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
+      protocol: TCP
+    - name: http-metrics
+      port: 12345
+      targetPort: 12345
+      protocol: TCP

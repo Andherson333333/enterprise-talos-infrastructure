@@ -1,0 +1,73 @@
+alloy:
+  # --- Image (Harbor proxy cache) ---
+  image:
+    registry: registry.harbor.local
+    repository: proxy-docker/grafana/alloy
+
+  # --- Config: external ConfigMap (templates/configmap.yaml) ---
+  configMap:
+    create: false
+    name: grafana-alloy
+    key: config.alloy
+
+  # --- No hostPath mounts (Talos has no writable host FS) ---
+  mounts:
+    varlog: false
+    dockercontainers: false
+
+  # --- Ports: OTLP gRPC/HTTP + syslog TCP for Talos OS logs ---
+  extraPorts:
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+      protocol: TCP
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
+      protocol: TCP
+    - name: syslog-tcp
+      port: 5140
+      targetPort: 5140
+      protocol: TCP
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+
+  # --- Deployment: 1 replica on infrastructure nodes ---
+  controller:
+    type: deployment
+    replicas: 1
+    nodeSelector:
+      workload-type: "infrastructure"
+      node.talos.dev/tier: "infrastructure"
+    tolerations:
+      - key: "workload-type"
+        value: "infrastructure"
+        effect: "PreferNoSchedule"
+        operator: "Equal"
+
+  # --- RBAC ---
+  rbac:
+    create: true
+  serviceAccount:
+    create: true
+  clusterRole:
+    create: true
+    rules:
+      - apiGroups: [""]
+        resources:
+          - nodes
+          - nodes/proxy
+          - services
+          - endpoints
+          - pods
+          - pods/log
+        verbs: ["get", "list", "watch"]
+      - apiGroups: ["extensions"]
+        resources: ["ingresses"]
+        verbs: ["get", "list", "watch"]

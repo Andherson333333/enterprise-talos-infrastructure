@@ -43,7 +43,7 @@ Wrapper chart de Grafana Loki en modo **SingleBinary** con storage en filesystem
 ```bash
 cd infrastructure-applications/loki/
 helm dependency update
-helm upgrade --install loki . -n monitoring --create-namespace
+helm upgrade --install loki . -n loki-system --create-namespace
 ```
 
 ## Estado de Preparación
@@ -56,15 +56,15 @@ Al completar el despliegue tendrás:
 ## Verificación
 
 ```bash
-kubectl get pods -n monitoring -l app.kubernetes.io/name=loki
+kubectl get pods -n loki-system -l app.kubernetes.io/name=loki
 ```
 
 ```bash
-kubectl get pvc -n monitoring | grep loki
+kubectl get pvc -n loki-system | grep loki
 ```
 
 ```bash
-kubectl port-forward -n monitoring svc/loki 3100:3100
+kubectl port-forward -n loki-system svc/loki 3100:3100
 ```
 
 ```bash
