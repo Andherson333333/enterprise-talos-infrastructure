@@ -1,0 +1,20 @@
+longhorn:
+#  global:
+#    nodeSelector:
+#      workload-type: "infrastructure"
+#    tolerations:
+#      - key: "workload-type"
+#        value: "infrastructure"
+#        operator: "Equal"
+#        effect: "PreferNoSchedule"
+
+  preUpgradeChecker:
+    jobEnabled: false
+
+  defaultSettings:
+    defaultDataPath: /var/mnt/sdb-storage
+    storageMinimalAvailablePercentage: 2
+    storageOverProvisioningPercentage: 100
+  service:
+    ui:
+      type: ClusterIP
