@@ -92,7 +92,3 @@ Al completar todos los pasos tendrás:
 - **Cilium** como CNI con IPs LoadBalancer anunciadas por BGP hacia FRR
 - **GitOps** con ArgoCD leyendo secrets desde OpenBao
 - **Observabilidad** completa: métricas, logs y trazas
-
-## Notas de Seguridad
-
-No subir al repositorio archivos con secrets (`talosconfig`, configs generadas en `_out/`, llaves `*.key`, passwords o tokens). Ver `.gitignore`.
