@@ -77,7 +77,7 @@ ISO air-gapped → installer con extensions → configs y bootstrap del cluster.
 |-------|-----|--------|
 | 1 | Gateway API CRDs | [`gateway-api/`](./infrastructure-applications/gateway-api/Readme.md) |
 | 2 | Cilium (CNI + BGP) | [`cilium/`](./infrastructure-applications/cilium/Readme.md) |
-| 3 | Longhorn | [`longhorn/`](./infrastructure-applications/longhorn/Readme.md) |
+| 3 | Longhorn, Metrics Server | [`longhorn/`](./infrastructure-applications/longhorn/Readme.md), [`metrics-server/`](./infrastructure-applications/metrics-server/Readme.md) |
 | 4 | ArgoCD (+ imagen con AVP) | [`argocd/`](./infrastructure-applications/argocd/Readme.md), [`argocd-docker-build/`](./infrastructure-applications/argocd-docker-build/Readme.md) |
 | 5 | Prometheus Stack | [`prometheus-stack/`](./infrastructure-applications/prometheus-stack/Readme.md) |
 | 6 | Loki, Tempo, Grafana Alloy | [`loki/`](./infrastructure-applications/loki/Readme.md), [`tempo/`](./infrastructure-applications/tempo/Readme.md), [`grafana-alloy/`](./infrastructure-applications/grafana-alloy/Readme.md) |

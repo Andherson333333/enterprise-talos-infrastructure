@@ -1,0 +1,15 @@
+metrics-server:
+  apiService:
+    create: true
+    insecureSkipTLSVerify: true
+  args:
+    - --kubelet-insecure-tls
+    - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+  nodeSelector:
+    workload-type: infrastructure
+    node.talos.dev/type: worker
+  tolerations:
+    - key: "workload-type"
+      value: "infrastructure"
+      effect: "PreferNoSchedule"
+      operator: "Equal"

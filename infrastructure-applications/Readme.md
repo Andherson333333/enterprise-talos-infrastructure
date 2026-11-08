@@ -12,6 +12,7 @@ Aplicaciones de plataforma que corren dentro del cluster Talos. Los charts e im�
 | 1 | Gateway API | CRDs de Gateway API, requeridas por Cilium | [`gateway-api/`](./gateway-api/Readme.md) |
 | 2 | Cilium | CNI sin kube-proxy, BGP Control Plane, Gateway API, Hubble | [`cilium/`](./cilium/Readme.md) |
 | 3 | Longhorn | Storage distribuido (PVs) | [`longhorn/`](./longhorn/Readme.md) |
+| 3 | Metrics Server | API `metrics.k8s.io` (`kubectl top`, HPA) | [`metrics-server/`](./metrics-server/Readme.md) |
 | 4 | ArgoCD (imagen) | Imagen custom con `argocd-vault-plugin` | [`argocd-docker-build/`](./argocd-docker-build/Readme.md) |
 | 5 | ArgoCD | GitOps en HA, secrets desde OpenBao vía AVP | [`argocd/`](./argocd/Readme.md) |
 | 6 | Prometheus Stack | Métricas, alertas y Grafana | [`prometheus-stack/`](./prometheus-stack/Readme.md) |
@@ -27,7 +28,7 @@ Aplicaciones de plataforma que corren dentro del cluster Talos. Los charts e im�
 Gateway API → Cilium. Hasta instalar Cilium los nodos quedan `NotReady` (el cluster arranca sin CNI).
 
 ### 2. Storage
-Longhorn, antes de cualquier app que use PVCs.
+Longhorn (antes de cualquier app que use PVCs) y Metrics Server.
 
 ### 3. GitOps
 Imagen de ArgoCD → ArgoCD. Requiere OpenBao operativo (`../services/openbao-server/`).
