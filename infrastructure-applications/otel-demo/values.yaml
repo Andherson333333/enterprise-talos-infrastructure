@@ -1,0 +1,67 @@
+opentelemetry-demo:
+  jaeger:
+    enabled: false
+  prometheus:
+    enabled: false
+  grafana:
+    enabled: false
+  opensearch:
+    enabled: false
+  default:
+    schedulingRules:
+      nodeSelector:
+        workload-type: "application"
+        node.talos.dev/tier: "application"
+      tolerations:
+        - key: "workload-type"
+          value: "application"
+          operator: "Equal"
+          effect: "PreferNoSchedule"
+  opentelemetry-collector:
+    mode: deployment
+    nodeSelector:
+      workload-type: "application"
+      node.talos.dev/tier: "application"
+    tolerations:
+      - key: "workload-type"
+        value: "application"
+        operator: "Equal"
+        effect: "PreferNoSchedule"
+    presets:
+      hostMetrics:
+        enabled: false
+      kubeletMetrics:
+        enabled: false
+      kubernetesAttributes:
+        enabled: false
+      clusterMetrics:
+        enabled: false
+    config:
+      connectors:
+        spanmetrics:
+          exemplars:
+            enabled: true
+      exporters:
+        debug: {}
+        otlp/alloy:
+          endpoint: "grafana-alloy.grafana-alloy.svc.cluster.local:4317"
+          tls:
+            insecure: true
+      service:
+        pipelines:
+          traces:
+            receivers: [otlp]
+            processors: [memory_limiter, batch]
+            exporters: [otlp/alloy, debug, spanmetrics]
+          metrics:
+            receivers: [spanmetrics]
+            processors: [memory_limiter, batch]
+            exporters: [otlp/alloy]
+          logs:
+            receivers: [otlp]
+            processors: [memory_limiter, batch]
+            exporters: [otlp/alloy]
+  components:
+    frontend-proxy:
+      service:
+        type: ClusterIP

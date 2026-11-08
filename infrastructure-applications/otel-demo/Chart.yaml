@@ -1,0 +1,11 @@
+apiVersion: v2
+name: otel-demo-custom
+description: OpenTelemetry Demo - Astronomy Shop
+type: application
+version: 1.0.0
+appVersion: "2.2.0"
+
+dependencies:
+  - name: opentelemetry-demo
+    version: 0.40.7
+    repository: oci://registry.harbor.local/helm-charts
