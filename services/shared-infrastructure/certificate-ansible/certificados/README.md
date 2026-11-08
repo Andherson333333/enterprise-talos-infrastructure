@@ -1,38 +1,36 @@
-Role Name
-=========
+# Role: certificados
 
-A brief description of the role goes here.
+Distribuye la CA interna a los hosts para que el sistema y Docker confíen en Harbor y Gitea.
 
-Requirements
-------------
+## Qué hace
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+1. Copia `harbor-ca.crt` y `gitea-ca.crt` a `/usr/local/share/ca-certificates/`
+2. Ejecuta `update-ca-certificates`
+3. Crea `/etc/docker/certs.d/192.168.253.12` y `/etc/docker/certs.d/registry.harbor.local`
+4. Copia `ca.crt` en `/etc/docker/certs.d/` para `192.168.253.11` y `gitea.server.local`
+5. Reinicia Docker
 
-Role Variables
---------------
+> **Ojo**: el paso 3 crea los directorios de Harbor, pero el paso 4 copia a los de Gitea, que no se crean. Revisar que ambas listas coincidan.
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+## Requisitos
 
-Dependencies
-------------
+- Docker instalado
+- CA exportada a `files/` (`ca.crt`, `harbor-ca.crt`, `gitea-ca.crt`)
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Uso
 
-Example Playbook
-----------------
+```bash
+ansible-playbook -i inventory certificados.yml
+```
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Por defecto apunta al grupo `gitea`. Cambiar `hosts:` en `certificados.yml` para otros servidores.
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+## Verificación
 
-License
--------
+```bash
+ls /etc/ssl/certs | grep -iE 'harbor|gitea'
+```
 
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```bash
+docker login registry.harbor.local
+```

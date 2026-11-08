@@ -1,38 +1,38 @@
-Role Name
-=========
+# Role: gitea-install
 
-A brief description of the role goes here.
+Despliega Gitea detrás de Traefik con TLS, todo con imágenes servidas desde Harbor.
 
-Requirements
-------------
+## Qué hace
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+1. Crea `/opt/gitea`
+2. Copia `docker-compose.yml`, `tls.yml` y los certificados (`gitea.pem`, `gitea.key`, `rootCA.pem`)
+3. Levanta el stack con `docker compose up -d`
 
-Role Variables
---------------
+| Componente | Detalle |
+|------------|---------|
+| Traefik | `traefik:v3.0`, puertos 80 (redirect a HTTPS), 443, 2222 (SSH) |
+| Gitea | `gitea/gitea:1.24.2`, SQLite, Actions habilitado |
+| Dominio | `gitea.server.local` / `192.168.253.11` |
+| Imágenes | `registry.harbor.local/proxy-docker/...` |
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+## Requisitos
 
-Dependencies
-------------
+- Docker + Compose y CA confiada en el host (`shared-infrastructure`)
+- Harbor con el proxy cache `proxy-docker`
+- Certificados generados (`requirements/certificate-server-config`). Las llaves no deben subirse a Git.
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Uso
 
-Example Playbook
-----------------
+```bash
+ansible-playbook -i inventory gitea-install.yml
+```
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+## Verificación
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```bash
+docker compose -f /opt/gitea/docker-compose.yml ps
+```
 
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```bash
+curl -I https://gitea.server.local
+```

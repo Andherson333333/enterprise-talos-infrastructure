@@ -1,38 +1,45 @@
-Role Name
-=========
+# Role: harbor-install
 
-A brief description of the role goes here.
+Instala Harbor v2.13.1 con Trivy usando el instalador offline.
 
-Requirements
-------------
+## Qué hace
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+1. Crea `/opt/harbor` y `/opt/harbor/certs`
+2. Copia el instalador offline, `harbor.yml` y los certificados
+3. Extrae el instalador y ejecuta `./prepare`
+4. Si Harbor no está corriendo, ejecuta `./install.sh --with-trivy`
+5. Borra el `.tgz` del instalador
 
-Role Variables
---------------
+Idempotente: no reinstala si `docker compose ps` ya devuelve contenedores.
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+## Requisitos
 
-Dependencies
-------------
+- Docker + Compose (`shared-infrastructure/docker-install-ansible`)
+- `files/harbor-offline-installer-v2.13.1.tgz`
+- Certificados `harbor.pem` / `harbor.key` (`requirements/certificate-server-config`)
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Variables (`vars/main.yml`)
 
-Example Playbook
-----------------
+| Variable | Default | Descripción |
+|----------|---------|-------------|
+| `harbor_install_dir` | `/opt/harbor` | Directorio de instalación |
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+La configuración de Harbor (hostname, TLS, passwords) está en `files/harbor.yml`.
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+> `harbor.yml` incluye el password de admin y el de la base de datos: usar `ansible-vault encrypt` o placeholders antes de versionarlo.
 
-License
--------
+## Uso
 
-BSD
+```bash
+ansible-playbook -i inventory harbor-install.yml
+```
 
-Author Information
-------------------
+## Verificación
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```bash
+docker compose -f /opt/harbor/harbor/docker-compose.yml ps
+```
+
+```bash
+curl -I https://registry.harbor.local
+```

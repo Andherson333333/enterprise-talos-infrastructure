@@ -1,38 +1,41 @@
-Role Name
-=========
+# Role: mkcert-ca
 
-A brief description of the role goes here.
+Genera certificados TLS para los servicios internos firmados con la CA local de mkcert, usando contenedores `iamluc/mkcert` con Docker Compose.
 
-Requirements
-------------
+## Qué hace
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+1. Crea `/opt/generated_certs/{gitea,harbor,wildcard-local}`
+2. Copia el `docker-compose.yml` de cada generador
+3. Ejecuta `docker compose up` en cada carpeta para emitir los certificados
 
-Role Variables
---------------
+| Certificado | Archivos | SANs |
+|-------------|----------|------|
+| Gitea | `gitea/gitea.pem`, `gitea.key` | `gitea.server.local`, `localhost`, `127.0.0.1`, `192.168.253.11` |
+| Harbor | `harbor/harbor.pem`, `harbor.key` | `registry.harbor.local`, `harbor.server.local`, `harbor.local`, `localhost`, IPs |
+| Wildcard | `wildcard-local/wildcard-local.pem`, `.key` | `*.local`, `local`, `localhost` |
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+`files/` también incluye `openbao-compose.yml` y `proxy-openbao-compose.yml` (nodos OpenBao y HAProxy); hoy no los ejecuta el role, se lanzan a mano.
 
-Dependencies
-------------
+## Requisitos
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+- Docker + Compose en el host
+- CA de mkcert en `/opt/harbor/mkcert-ca` (la montan los compose como solo lectura)
 
-Example Playbook
-----------------
+## Variables (`vars/main.yml`)
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+| Variable | Default | Descripción |
+|----------|---------|-------------|
+| `cert_base_dir` | `/opt/generated_certs` | Directorio de salida |
+| `mkcert_ca_path` | `/opt/mkcert-ca` | No se usa: los compose montan `/opt/harbor/mkcert-ca` fijo |
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+## Uso
 
-License
--------
+```bash
+ansible-playbook -i ../inventory mkcer.yml
+```
 
-BSD
+## Verificación
 
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```bash
+openssl x509 -in /opt/generated_certs/harbor/harbor.pem -noout -subject -ext subjectAltName
+```

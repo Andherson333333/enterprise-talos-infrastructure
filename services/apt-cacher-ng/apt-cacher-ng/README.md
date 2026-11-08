@@ -1,38 +1,37 @@
-Role Name
-=========
+# Role: apt-cacher-ng
 
-A brief description of the role goes here.
+Despliega apt-cacher-ng en Docker como cache de paquetes APT para las VMs Debian del entorno.
 
-Requirements
-------------
+## Qué hace
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+1. Crea `/opt/apt-cacher-ng`
+2. Copia `files/docker-compose.yml`
+3. Levanta el servicio con `docker compose up -d`
 
-Role Variables
---------------
+| Parámetro | Valor |
+|-----------|-------|
+| Imagen | `sameersbn/apt-cacher-ng` |
+| Puerto | `80` (host) → `3142` (contenedor) |
+| Volumen | `apt-cacher-ng` → `/var/cache/apt-cacher-ng` |
+| Healthcheck | `http://localhost:3142/acng-report.html` |
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+## Requisitos
 
-Dependencies
-------------
+- Docker + Compose instalados (`shared-infrastructure/docker-install-ansible`)
+- Grupo `apt_ng` en el inventario
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Uso
 
-Example Playbook
-----------------
+```bash
+ansible-playbook -i inventory apt-cacher-ng.yml
+```
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+## Verificación
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```bash
+docker ps --filter name=apt-cacher-ng
+```
 
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```bash
+curl -s http://localhost/acng-report.html | head
+```

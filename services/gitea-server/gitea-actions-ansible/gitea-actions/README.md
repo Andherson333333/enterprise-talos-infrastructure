@@ -1,38 +1,37 @@
-Role Name
-=========
+# Role: gitea-actions
 
-A brief description of the role goes here.
+Publica en Gitea un mirror offline de GitHub Actions para usar Gitea Actions en entorno air-gapped.
 
-Requirements
-------------
+## Qué hace
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+1. Descomprime `files/github-actions-airgap-full-repos.tar.gz` en `/opt/gitea-actions-source`
+2. Crea la organización `actions` vía API (ignora si ya existe)
+3. Crea un repositorio por cada action encontrada
+4. Hace `git push --all --force` de cada action a su repo
 
-Role Variables
---------------
+## Requisitos
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+- Gitea operativo (`gitea-install`)
+- Token de API de Gitea con permisos de admin
+- Paquete `.tar.gz` generado con `../download-actions.sh`
 
-Dependencies
-------------
+## Variables (`vars/main.yml`)
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+| Variable | Default | Descripción |
+|----------|---------|-------------|
+| `gitea_url` | `https://192.168.253.11` | URL de Gitea |
+| `gitea_actions_org` | `actions` | Organización destino |
+| `gitea_actions_dir` | `/opt/gitea-actions-source` | Directorio de extracción |
+| `actions_tar_file` | `github-actions-airgap-full-repos.tar.gz` | Paquete de actions |
+| `gitea_user` / `gitea_group` | `gitea` | Dueño de los archivos |
+| `gitea_admin_user`, `gitea_admin_password`, token | — | **Secrets**: usar `ansible-vault` o `--extra-vars`, no dejarlos en texto plano |
 
-Example Playbook
-----------------
+## Uso
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```bash
+ansible-playbook -i inventory gitea-actions.yml
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+## Verificación
 
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+En Gitea: organización `actions` con un repo por action (p. ej. `actions/checkout`). En los workflows se referencian igual que en GitHub.

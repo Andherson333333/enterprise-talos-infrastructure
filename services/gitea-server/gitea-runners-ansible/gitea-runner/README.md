@@ -1,38 +1,39 @@
-Role Name
-=========
+# Role: gitea-runner
 
-A brief description of the role goes here.
+Despliega `act_runner` en Docker y lo registra contra Gitea para ejecutar Gitea Actions.
 
-Requirements
-------------
+## Qué hace
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+1. Crea `/opt/gitea-runner`
+2. Copia `docker-compose.yml` y `config.yaml`
+3. Levanta el runner con `docker compose up -d`
 
-Role Variables
---------------
+| Parámetro | Valor |
+|-----------|-------|
+| Imagen | `registry.harbor.local/proxy-docker/gitea/act_runner:latest` |
+| Instancia | `https://gitea.server.local` |
+| Nombre | `gitea-runner-docker` |
+| Ejecución | Docker del host (`/var/run/docker.sock`) |
+| CA | `/etc/ssl/certs/ca-certificates.crt` del host montado |
+| Hosts | `gitea.server.local` → .11, `registry.harbor.local` → .12 |
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+## Requisitos
 
-Dependencies
-------------
+- Gitea operativo y token de registro del runner (Admin → Actions → Runners)
+- CA instalada en el host (`shared-infrastructure/certificate-ansible`)
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+> El token de registro (`GITEA_RUNNER_REGISTRATION_TOKEN`) es un secret: pasarlo con `ansible-vault` o variable de entorno, no dejarlo en el compose versionado.
 
-Example Playbook
-----------------
+## Uso
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```bash
+ansible-playbook -i inventory gitea-runner.yml
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+## Verificación
 
-License
--------
+```bash
+docker logs gitea-runner --tail 20
+```
 
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+En Gitea: Admin → Actions → Runners muestra el runner en estado `Idle`.

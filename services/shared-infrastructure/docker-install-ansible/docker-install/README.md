@@ -1,38 +1,45 @@
-Role Name
-=========
+# Role: docker-install
 
-A brief description of the role goes here.
+Instala Docker CE en Debian 12 desde paquetes `.deb` locales, sin acceso a internet.
 
-Requirements
-------------
+## Qué hace
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+1. Copia los `.deb` de `files/` a `/tmp`
+2. Los instala en orden: containerd → docker-ce-cli → docker-ce → buildx → compose
+3. Borra los `.deb` temporales
+4. Habilita y arranca `docker`
+5. Agrega `root` al grupo `docker`
+6. Verifica `docker --version` y `docker compose --version`
 
-Role Variables
---------------
+| Paquete | Versión |
+|---------|---------|
+| containerd.io | 1.7.27 |
+| docker-ce / docker-ce-cli | 28.3.2 |
+| docker-buildx-plugin | 0.25.0 |
+| docker-compose-plugin | 2.38.2 |
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+## Variables (`defaults/main.yml`)
 
-Dependencies
-------------
+| Variable | Descripción |
+|----------|-------------|
+| `docker_deb_packages` | Lista de `.deb` a copiar y limpiar |
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Para cambiar de versión, reemplazar los `.deb` en `files/` y actualizar la lista **y** los nombres en `tasks/main.yml`.
 
-Example Playbook
-----------------
+## Uso
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```bash
+ansible-playbook -i inventory docker-install.yml
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+Por defecto apunta al grupo `gitea`. Cambiar `hosts:` en `docker-install.yml` para otros servidores.
 
-License
--------
+## Verificación
 
-BSD
+```bash
+docker --version
+```
 
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```bash
+systemctl is-active docker
+```

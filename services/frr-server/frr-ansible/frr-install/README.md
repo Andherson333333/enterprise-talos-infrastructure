@@ -1,38 +1,36 @@
-Role Name
-=========
+# Role: frr-install
 
-A brief description of the role goes here.
+Instala FRRouting desde el repo oficial y aplica un `frr.conf` estático por nodo para hacer peering BGP con Cilium.
 
-Requirements
-------------
+## Qué hace
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+1. Instala `gnupg` y agrega el repo `deb.frrouting.org` (`frr-stable`)
+2. Instala `frr` y `frr-pythontools`
+3. Habilita `bgpd` en `/etc/frr/daemons`
+4. Habilita `net.ipv4.ip_forward=1`
+5. Copia `files/<inventory_hostname>.conf` a `/etc/frr/frr.conf`
+6. Reinicia FRR y aplica la config con `vtysh`
 
-Role Variables
---------------
+| Nodo | IP | Config |
+|------|-----|--------|
+| frr-01 | 192.168.253.20 | `files/frr-01.conf` |
+| frr-02 | 192.168.253.21 | `files/frr-02.conf` |
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+ASN local 65000, peers Cilium en ASN 65001.
 
-Dependencies
-------------
+## Requisitos
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+- Acceso a `deb.frrouting.org` (o mirror equivalente vía proxy APT)
+- El nombre del host en el inventario debe coincidir con el archivo `.conf`
 
-Example Playbook
-----------------
+## Uso
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```bash
+ansible-playbook -i ../inventory ../frr-install.yml
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+## Verificación
 
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```bash
+vtysh -c "show bgp summary"
+```
