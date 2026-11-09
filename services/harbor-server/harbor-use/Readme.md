@@ -142,6 +142,8 @@ Generación de SBOM:  Automático al push
 CVE allowlist: System allowlist (nivel sistema)
 ```
 
+![Configuración del proyecto docker-images](../../../images/harbor-server-10.png)
+
 ### Gestión de Tags
 ```bash
 # Multiple tags para la misma imagen

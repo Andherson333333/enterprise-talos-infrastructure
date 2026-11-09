@@ -51,6 +51,9 @@ vtysh -c "show bgp summary"
 
 Debe mostrar el peer iBGP (`.20`/`.21` entre sí) y los peers hacia los nodos Talos en estado `Established` una vez Cilium esté desplegado.
 
+![BGP summary frr-01](../../images/frr-04.png)
+![Rutas ECMP frr-01](../../images/frr-01.png)
+
 ## Siguiente Paso
 
 Con FRR operativo, despliega `../../infrastructure-applications/cilium/` para que los nodos Talos empiecen a peerear vía BGP y las IPs de LoadBalancer se anuncien correctamente.

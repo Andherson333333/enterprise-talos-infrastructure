@@ -49,6 +49,8 @@ terraform apply
 terraform state list
 ```
 
+![VMs en Proxmox](../images/proxmox-vms.png)
+
 ## Dependencias
 
 - Token de API de Proxmox (`../requirements/proxmox-api-token/`)

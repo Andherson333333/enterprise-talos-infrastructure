@@ -51,6 +51,8 @@ bao operator step-down   # desde el nodo líder
 curl -k https://192.168.253.34:8200/v1/sys/health
 ```
 
+![OpenBao health vía HAProxy](../../../images/open-bao-3.png)
+
 ## Siguiente Paso
 
 - **`../../../infrastructure-applications/argocd/`** - Usar este endpoint como `VAULT_ADDR`

@@ -175,6 +175,8 @@ docker load -i _out/installer-amd64.tar
 talosctl upgrade --nodes <NODE_IP> --image <INSTALLER_IMAGE>
 ```
 
+![Extensions instaladas](../../images/talos-extensions.png)
+
 ## Limitaciones
 
 | Escenario | Funcionalidad |

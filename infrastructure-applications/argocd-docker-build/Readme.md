@@ -48,6 +48,8 @@ argocd-vault-plugin generate .
 # Debe resolver a: world
 ```
 
+![Imagen argocd en Harbor](../../images/harbor-server-9.png)
+
 ## Siguiente Paso
 
 Una vez la imagen está en Harbor, dirigirse a:

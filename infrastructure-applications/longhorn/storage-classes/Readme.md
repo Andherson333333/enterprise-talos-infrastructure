@@ -37,6 +37,8 @@ kubectl apply -f infrastructure-applications/longhorn/storage-classes/
 kubectl get storageclass
 ```
 
+![StorageClasses](../../../images/storage-classes.png)
+
 ## Dependencias
 
 - Longhorn desplegado (`../`)

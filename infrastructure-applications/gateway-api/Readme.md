@@ -87,6 +87,8 @@ kubectl get svc -n gateway-system
 
 Las dos columnas `PROGRAMMED` deben estar en `True` y las IPs asignadas.
 
+![Gateways programados](../../images/gateway-api.png)
+
 ## Dependencias
 
 - **Cilium** (`../cilium/`) con Gateway API y BGP
