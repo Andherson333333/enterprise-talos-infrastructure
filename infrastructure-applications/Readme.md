@@ -31,7 +31,7 @@ Cilium → Gateway API (Gateways e IP pools). Hasta instalar Cilium los nodos qu
 Longhorn (antes de cualquier app que use PVCs) y Metrics Server.
 
 ### 3. GitOps
-Imagen de ArgoCD → ArgoCD. Requiere OpenBao operativo (`../services/openbao-server/`).
+Imagen de ArgoCD → ArgoCD → [`argocd-applications/`](./argocd-applications/Readme.md) (`kubectl apply -f`). Requiere OpenBao operativo (`../services/openbao-server/`).
 
 ### 4. Observabilidad
 Prometheus Stack → Loki y Tempo → Grafana Alloy.
