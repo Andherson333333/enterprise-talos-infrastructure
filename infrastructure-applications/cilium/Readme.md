@@ -1,94 +1,96 @@
+**English** | [Español](./Readme.es.md)
+
 # Cilium - CNI + BGP Control Plane
-![Cilium](https://img.shields.io/badge/Cilium-v1.19.1-EF7B4D?style=for-the-badge&logo=cilium&logoColor=white)
+![Cilium](https://img.shields.io/badge/Cilium-v1.20.1-EF7B4D?style=for-the-badge&logo=cilium&logoColor=white)
 ![BGP](https://img.shields.io/badge/BGP-Control_Plane-4B8BBE?style=for-the-badge)
 ![Gateway API](https://img.shields.io/badge/Gateway_API-Enabled-60B932?style=for-the-badge)
 ![Hubble](https://img.shields.io/badge/Hubble-UI_%2B_Relay-FFEC6E?style=for-the-badge)
 
-Wrapper chart de Cilium como CNI del cluster, con BGP Control Plane para anunciar las IPs de LoadBalancer de los Gateways vía ECMP hacia FRR, reemplazando L2 announcements.
+Cilium wrapper chart as the cluster CNI, with the BGP Control Plane advertising the Gateways' LoadBalancer IPs via ECMP towards FRR, replacing L2 announcements.
 
-## Componentes
+## Components
 
-| Componente | Detalle |
-|------------|---------|
-| Chart base | `cilium` 1.19.1, vía OCI desde `oci://registry.harbor.local/helm-charts` |
-| Routing mode | Native, `autoDirectNodeRoutes`, datapath `netkit` |
-| kube-proxy | Reemplazado (`kubeProxyReplacement: true`) |
-| Load Balancer | Modo `hybrid`, algoritmo `maglev` |
-| Bandwidth Manager | BBR habilitado |
-| Hubble | UI + Relay habilitados, TLS auto (método Helm) |
-| Gateway API | Habilitado, CRDs instalados |
+| Component | Detail |
+|-----------|--------|
+| Base chart | `cilium` 1.20.1, via OCI from `oci://registry.harbor.local/helm-charts` |
+| Routing mode | Native, `autoDirectNodeRoutes`, `netkit` datapath |
+| kube-proxy | Replaced (`kubeProxyReplacement: true`) |
+| Load Balancer | `hybrid` mode, `maglev` algorithm |
+| Bandwidth Manager | BBR enabled |
+| Hubble | UI + Relay enabled, auto TLS (Helm method) |
+| Gateway API | Enabled, CRDs installed |
 
 ## BGP (`bgp/`)
 
-BGP Control Plane en vez de L2 announcements, para anunciar IPs de LoadBalancer con ECMP.
+BGP Control Plane instead of L2 announcements, to advertise LoadBalancer IPs with ECMP.
 
-| Recurso | Detalle |
-|---------|---------|
-| `bgp-cluster-infra.yaml` | `CiliumBGPClusterConfig` para nodos `workload-type: infrastructure`, ASN local 65001 |
-| `bgp-cluster-app.yaml` | `CiliumBGPClusterConfig` para nodos `workload-type: application`, ASN local 65001 |
-| `bgp-peer-config-infra.yaml` / `bgp-peer-config-app.yaml` | `CiliumBGPPeerConfig` — graceful restart, timers, selector de advertisements por label |
-| `bgp-advertisement-infra.yaml` / `bgp-advertisement-app.yaml` | `CiliumBGPAdvertisement` — anuncia `LoadBalancerIP` de los Services que matchean `infra-gateway` / `apps-gateway` |
+| Resource | Detail |
+|----------|--------|
+| `bgp-cluster-infra.yaml` | `CiliumBGPClusterConfig` for `workload-type: infrastructure` nodes, local ASN 65001 |
+| `bgp-cluster-app.yaml` | `CiliumBGPClusterConfig` for `workload-type: application` nodes, local ASN 65001 |
+| `bgp-peer-config-infra.yaml` / `bgp-peer-config-app.yaml` | `CiliumBGPPeerConfig` — graceful restart, timers, advertisement selector by label |
+| `bgp-advertisement-infra.yaml` / `bgp-advertisement-app.yaml` | `CiliumBGPAdvertisement` — advertises the `LoadBalancerIP` of Services matching `infra-gateway` / `apps-gateway` |
 
-Peers BGP (ASN 65000):
+BGP peers (ASN 65000):
 - `frr-01` — `192.168.253.20`
 - `frr-02` — `192.168.253.21`
 
 ## Routes (`routes/`)
 
-- `https.yaml` — `HTTPRoute` para exponer Hubble UI (`hubble.local`) vía `infra-gateway`, con redirect HTTP → HTTPS
+- `https.yaml` — `HTTPRoute` exposing the Hubble UI (`hubble.local`) via `infra-gateway`, with HTTP → HTTPS redirect
 
-## Orden de Despliegue
+## Deployment Order
 
-### 1. Requisitos previos
-- FRR (`frr-01`/`frr-02`) desplegado y configurado como peer BGP en AS 65000
-- Gateway API CRDs instalados (los Gateways e IP pools se crean después, ver `../gateway-api/`)
+### 1. Prerequisites
+- FRR (`frr-01`/`frr-02`) deployed and configured as BGP peer in AS 65000
+- Gateway API CRDs installed (Gateways and IP pools are created afterwards, see `../gateway-api/`)
 
-### 2. Instalar/Actualizar el Release
+### 2. Install/Upgrade the Release
 ```bash
 cd infrastructure-applications/cilium/
 helm dependency update
 helm upgrade --install cilium . -n kube-system
 ```
 
-## Estado de Preparación
+## Readiness State
 
-Al completar el despliegue tendrás:
-- **Cilium** como CNI único, sin kube-proxy
-- **BGP Control Plane** anunciando IPs de LoadBalancer vía ECMP hacia FRR
-- **Hubble UI** accesible en `hubble.local` vía Gateway API
+After the deployment you will have:
+- **Cilium** as the only CNI, without kube-proxy
+- **BGP Control Plane** advertising LoadBalancer IPs via ECMP towards FRR
+- **Hubble UI** reachable at `hubble.local` via Gateway API
 
-### Evidencia
+### Evidence
 
-Cada FRR con 6 peers `Established`: el otro FRR (AS 65000) y los 5 nodos Cilium (AS 65001):
+Each FRR with 6 `Established` peers: the other FRR (AS 65000) and the 5 Cilium nodes (AS 65001):
 
 ![frr-01 bgp summary](../../images/frr-04.png)
 ![frr-02 bgp summary](../../images/frr-03.png)
 
-Rutas ECMP instaladas en FRR: `192.168.141.51` (infra-gateway, 3 nexthops infra) y `192.168.141.60` (apps-gateway, 2 nexthops app):
+ECMP routes installed in FRR: `192.168.141.51` (infra-gateway, 3 infra nexthops) and `192.168.141.60` (apps-gateway, 2 app nexthops):
 
 ![frr-01 ip route](../../images/frr-01.png)
 ![frr-02 ip route](../../images/frr-02.png)
 
 ![Hubble UI - otel-demo](../../images/hubble-otel-demo.png)
 
-## Verificación
+## Verification
 
 ```bash
-# Estado de los peers BGP
+# BGP peer status
 cilium bgp peers
 
-# Rutas anunciadas
+# Advertised routes
 cilium bgp routes
 
-# Pods de Cilium en Running
+# Cilium pods Running
 kubectl get pods -n kube-system -l k8s-app=cilium
 ```
 
-## Siguiente Paso
+## Next Step
 
-Con Cilium y BGP operativos, los Services de tipo LoadBalancer de las aplicaciones del resto de `infrastructure-applications/` quedan alcanzables vía las IPs anunciadas a FRR.
+With Cilium and BGP running, the LoadBalancer Services of the rest of `infrastructure-applications/` become reachable through the IPs advertised to FRR.
 
-## Dependencias
+## Dependencies
 
-- **Paso 1** requiere FRR configurado como peer BGP (fuera de este repo, en `frr-01`/`frr-02`)
-- **Gateway API** (`../gateway-api/`) requerido antes de que las `CiliumBGPAdvertisement` tengan algo que anunciar
+- **Step 1** requires FRR configured as BGP peer (on `frr-01`/`frr-02`, see `../../services/frr-server/`)
+- **Gateway API** (`../gateway-api/`) is required before the `CiliumBGPAdvertisement` resources have anything to advertise

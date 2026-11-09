@@ -1,40 +1,42 @@
+**English** | [Español](./README.es.md)
+
 # Role: harbor-install
 
-Instala Harbor v2.13.1 con Trivy usando el instalador offline.
+Installs Harbor v2.13.1 with Trivy using the offline installer.
 
-## Qué hace
+## What it does
 
-1. Crea `/opt/harbor` y `/opt/harbor/certs`
-2. Copia el instalador offline, `harbor.yml` y los certificados
-3. Extrae el instalador y ejecuta `./prepare`
-4. Si Harbor no está corriendo, ejecuta `./install.sh --with-trivy`
-5. Borra el `.tgz` del instalador
+1. Creates `/opt/harbor` and `/opt/harbor/certs`
+2. Copies the offline installer, `harbor.yml` and the certificates
+3. Extracts the installer and runs `./prepare`
+4. If Harbor is not running, runs `./install.sh --with-trivy`
+5. Removes the installer `.tgz`
 
-Idempotente: no reinstala si `docker compose ps` ya devuelve contenedores.
+Idempotent: it does not reinstall if `docker compose ps` already returns containers.
 
-## Requisitos
+## Requirements
 
 - Docker + Compose (`shared-infrastructure/docker-install-ansible`)
 - `files/harbor-offline-installer-v2.13.1.tgz`
-- Certificados `harbor.pem` / `harbor.key` (`requirements/certificate-server-config`)
+- `harbor.pem` / `harbor.key` certificates (`requirements/certificate-server-config`)
 
 ## Variables (`vars/main.yml`)
 
-| Variable | Default | Descripción |
+| Variable | Default | Description |
 |----------|---------|-------------|
-| `harbor_install_dir` | `/opt/harbor` | Directorio de instalación |
+| `harbor_install_dir` | `/opt/harbor` | Installation directory |
 
-La configuración de Harbor (hostname, TLS, passwords) está en `files/harbor.yml`.
+Harbor configuration (hostname, TLS, passwords) lives in `files/harbor.yml`.
 
-> `harbor.yml` incluye el password de admin y el de la base de datos: usar `ansible-vault encrypt` o placeholders antes de versionarlo.
+> `harbor.yml` includes the admin and database passwords: use `ansible-vault encrypt` or placeholders before committing it.
 
-## Uso
+## Usage
 
 ```bash
 ansible-playbook -i inventory harbor-install.yml
 ```
 
-## Verificación
+## Verification
 
 ```bash
 docker compose -f /opt/harbor/harbor/docker-compose.yml ps

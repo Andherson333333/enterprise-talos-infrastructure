@@ -1,62 +1,64 @@
-# OpenBao - HAProxy (Endpoint HA)
+**English** | [Español](./Readme.es.md)
+
+# OpenBao - HAProxy (HA Endpoint)
 ![HAProxy](https://img.shields.io/badge/HAProxy-Load_Balanced-106DA9?style=for-the-badge&logo=haproxy&logoColor=white)
 ![TLS](https://img.shields.io/badge/TLS-Passthrough-28a745?style=for-the-badge)
 
-Balanceador que expone un único endpoint HA para OpenBao, dirigiendo tráfico solo al líder activo del cluster Raft.
+Load balancer exposing a single HA endpoint for OpenBao, routing traffic only to the active leader of the Raft cluster.
 
-## Especificaciones
+## Specifications
 
 - IP: 192.168.253.34
-- Health-check: `/v1/sys/health` — responde HTTP 200 **solo** para el nodo líder
-- Los demás nodos (standby/sealed) responden códigos distintos, por lo que HAProxy los excluye automáticamente del pool
+- Health-check: `/v1/sys/health` — returns HTTP 200 **only** for the leader node
+- The other nodes (standby/sealed) return different codes, so HAProxy automatically removes them from the pool
 
-## Orden de Despliegue
+## Deployment Order
 
-### 1. Generar Certificado
-**Carpeta**: [`../../../requirements/certificate-server-config/`](../../../requirements/certificate-server-config/)
+### 1. Generate Certificate
+**Folder**: [`../../../requirements/certificate-server-config/`](../../../requirements/certificate-server-config/)
 
-Certificado propio para el endpoint HAProxy (distinto al de los nodos OpenBao).
+Dedicated certificate for the HAProxy endpoint (different from the OpenBao nodes certificate).
 
-### 2. Instalar HAProxy
+### 2. Install HAProxy
 ```bash
 apt install haproxy
 ```
 
-### 3. Aplicar Configuración
-Copiar `haproxy.cfg` de esta carpeta a `/etc/haproxy/haproxy.cfg`:
+### 3. Apply Configuration
+Copy `haproxy.cfg` from this folder to `/etc/haproxy/haproxy.cfg`:
 ```bash
 systemctl restart haproxy
 ```
 
-### 4. Apuntar Clientes al Endpoint
-En ArgoCD (u otros consumidores), configurar:
+### 4. Point Clients to the Endpoint
+In ArgoCD (or other consumers), configure:
 ```bash
 VAULT_ADDR=https://192.168.253.34:8200
 ```
 
-## Estado de Preparación
+## Readiness State
 
-Al completar estos pasos tendrás:
-- **Endpoint único** (`.34:8200`) resolviendo siempre al líder activo
-- **Failover transparente** ante cambio de líder en el Raft
+After these steps you will have:
+- **Single endpoint** (`.34:8200`) always resolving to the active leader
+- **Transparent failover** when the Raft leader changes
 
-## Verificación
+## Verification
 
 ```bash
-# Debe responder 200 solo mientras hay un líder activo
+# Must return 200 only while there is an active leader
 curl -k https://192.168.253.34:8200/v1/sys/health
 
-# Provocar failover manual y confirmar que HAProxy sigue respondiendo
-bao operator step-down   # desde el nodo líder
+# Force a manual failover and confirm HAProxy keeps answering
+bao operator step-down   # from the leader node
 curl -k https://192.168.253.34:8200/v1/sys/health
 ```
 
-![OpenBao health vía HAProxy](../../../images/open-bao-3.png)
+![OpenBao health via HAProxy](../../../images/open-bao-3.png)
 
-## Siguiente Paso
+## Next Step
 
-- **`../../../infrastructure-applications/argocd/`** - Usar este endpoint como `VAULT_ADDR`
+- **`../../../infrastructure-applications/argocd/`** - Use this endpoint as `VAULT_ADDR`
 
-## Dependencias
+## Dependencies
 
-- Requiere el cluster OpenBao ya inicializado (`../open-bao-1/`)
+- Requires the OpenBao cluster already initialized (`../open-bao-1/`)

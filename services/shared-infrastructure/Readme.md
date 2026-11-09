@@ -1,66 +1,68 @@
+**English** | [Español](./Readme.es.md)
+
 # Shared Infrastructure
 
 ![Ansible](https://img.shields.io/badge/Ansible-Automation-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 ![Infrastructure](https://img.shields.io/badge/Infrastructure-Shared-4CAF50?style=for-the-badge&logo=ansible&logoColor=white)
 
-Infraestructura compartida base para servicios empresariales mediante playbooks de Ansible.
+Shared base infrastructure for enterprise services using Ansible playbooks.
 
-## ¿Qué incluye?
+## What does it include?
 
-Configuración base común requerida por todos los servicios: proxy APT, Docker y certificados SSL/TLS.
+Common base configuration required by every service: APT proxy, Docker and SSL/TLS certificates.
 
-### Componentes
+### Components
 
-- **prox-repo-debian**: Configuración proxy APT para cache de paquetes
-- **docker-install-ansible**: Instalación offline de Docker y componentes
-- **certificate-ansible**: Configuración certificados SSL/TLS sistema y Docker
+- **prox-repo-debian**: APT proxy configuration for package caching
+- **docker-install-ansible**: Offline installation of Docker and its components
+- **certificate-ansible**: SSL/TLS certificate configuration for the system and Docker
 
-## Orden de Implementación
+## Implementation Order
 
-**IMPORTANTE**: Ejecutar en este orden específico para dependencias correctas.
+**IMPORTANT**: Run in this exact order so dependencies are satisfied.
 
-### 1. Configurar Proxy APT
+### 1. Configure APT Proxy
 ```bash
 cd prox-repo-debian/
 ansible-playbook -i inventory proxy-setup.yml
 ```
 
-### 2. Instalar Docker
+### 2. Install Docker
 ```bash
 cd docker-install-ansible/
 ansible-playbook -i inventory docker-install.yml
 ```
 
-### 3. Configurar Certificados
+### 3. Configure Certificates
 ```bash
 cd certificate-ansible/
 ansible-playbook -i inventory certificados.yml
 ```
 
-## Verificación Completa
+## Full Verification
 
 ```bash
-# Verificar proxy configurado
+# Check proxy configuration
 ansible all -i inventory -m shell -a "cat /etc/apt/apt.conf.d/02proxy"
 
-# Verificar Docker instalado
+# Check Docker installation
 ansible all -i inventory -m shell -a "docker --version"
 
-# Verificar certificados
+# Check certificates
 ansible all -i inventory -m shell -a "ls /usr/local/share/ca-certificates/"
 ```
 
-## Uso en Servicios
+## Usage by Services
 
-Ejecutar esta infraestructura base antes de desplegar:
+Run this base infrastructure before deploying:
 - harbor-server
 - gitea-server  
 - apt-cacher-ng
 
-## Documentación Específica
+## Specific Documentation
 
-| Componente | README | Propósito |
-|------------|--------|-----------|
-| prox-repo-debian | [`prox-repo-debian/README.md`](./prox-repo-debian/Readme.md) | Proxy cache APT |
-| docker-install-ansible | [`docker-install-ansible/README.md`](./docker-install-ansible/Readme.md) | Instalación Docker offline |
-| certificate-ansible | [`certificate-ansible/README.md`](./certificate-ansible/Readme.md) | Certificados SSL/TLS |
+| Component | README | Purpose |
+|-----------|--------|---------|
+| prox-repo-debian | [`prox-repo-debian/Readme.md`](./prox-repo-debian/Readme.md) | APT cache proxy |
+| docker-install-ansible | [`docker-install-ansible/Readme.md`](./docker-install-ansible/Readme.md) | Offline Docker installation |
+| certificate-ansible | [`certificate-ansible/Readme.md`](./certificate-ansible/Readme.md) | SSL/TLS certificates |

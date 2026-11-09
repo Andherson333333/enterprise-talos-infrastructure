@@ -1,3 +1,5 @@
+**English** | [Español](./Readme.es.md)
+
 # Terraform Air-gapped Bundle
 
 ![Terraform](https://img.shields.io/badge/Terraform-1.9.0+-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)
@@ -6,31 +8,31 @@
 ![Talos](https://img.shields.io/badge/Talos-Linux-000000?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-Bundle de Terraform auto-contenido para entornos sin conexión a internet. Incluye providers de Proxmox, Talos y módulos populares en una imagen Docker portable.
+Self-contained Terraform bundle for environments without internet access. Includes the Proxmox and Talos providers and popular modules in a portable Docker image.
 
-## Características
+## Features
 
 - **Providers**: bpg/proxmox, telmate/proxmox, siderolabs/talos, hashicorp/*
-- **15+ módulos** pre-cargados para VMs, LXCs y Kubernetes
-- **100% offline** una vez construido
+- **15+ modules** preloaded for VMs, LXCs and Kubernetes
+- **100% offline** once built
 
-## Proceso
+## Process
 
-1. **Máquina Online**: Crear bundle con dependencias
-2. **Máquina Offline**: Transferir bundle y usar con Docker
+1. **Online machine**: Build the bundle with its dependencies
+2. **Offline machine**: Transfer the bundle and use it with Docker
 
-## Fase 1: Creación (Máquina Online)
+## Phase 1: Build (Online Machine)
 
-**Requisitos**: Terraform v1.9.0+, Git
+**Requirements**: Terraform v1.9.0+, Git
 
-### 1. Estructura inicial
+### 1. Initial structure
 
 ```bash
 mkdir -p terraform-proxmox-airgap/{modules,mirror}
 cd terraform-proxmox-airgap
 ```
 
-### 2. Configurar providers
+### 2. Configure providers
 
 ```bash
 cat > main.tf << 'EOF'
@@ -56,14 +58,14 @@ provider "time" {}
 EOF
 ```
 
-### 3. Descargar providers
+### 3. Download providers
 
 ```bash
 terraform init
 terraform providers mirror -platform=linux_amd64 -platform=linux_arm64 ./mirror
 ```
 
-### 4. Descargar módulos
+### 4. Download modules
 
 ```bash
 cd modules
@@ -86,7 +88,7 @@ git clone https://github.com/sergelogvinov/terraform-talos.git talos-sergei-mult
 cd ..
 ```
 
-### 5. Configurar offline mode
+### 5. Configure offline mode
 
 ```bash
 cat > .terraformrc << 'EOF'
@@ -103,7 +105,7 @@ plugin_cache_dir = "/terraform-cache"
 EOF
 ```
 
-### 6. Crear Dockerfile
+### 6. Create the Dockerfile
 
 ```bash
 cat > Dockerfile << 'EOF'
@@ -131,7 +133,7 @@ CMD ["--help"]
 EOF
 ```
 
-### 7. Empaquetar bundle
+### 7. Package the bundle
 
 ```bash
 rm main.tf .terraform.lock.hcl
@@ -140,11 +142,11 @@ cd ..
 tar -czf "terraform-airgap-bundle-$(date +%Y%m%d).tar.gz" "terraform-proxmox-airgap/"
 ```
 
-## Fase 2: Uso (Máquina Offline)
+## Phase 2: Usage (Offline Machine)
 
-**Requisito**: Docker
+**Requirement**: Docker
 
-### 1. Descomprimir y construir
+### 1. Extract and build
 
 ```bash
 tar -xzf terraform-airgap-bundle-*.tar.gz
@@ -152,26 +154,25 @@ cd terraform-proxmox-airgap
 docker build -t terraform-airgap:latest .
 ```
 
-### 2. Usar Terraform
+### 2. Use Terraform
 
 ```bash
-# En tu directorio de proyecto
+# In your project directory
 docker run --rm -it -v "$(pwd):/terraform" terraform-airgap:latest init
 docker run --rm -it -v "$(pwd):/terraform" terraform-airgap:latest plan
 docker run --rm -it -v "$(pwd):/terraform" terraform-airgap:latest apply
 ```
 
-### Alias recomendado
+### Recommended alias
 
 ```bash
 alias terraform='docker run --rm -it -v "$(pwd):/terraform" -v "$HOME/.ssh:/root/.ssh:ro" terraform-airgap:latest'
 ```
 
-Después puedes usar `terraform` normalmente:
+Then use `terraform` as usual:
 ```bash
 terraform plan
 terraform apply
 ```
 
-## Nota : si no quieres hacer este proceso puedes descargar la imagen desde docker hub andherson1039/terraform-complete-airgap:2.0
-
+## Note: if you don't want to go through this process, you can pull the prebuilt image from Docker Hub: `andherson1039/terraform-complete-airgap:2.0`

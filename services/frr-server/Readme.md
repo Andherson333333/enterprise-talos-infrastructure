@@ -1,65 +1,67 @@
+**English** | [Español](./Readme.es.md)
+
 # FRR - BGP Router (Cilium Peering)
 ![Ansible](https://img.shields.io/badge/Ansible-Role-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 ![FRR](https://img.shields.io/badge/FRRouting-10.5.3-4B8BBE?style=for-the-badge)
 ![Terraform](https://img.shields.io/badge/Terraform-Managed-623CE4?style=for-the-badge&logo=terraform&logoColor=white)
 ![Debian](https://img.shields.io/badge/Debian-13-A81D33?style=for-the-badge&logo=debian&logoColor=white)
 
-Dos routers FRR (`frr-01`/`frr-02`) que actúan como peers BGP intermedios entre Cilium BGP Control Plane (AS 65001) y la red del homelab, en AS 65000. Provisionados con Terraform y configurados con Ansible.
+Two FRR routers (`frr-01`/`frr-02`) acting as intermediate BGP peers between the Cilium BGP Control Plane (AS 65001) and the homelab network, in AS 65000. Provisioned with Terraform and configured with Ansible.
 
-## Componentes
+## Components
 
-| Componente | Detalle |
-|------------|---------|
-| VMs | `frr-01` (192.168.253.20), `frr-02` (192.168.253.21) — clonadas de template 8002 (Debian 13) |
-| Terraform | `terraform/code/vm-frr.tf`, variable `frr_nodes` en `terraform/code/variables.tf` |
-| Ansible | `frr-ansible/` — role `frr-install`, un `frr.conf` estático por nodo en `frr-install/files/` |
-| ASN local | 65000 (peer iBGP entre frr-01 y frr-02) |
-| ASN remoto | 65001 (nodos Cilium, ver `../../infrastructure-applications/cilium/bgp/`) |
+| Component | Detail |
+|-----------|--------|
+| VMs | `frr-01` (192.168.253.20), `frr-02` (192.168.253.21) — cloned from template 8002 (Debian 13) |
+| Terraform | `terraform/code/vm-frr.tf`, `frr_nodes` variable in `terraform/code/variables.tf` |
+| Ansible | `frr-ansible/` — `frr-install` role, one static `frr.conf` per node in `frr-install/files/` |
+| Local ASN | 65000 (iBGP peer between frr-01 and frr-02) |
+| Remote ASN | 65001 (Cilium nodes, see `../../infrastructure-applications/cilium/bgp/`) |
 
-## Orden de Despliegue
+## Deployment Order
 
-### 1. Provisionar las VMs (Terraform)
+### 1. Provision the VMs (Terraform)
 ```bash
 cd terraform/
 docker compose run --rm terraform apply -target='proxmox_virtual_environment_vm.frr["frr-01"]' -target='proxmox_virtual_environment_vm.frr["frr-02"]'
 ```
 
-### 2. Copiar la SSH key de administración a cada VM
+### 2. Copy the admin SSH key to each VM
 ```bash
 ssh-copy-id root@192.168.253.20
 ssh-copy-id root@192.168.253.21
 ```
 
-### 3. Instalar y configurar FRR (Ansible)
+### 3. Install and configure FRR (Ansible)
 ```bash
 cd frr-ansible/
 ansible-playbook -i inventory frr-install.yml
 ```
 
-## Estado de Preparación
+## Readiness State
 
-Al completar el despliegue tendrás:
-- **FRR** instalado y corriendo en ambos nodos, con `bgpd` habilitado
-- **iBGP** establecido entre `frr-01` ↔ `frr-02`
-- **eBGP** listo para peerear con los nodos Cilium (AS 65001) una vez desplegado `../../infrastructure-applications/cilium/`
+After the deployment you will have:
+- **FRR** installed and running on both nodes, with `bgpd` enabled
+- **iBGP** established between `frr-01` ↔ `frr-02`
+- **eBGP** ready to peer with the Cilium nodes (AS 65001) once `../../infrastructure-applications/cilium/` is deployed
 
-## Verificación
+## Verification
 
 ```bash
 vtysh -c "show bgp summary"
 ```
 
-Debe mostrar el peer iBGP (`.20`/`.21` entre sí) y los peers hacia los nodos Talos en estado `Established` una vez Cilium esté desplegado.
+It must show the iBGP peer (`.20`/`.21` with each other) and the peers towards the Talos nodes in `Established` state once Cilium is deployed.
 
 ![BGP summary frr-01](../../images/frr-04.png)
-![Rutas ECMP frr-01](../../images/frr-01.png)
+![ECMP routes frr-01](../../images/frr-01.png)
 
-## Siguiente Paso
+## Next Step
 
-Con FRR operativo, despliega `../../infrastructure-applications/cilium/` para que los nodos Talos empiecen a peerear vía BGP y las IPs de LoadBalancer se anuncien correctamente.
+With FRR running, deploy `../../infrastructure-applications/cilium/` so the Talos nodes start peering via BGP and LoadBalancer IPs are advertised correctly.
 
-## Dependencias
+## Dependencies
 
-- Template 8002 (Debian 13) disponible en Proxmox
-- Provider `bpg/proxmox` configurado (`terraform/provider.tf`)
-- Requiere acceso a internet para el repo de FRRouting (`deb.frrouting.org`), o mirror local vía apt-cacher-ng
+- Template 8002 (Debian 13) available on Proxmox
+- `bpg/proxmox` provider configured (`terraform/provider.tf`)
+- Requires internet access for the FRRouting repo (`deb.frrouting.org`), or a local mirror via apt-cacher-ng

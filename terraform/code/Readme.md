@@ -1,3 +1,5 @@
+**English** | [Español](./Readme.es.md)
+
 # Terraform Proxmox Infrastructure
 
 ![Terraform](https://img.shields.io/badge/Terraform-844FBA?style=for-the-badge&logo=terraform&logoColor=white)
@@ -5,165 +7,165 @@
 ![Talos](https://img.shields.io/badge/Talos-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![Ansible](https://img.shields.io/badge/Ansible-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 
-Infraestructura completa en Proxmox con Terraform para cluster Talos Kubernetes y servicios de soporte.
+Full Proxmox infrastructure with Terraform for the Talos Kubernetes cluster and its support services.
 
-## ¿Qué hace?
+## What does it do?
 
-Despliega automáticamente una infraestructura de 3 capas en Proxmox: servicios proxy (apt-cacher-ng, harbor), servicios git (gitea + runners) y cluster Kubernetes con Talos Linux. Incluye configuración de red dual (vmbr0/vmbr1) y aprovisionamiento optimizado para entornos offline.
+Automatically deploys a 3-layer infrastructure on Proxmox: proxy services (apt-cacher-ng, harbor), git services (gitea + runners) and a Kubernetes cluster with Talos Linux. Includes dual network configuration (vmbr0/vmbr1) and provisioning optimized for offline environments.
 
-## Arquitectura
+## Architecture
 
-![Infraestructura completa](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Arquitectura%20general%20-1.png)
+![Full infrastructure](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Arquitectura%20general%20-1.png)
 
-**Capas de la infraestructura:**
-- **Layer Proxy**: apt-cacher-ng + harbor-server (acceso internet)
-- **Layer Git+Runner**: gitea-server + runners (CI/CD)
-- **Layer Kubernetes**: cluster Talos (1 CP + workers variables)
+**Infrastructure layers:**
+- **Proxy layer**: apt-cacher-ng + harbor-server (internet access)
+- **Git+Runner layer**: gitea-server + runners (CI/CD)
+- **Kubernetes layer**: Talos cluster (1 CP + variable workers)
 
-![Infraestructura completa](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/apt-cacher-ng%20server.png)
-![Infraestructura completa](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Harbor-server.png)
-![Infraestructura completa](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner.png)
-![Infraestructura completa](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/talos-linux-vm.png)
+![Full infrastructure](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/apt-cacher-ng%20server.png)
+![Full infrastructure](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Harbor-server.png)
+![Full infrastructure](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner.png)
+![Full infrastructure](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/talos-linux-vm.png)
 
-**Características principales:**
-- **Automatización completa**: Deploy con un solo comando
-- **Arquitectura en capas**: Separación clara de responsabilidades
-- **Escalabilidad**: Workers variables por tipo de carga
-- **Optimización offline**: apt-cacher-ng y harbor incluidos
+**Main features:**
+- **Full automation**: Deploy with a single command
+- **Layered architecture**: Clear separation of responsibilities
+- **Scalability**: Variable workers per workload type
+- **Offline optimization**: apt-cacher-ng and harbor included
 
-## Servicios Disponibles
+## Available Services
 
-| Servicio | Propósito | VMs | Redes |
-|----------|-----------|-----|-------|
-| **apt-cacher-ng** | Cache de paquetes Debian/Ubuntu | 1 | vmbr0 + vmbr1 |
-| **harbor** | Registry privado Docker/OCI | 1 | vmbr0 + vmbr1 |
-| **gitea** | Git server con CI/CD | 1 + runners | vmbr1 |
-| **talos-cp** | Control plane Kubernetes | 1 | vmbr1 + vmbr2 |
-| **talos-infra** | Workers infraestructura | 2 | vmbr1 + vmbr2 |
-| **talos-app** | Workers aplicaciones | 0 (variable) | vmbr1 + vmbr2 |
+| Service | Purpose | VMs | Networks |
+|---------|---------|-----|----------|
+| **apt-cacher-ng** | Debian/Ubuntu package cache | 1 | vmbr0 + vmbr1 |
+| **harbor** | Private Docker/OCI registry | 1 | vmbr0 + vmbr1 |
+| **gitea** | Git server with CI/CD | 1 + runners | vmbr1 |
+| **talos-cp** | Kubernetes control plane | 1 | vmbr1 + vmbr2 |
+| **talos-infra** | Infrastructure workers | 3 | vmbr1 + vmbr2 |
+| **talos-app** | Application workers | 2 | vmbr1 + vmbr2 |
 
-## Prerequisitos
+## Prerequisites
 
-- Proxmox VE con templates configurados
+- Proxmox VE with templates configured
 - Terraform >= 1.0
-- Templates disponibles: 8000, 8001 (Ubuntu), 9000 (Talos)
-- API token de Proxmox configurado
+- Available templates: 8000, 8001 (Ubuntu), 9000 (Talos)
+- Proxmox API token configured
 
-## Configuración
+## Configuration
 
-### Variables Principales
+### Main Variables
 
 ```hcl
 # terraform.tfvars
 cluster_name = "talos-infrastructure"
 control_plane_count = 1
-infra_worker_count = 2
-app_worker_count = 0
+infra_worker_count = 3
+app_worker_count = 2
 gitea_count_runners = 0
 ```
 
-### Templates Requeridos
+### Required Templates
 
-| Template ID | Propósito | Imagen Base |
-|-------------|-----------|-------------|
+| Template ID | Purpose | Base image |
+|-------------|---------|------------|
 | 8000 | Gitea runners | Debian12 |
-| 8001 | Servicios base | Debian12 |
-| 9000 | Cluster Talos | Talos Linux |
+| 8001 | Base services | Debian12 |
+| 9000 | Talos cluster | Talos Linux |
 
-## Orden de Implementación
+## Implementation Order
 
-### 1. Preparar Configuración
+### 1. Prepare the Configuration
 
 ```bash
-# Clonar repositorio
+# Clone the repository
 git clone <repo-url>
 cd terraform-promox-1
 
-# Configurar variables
+# Configure variables
 cp terraform.tfvars.example terraform.tfvars
 vim terraform.tfvars
 ```
 
-### 2. Validar y Planificar
+### 2. Validate and Plan
 
 ```bash
-# Inicializar Terraform
+# Initialize Terraform
 terraform init
 
-# Validar configuración
+# Validate configuration
 terraform validate
 
-# Ver plan de ejecución
+# Show the execution plan
 terraform plan
 ```
 
-### 3. Desplegar Infraestructura
+### 3. Deploy the Infrastructure
 
 ```bash
-# Aplicar configuración
+# Apply configuration
 terraform apply
 
-# Confirmar con 'yes' cuando se solicite
+# Confirm with 'yes' when prompted
 ```
 
-## Verificación
+## Verification
 
 ```bash
-# Estado del deployment
+# Deployment state
 terraform show
 
-# Listar VMs creadas
+# List created VMs
 terraform state list | grep proxmox_virtual_environment_vm
 
-# Verificar en Proxmox
+# Check on Proxmox
 qm list | grep -E "(apt-cacher|harbor|gitea|talos)"
 ```
 
-## Personalización
+## Customization
 
-Para modificar recursos de VMs, editar:
-- `vm-*.tf` - Configuración específica por servicio
-- `terraform.tfvars` - Cantidad de instancias
-- `provider.tf` - Configuración de Proxmox
+To change VM resources, edit:
+- `vm-*.tf` - Per-service configuration
+- `terraform.tfvars` - Instance counts
+- `provider.tf` - Proxmox configuration
 
-### Escalado de Workers
+### Scaling Workers
 
 ```hcl
-# Aumentar workers de infraestructura
+# Increase infrastructure workers
 infra_worker_count = 3
 
-# Activar workers de aplicación
+# Enable application workers
 app_worker_count = 2
 
-# Añadir gitea runners
+# Add gitea runners
 gitea_count_runners = 2
 ```
 
-### Configuración de Almacenamiento
+### Storage Configuration
 
-Todas las VMs utilizan configuración de disco dual:
-- **scsi0**: Disco sistema operativo (20GB)
-- **scsi1**: Disco datos/aplicaciones (20GB)
-- **Datastore**: local-lvm con discard habilitado
-- **Formato**: raw para mejor rendimiento
+Every VM uses a dual-disk layout:
+- **scsi0**: Operating system disk (20GB)
+- **scsi1**: Data/application disk (20GB)
+- **Datastore**: local-lvm with discard enabled
+- **Format**: raw for better performance
 
-## Administración
+## Administration
 
 ```bash
-# Destruir infraestructura
+# Destroy the infrastructure
 terraform destroy
 
-# Actualizar solo un servicio
+# Update a single service
 terraform apply -target=proxmox_virtual_environment_vm.harbor_server
 
-# Ver outputs
+# Show outputs
 terraform output
 ```
 
-## Arquitectura de Red
+## Network Architecture
 
-| Interface | Red | Propósito |
-|-----------|-----|-----------|
-| **vmbr0** | Externa | Acceso internet (proxy layer) |
-| **vmbr1** | Interna | Comunicación servicios |
-| **vmbr2** | Cluster | Red Kubernetes Talos | 
+| Interface | Network | Purpose |
+|-----------|---------|---------|
+| **vmbr0** | External | Internet access (proxy layer) |
+| **vmbr1** | Internal | Service communication |
+| **vmbr2** | Cluster | Talos Kubernetes network |

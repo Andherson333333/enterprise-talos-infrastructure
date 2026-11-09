@@ -1,79 +1,81 @@
+**English** | [Español](./Readme.es.md)
+
 # Talos ISO Builder
 
 ![Talos](https://img.shields.io/badge/Talos-Linux_OS-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Container-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![ISO](https://img.shields.io/badge/ISO-Builder-FF6B35?style=for-the-badge&logo=linux&logoColor=white)
 
-Herramienta para crear imágenes ISO booteable de Talos Linux con cache offline de imágenes.
+Tool to build bootable Talos Linux ISO images with an offline image cache.
 
-## ¿Qué es?
+## What is it?
 
-Genera imágenes ISO de Talos Linux con todas las imágenes de Kubernetes y CNI precargadas. Ideal para instalaciones offline en servidores físicos o máquinas virtuales.
+Builds Talos Linux ISO images with every Kubernetes and CNI image preloaded. Ideal for offline installations on physical servers or virtual machines.
 
-### Beneficios Principales
+### Main Benefits
 
-- **Instalación offline**: ISO con todas las imágenes necesarias incluidas
-- **Cache optimizado**: Imágenes precargadas para instalación rápida
-- **Booteable**: ISO lista para instalar en cualquier hardware
-- **CNI incluido**: Flannel preconfigurado por defecto
-- **Sin internet**: Funciona completamente offline tras la generación
+- **Offline installation**: ISO with every required image included
+- **Optimized cache**: Preloaded images for a fast installation
+- **Bootable**: ISO ready to install on any hardware
+- **CNI included**: Flannel preconfigured by default
+- **No internet**: Works fully offline after the build
 
-## Prerequisitos
+## Prerequisites
 
-- Docker instalado
+- Docker installed
 - talosctl CLI
-- Acceso privilegiado (/dev mount)
-- Espacio en disco (~2GB para ISO)
-- Acceso a internet (solo para build inicial)
+- Privileged access (/dev mount)
+- Disk space (~2GB for the ISO)
+- Internet access (initial build only)
 
-## Estructura de Archivos
+## File Structure
 
 ```
 ~/talos-iso-builder/
-├── images.txt              # Lista de imágenes base
-├── extra-images.txt        # Imágenes adicionales (opcional)
-├── image-cache.oci/        # Cache de imágenes generado
-└── _out/                   # Archivos de salida
-    └── metal-amd64.iso     # ISO final
+├── images.txt              # Base image list
+├── extra-images.txt        # Additional images (optional)
+├── image-cache.oci/        # Generated image cache
+└── _out/                   # Output files
+    └── metal-amd64.iso     # Final ISO
 ```
 
-## Instalación
+## Installation
 
-### 1. Preparar Workspace
+### 1. Prepare the Workspace
 
 ```bash
-# Crear directorio de trabajo
+# Create working directory
 mkdir ~/talos-iso-builder
 cd ~/talos-iso-builder
 ```
 
-### 2. Extraer Imágenes Base
+### 2. Extract Base Images
 
 ```bash
-# Extraer imágenes default de Talos
+# Extract the default Talos images
 talosctl images default > images.txt
 
-# Agregar imágenes extra (opcional)
+# Add extra images (optional)
 # echo "registry.k8s.io/my-custom-image:latest" >> images.txt
 # cat extra-images.txt >> images.txt
 ```
 
-### 3. Crear Cache OCI
+### 3. Create the OCI Cache
 
 ```bash
-# Generar cache de imágenes (requiere internet)
+# Build the image cache (requires internet)
 cat images.txt | talosctl images cache-create \
   --image-cache-path ./image-cache.oci \
   --images=-
 ```
 
-### 4. Generar ISO
+### 4. Build the ISO
 
 ```bash
-# Crear directorio de salida
+# Create output directory
 mkdir -p _out/
 
-# Generar ISO con cache
+# Build the ISO with the cache
 docker run --rm -t \
   -v $PWD/_out:/secureboot:ro \
   -v $PWD/_out:/out \
@@ -84,32 +86,32 @@ docker run --rm -t \
   --image-cache /image-cache.oci
 ```
 
-## Configuración
+## Configuration
 
-### Variables por Defecto
+### Default Variables
 
 ```yaml
-# Versión Talos
+# Talos version
 talos_version: v1.10.3
 imager_version: v1.10.3
 
-# Arquitectura
+# Architecture
 arch: amd64
 
-# CNI incluido
+# Included CNI
 cni: flannel
 
 # Cache path
 image_cache_path: ./image-cache.oci
 ```
 
-### Contenido de images.txt
+### images.txt Contents
 
 ```bash
-# Ver qué imágenes se incluirán
+# Show which images will be included
 cat images.txt
 
-# Ejemplo de contenido:
+# Example contents:
 # ghcr.io/siderolabs/flannel:v0.26.7
 # registry.k8s.io/coredns/coredns:v1.12.1
 # gcr.io/etcd-development/etcd:v3.5.21
@@ -117,85 +119,85 @@ cat images.txt
 # ghcr.io/siderolabs/installer:v1.10.5
 ```
 
-## Uso
+## Usage
 
-### Preparar ISO para Instalación
+### Prepare the ISO for Installation
 
 ```bash
-# Verificar ISO generada
+# Check the generated ISO
 ls -lh _out/metal-amd64.iso
 
-# Transferir a dispositivo USB
+# Write it to a USB device
 dd if=_out/metal-amd64.iso of=/dev/sdX bs=4M status=progress
 
-# Para VMs, montar directamente el archivo ISO
+# For VMs, mount the ISO file directly
 ```
 
-### Instalación en Servidor
+### Server Installation
 
 ```bash
-# 1. Bootear desde ISO
-# 2. Seguir proceso normal de instalación Talos
-# 3. Las imágenes se cargan desde cache local (rápido)
+# 1. Boot from the ISO
+# 2. Follow the normal Talos installation process
+# 3. Images are loaded from the local cache (fast)
 ```
 
-## Verificación
+## Verification
 
 ```bash
-# Verificar cache generado
+# Check the generated cache
 du -sh image-cache.oci/
 
-# Contar imágenes en cache
+# Count images in the cache
 cat images.txt | wc -l
 
-# Verificar ISO final
+# Check the final ISO
 file _out/metal-amd64.iso
 ls -lh _out/metal-amd64.iso
 ```
 
-## Administración
+## Administration
 
 ```bash
-# Regenerar cache (si cambian las imágenes)
+# Rebuild the cache (if the images change)
 rm -rf image-cache.oci/
 cat images.txt | talosctl images cache-create --image-cache-path ./image-cache.oci --images=-
 
-# Limpiar archivos de salida
+# Clean output files
 rm -rf _out/
 
-# Ver espacio total usado
+# Show total disk usage
 du -sh ~/talos-iso-builder/
 ```
 
-## Comandos Resumidos
+## Command Summary
 
 ```bash
-# Build completo en una secuencia
+# Full build in one sequence
 mkdir ~/talos-iso-builder && cd ~/talos-iso-builder
 
-# 1. Extraer imágenes
+# 1. Extract images
 talosctl images default > images.txt
 
-# 2. Crear cache
+# 2. Create cache
 cat images.txt | talosctl images cache-create --image-cache-path ./image-cache.oci --images=-
 
-# 3. Generar ISO
+# 3. Build ISO
 mkdir -p _out/
 docker run --rm -t -v $PWD/_out:/secureboot:ro -v $PWD/_out:/out -v $PWD/image-cache.oci:/image-cache.oci:ro -v /dev:/dev --privileged ghcr.io/siderolabs/imager:v1.10.3 iso --image-cache /image-cache.oci
 
-# 4. Verificar resultado
+# 4. Check the result
 ls -lh _out/metal-amd64.iso
 ```
 
-## Solución de Problemas
+## Troubleshooting
 
-| Problema | Solución |
-|----------|----------|
-| **Error /dev mount** | Ejecutar con `--privileged` |
-| **Cache corrupto** | Eliminar `image-cache.oci/` y regenerar |
-| **ISO muy grande** | Normal (~2GB con todas las imágenes) |
-| **Sin espacio** | Liberar ~3GB antes del build |
+| Problem | Solution |
+|---------|----------|
+| **/dev mount error** | Run with `--privileged` |
+| **Corrupted cache** | Delete `image-cache.oci/` and rebuild |
+| **ISO too large** | Normal (~2GB with every image) |
+| **Out of space** | Free ~3GB before the build |
 
 ---
 
-**Nota**: La ISO generada incluye Flannel CNI por defecto. Para otros CNI o extensions, usar método personalizado.
+**Note**: The generated ISO includes Flannel CNI by default. For other CNIs or extensions, use the custom method.

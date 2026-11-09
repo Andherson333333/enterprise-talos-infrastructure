@@ -1,3 +1,5 @@
+**English** | [Español](./Readme.es.md)
+
 # Harbor Ansible Installation 
 
 ![Ansible](https://img.shields.io/badge/Ansible-Role-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
@@ -5,40 +7,40 @@
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Trivy](https://img.shields.io/badge/Trivy-Scanner-1904DA?style=for-the-badge&logo=aqua&logoColor=white)
 
-Guia para instalacion de harbor mediante ansible plaubook de forma automatizada con certificados SSL y scanner Trivy.
+Guide for an automated Harbor installation with an Ansible playbook, including SSL certificates and the Trivy scanner.
 
-## Características
+## Features
 
--  **Instalación Offline** con Harbor v2.13.1
--  **SSL/TLS** preconfigurado
--  **Trivy Scanner** integrado
--  **Docker Compose** automático
--  **Idempotente** y reutilizable
+-  **Offline installation** with Harbor v2.13.1
+-  **SSL/TLS** preconfigured
+-  **Trivy scanner** integrated
+-  **Docker Compose** automated
+-  **Idempotent** and reusable
 
-## Preparación
+## Preparation
 
-### 1. Descargar Harbor
+### 1. Download Harbor
 
 ```bash
 wget https://github.com/goharbor/harbor/releases/download/v2.13.1/harbor-offline-installer-v2.13.1.tgz
 ```
 
-### 2. Estructura del Proyecto
+### 2. Project Structure
 
 ```
 harbor-install/
 ├── files/
-│   ├── harbor-offline-installer-v2.13.1.tgz  # ← Colocar aquí
-│   ├── harbor.yml                             # Configuración
-│   ├── harbor.pem                             # Certificado SSL
-│   └── harbor.key                             # Clave privada
-├── tasks/main.yml                             # Tareas Ansible
+│   ├── harbor-offline-installer-v2.13.1.tgz  # ← Place it here
+│   ├── harbor.yml                             # Configuration
+│   ├── harbor.pem                             # SSL certificate
+│   └── harbor.key                             # Private key
+├── tasks/main.yml                             # Ansible tasks
 └── defaults/main.yml                          # Variables
 ```
 
-## Configuración
+## Configuration
 
-### Variables Principales
+### Main Variables
 
 ```yaml
 # defaults/main.yml
@@ -49,7 +51,7 @@ harbor_ssl_enabled: true
 harbor_trivy_enabled: true
 ```
 
-### Inventario
+### Inventory
 
 ```ini
 [harbor_servers]
@@ -60,9 +62,9 @@ harbor_hostname=registry.company.com
 harbor_admin_password=MySecurePassword123
 ```
 
-## Instalación
+## Installation
 
-### Playbook Básico
+### Basic Playbook
 
 ```yaml
 # harbor-install.yml
@@ -74,28 +76,28 @@ harbor_admin_password=MySecurePassword123
     - harbor-install
 ```
 
-### Ejecutar
+### Run
 
 ```bash
-# Instalación estándar
+# Standard installation
 ansible-playbook -i inventory harbor-install.yml
 
-# Con variables personalizadas
+# With custom variables
 ansible-playbook -i inventory harbor-install.yml \
   -e "harbor_hostname=registry.company.com"
 ```
 
 ![Trivy](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/harbor-server-7.png)
 
-## Verificación
+## Verification
 
-### Comprobar Estado
+### Check Status
 
 ```bash
-# Servicios corriendo
+# Running services
 cd /opt/harbor/harbor && docker compose ps
 
-# Acceso web
+# Web access
 curl -k https://harbor.server.local
 
 ```
@@ -103,20 +105,20 @@ curl -k https://harbor.server.local
 
 ![Trivy](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/harbor-server-14.png)
 
-### Acceso Web
+### Web Access
 
 ```
 URL: https://harbor.server.local
-Usuario: admin
-Password: [tu harbor_admin_password]
+User: admin
+Password: [your harbor_admin_password]
 ```
 
 ![Trivy](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/harbor-server-13.png)
 
-### Servicios Esperados
+### Expected Services
 
 ```
- harbor-core        (API principal)
+ harbor-core        (Main API)
  harbor-portal      (Web UI)
  registry           (Docker registry)
  harbor-db          (PostgreSQL)
@@ -124,53 +126,53 @@ Password: [tu harbor_admin_password]
  trivy-adapter      (Scanner)
 ```
 
-### Puertos ocupados
+### Ports in use
 
 ```bash
-# Verificar puertos
+# Check ports
 netstat -tlnp | grep -E ':(80|443)'
 
-# Liberar puerto si es necesario
+# Free the port if needed
 sudo fuser -k 443/tcp
 ```
 
-## Backup y Actualización
+## Backup and Upgrade
 
-### Crear Backup
+### Create a Backup
 
 ```bash
 cd /opt/harbor/harbor && docker compose down
 tar -czf harbor-backup-$(date +%Y%m%d).tar.gz /opt/harbor/
 ```
 
-### Actualizar Harbor
+### Upgrade Harbor
 
 ```bash
-# Re-ejecutar role con nueva versión
+# Re-run the role with the new version
 ansible-playbook -i inventory harbor-install.yml \
   -e "harbor_version=v2.14.0"
 ```
 
-## Certificados SSL
+## SSL Certificates
 
-### Renovar Certificados
+### Renew Certificates
 
 ```bash
-# Backup actuales
+# Back up the current ones
 cp /opt/harbor/certs/harbor.* /backup/
 
-# Copiar nuevos
+# Copy the new ones
 cp new-harbor.pem /opt/harbor/certs/harbor.pem
 cp new-harbor.key /opt/harbor/certs/harbor.key
 chmod 600 /opt/harbor/certs/harbor.key
 
-# Reiniciar
+# Restart
 cd /opt/harbor/harbor && docker compose restart
 ```
 
-## Notas Importantes
+## Important Notes
 
-- El archivo `.tgz` debe estar en `files/` antes de ejecutar
-- Cambiar passwords por defecto en producción
-- Verificar resolución DNS del hostname
-- Backup regular de la base de datos PostgreSQL
+- The `.tgz` file must be in `files/` before running
+- Change default passwords in production
+- Verify DNS resolution of the hostname
+- Regularly back up the PostgreSQL database

@@ -1,3 +1,5 @@
+**English** | [Español](./Readme.es.md)
+
 # Gitea Runner Ansible Deployment
 ![Ansible](https://img.shields.io/badge/Ansible-Automation-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 ![Gitea](https://img.shields.io/badge/Gitea-Runner-609926?style=for-the-badge&logo=gitea&logoColor=white)
@@ -5,50 +7,50 @@
 ![Proxmox](https://img.shields.io/badge/Proxmox-Infrastructure-E57000?style=for-the-badge&logo=proxmox&logoColor=white)
 ![Harbor](https://img.shields.io/badge/Harbor-Registry-60B932?style=for-the-badge&logo=harbor&logoColor=white)
 
-Despliegue automatizado de Gitea Runner con Ansible en infraestructura Proxmox multi-capa con registro Harbor privado.
+Automated Gitea Runner deployment with Ansible on a multi-layer Proxmox infrastructure with a private Harbor registry.
 
-## Flujo de Trabajo
+## Workflow
 ```
-DESPLIEGUE: Ansible Role → Docker Compose → Gitea Runner Container
-CONEXIÓN: Runner → Gitea Server (gitea.server.local:192.168.253.11)
-REGISTRO: Harbor Registry (registry.harbor.local:192.168.253.12)
-EJECUCIÓN: Runner → Docker in Docker → CI/CD Pipeline
+DEPLOYMENT: Ansible Role → Docker Compose → Gitea Runner Container
+CONNECTION: Runner → Gitea Server (gitea.server.local:192.168.253.11)
+REGISTRY: Harbor Registry (registry.harbor.local:192.168.253.12)
+EXECUTION: Runner → Docker in Docker → CI/CD Pipeline
 ```
 
-## Características
-- **Auto-registro**: Configuración automática con token de registro
-- **Docker-in-Docker**: Soporte completo para pipelines de contenedores  
-- **Registry privado**: Integración con Harbor registry local
-- **SSL Strict**: Verificación estricta de certificados SSL/TLS ✅
-- **Force Pull**: Actualización automática de imágenes en cada ejecución
-- **CA Certificates**: Soporte completo para certificados corporativos
-- **Ansible Ready**: Despliegue completamente automatizado
-- **Persistent Data**: Volúmenes Docker persistentes
-- **Custom Hosts**: Resolución DNS personalizada para servicios internos
+## Features
+- **Auto-registration**: Automatic configuration with a registration token
+- **Docker-in-Docker**: Full support for container pipelines  
+- **Private registry**: Integration with the local Harbor registry
+- **Strict SSL**: Strict SSL/TLS certificate verification ✅
+- **Force Pull**: Images refreshed automatically on every run
+- **CA Certificates**: Full support for corporate certificates
+- **Ansible Ready**: Fully automated deployment
+- **Persistent Data**: Persistent Docker volumes
+- **Custom Hosts**: Custom DNS resolution for internal services
 
-## Requisitos
-- Servidor con Docker y Docker Compose
-- Acceso a Gitea Server (192.168.253.11)
-- Acceso a Harbor Registry (192.168.253.12)
-- Ansible 2.9+ en máquina de control
-- Token de registro de Gitea
+## Requirements
+- Server with Docker and Docker Compose
+- Access to the Gitea Server (192.168.253.11)
+- Access to the Harbor Registry (192.168.253.12)
+- Ansible 2.9+ on the control machine
+- Gitea registration token
 
-## Estructura del Proyecto
+## Project Structure
 ```
 gitea-runner/
-├── defaults/main.yml           # Variables por defecto
+├── defaults/main.yml           # Default variables
 ├── files/
-│   ├── config.yaml            # Configuración del runner
-│   └── docker-compose.yml     # Definición de servicios
-├── handlers/main.yml          # Handlers de Ansible
-├── tasks/main.yml            # Tareas principales
-├── vars/main.yml             # Variables específicas
-└── gitea-runner.yml          # Playbook principal
+│   ├── config.yaml            # Runner configuration
+│   └── docker-compose.yml     # Service definition
+├── handlers/main.yml          # Ansible handlers
+├── tasks/main.yml            # Main tasks
+├── vars/main.yml             # Specific variables
+└── gitea-runner.yml          # Main playbook
 ```
 
-## Configuración
+## Configuration
 
-### Variables Principales (defaults/main.yml)
+### Main Variables (defaults/main.yml)
 ```yaml
 # Gitea Configuration
 gitea_instance_url: "https://gitea.server.local"
@@ -83,18 +85,18 @@ services:
       - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
 ```
 
-## Despliegue
+## Deployment
 
-### Método Rápido
+### Quick Method
 ```bash
-# Ejecutar playbook completo
+# Run the full playbook
 ansible-playbook -i inventory gitea-runner.yml
 ```
 
-### Método Paso a Paso
-#### 1. Preparar inventario
+### Step-by-Step Method
+#### 1. Prepare the inventory
 ```bash
-# Crear inventory con hosts objetivo
+# Create an inventory with the target hosts
 cat > inventory << EOF
 [gitea_runners]
 runner-01 ansible_host=192.168.1.100
@@ -102,29 +104,29 @@ runner-02 ansible_host=192.168.1.101
 EOF
 ```
 
-#### 2. Configurar variables
+#### 2. Configure variables
 
-Sustituir el token de su gitea en el compose 
+Replace the token with your Gitea token in the compose file
 
 ```bash
-# Editar variables en defaults/main.yml
+# Edit variables in defaults/main.yml
 docker-compose.yaml
 ```
 
 ![Proxmox](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner-7.png)
 
-#### 3. Ejecutar despliegue
+#### 3. Run the deployment
 ```bash
-# Despliegue con tags específicos
+# Deploy with specific tags
 ansible-playbook -i inventory gitea-runner.yml --tags "docker,runner"
 
-# Despliegue completo con verbose
+# Full deployment with verbose output
 ansible-playbook -i inventory gitea-runner.yml -v
 ```
 
 ![Proxmox](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner-9.png)
 
-#### 4. Verificar servicios
+#### 4. Verify services
 ```bash
 # Check runner status
 ansible all -i inventory -m shell -a "docker ps | grep gitea-runner"
@@ -133,9 +135,9 @@ ansible all -i inventory -m shell -a "docker ps | grep gitea-runner"
 ansible all -i inventory -m shell -a "docker logs gitea-runner"
 ```
 
-## Configuración del Runner
+## Runner Configuration
 
-### Config.yaml Completo
+### Full Config.yaml
 ```yaml
 ---
 log:
@@ -170,9 +172,9 @@ host:
   workdir_parent: /tmp/act_runner
 ```
 
-### Configuraciones Avanzadas
+### Advanced Configuration
 
-#### SSL y Certificados
+#### SSL and Certificates
 ```yaml
 container:
   options: >-
@@ -183,30 +185,29 @@ container:
     - "/etc/ssl/certs/ca-certificates.crt"
 ```
 
-#### Hosts personalizados
+#### Custom hosts
 ```bash
-# El runner incluye automáticamente:
-gitea.server.local:192.168.253.11       # Servidor Gitea
-registry.harbor.local:192.168.253.12    # Registry Harbor
+# The runner automatically includes:
+gitea.server.local:192.168.253.11       # Gitea server
+registry.harbor.local:192.168.253.12    # Harbor registry
 ```
 
 
-## Verificación
+## Verification
 
 ```bash
-# Verificar contenedor
+# Check the container
 docker ps | grep gitea-runner
 docker logs gitea-runner
 
-# Verificar registro en Gitea
+# Check registration in Gitea
 curl -k https://gitea.server.local/api/v1/admin/runners
 
-# Verificar conectividad Harbor
+# Check Harbor connectivity
 docker pull registry.harbor.local/proxy-docker/hello-world
 
-# Test pipeline básico
+# Basic pipeline test
 git push origin main  # Trigger pipeline
 ```
 
 ![Proxmox](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner-8.png)
-

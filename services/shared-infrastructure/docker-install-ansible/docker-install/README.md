@@ -1,17 +1,19 @@
+**English** | [Español](./README.es.md)
+
 # Role: docker-install
 
-Instala Docker CE en Debian 12 desde paquetes `.deb` locales, sin acceso a internet.
+Installs Docker CE on Debian 12 from local `.deb` packages, without internet access.
 
-## Qué hace
+## What it does
 
-1. Copia los `.deb` de `files/` a `/tmp`
-2. Los instala en orden: containerd → docker-ce-cli → docker-ce → buildx → compose
-3. Borra los `.deb` temporales
-4. Habilita y arranca `docker`
-5. Agrega `root` al grupo `docker`
-6. Verifica `docker --version` y `docker compose --version`
+1. Copies the `.deb` files from `files/` to `/tmp`
+2. Installs them in order: containerd → docker-ce-cli → docker-ce → buildx → compose
+3. Removes the temporary `.deb` files
+4. Enables and starts `docker`
+5. Adds `root` to the `docker` group
+6. Checks `docker --version` and `docker compose --version`
 
-| Paquete | Versión |
+| Package | Version |
 |---------|---------|
 | containerd.io | 1.7.27 |
 | docker-ce / docker-ce-cli | 28.3.2 |
@@ -20,21 +22,21 @@ Instala Docker CE en Debian 12 desde paquetes `.deb` locales, sin acceso a inter
 
 ## Variables (`defaults/main.yml`)
 
-| Variable | Descripción |
+| Variable | Description |
 |----------|-------------|
-| `docker_deb_packages` | Lista de `.deb` a copiar y limpiar |
+| `docker_deb_packages` | List of `.deb` files to copy and clean up |
 
-Para cambiar de versión, reemplazar los `.deb` en `files/` y actualizar la lista **y** los nombres en `tasks/main.yml`.
+To change versions, replace the `.deb` files in `files/` and update the list **and** the file names in `tasks/main.yml`.
 
-## Uso
+## Usage
 
 ```bash
 ansible-playbook -i inventory docker-install.yml
 ```
 
-Por defecto apunta al grupo `gitea`. Cambiar `hosts:` en `docker-install.yml` para otros servidores.
+Targets the `gitea` group by default. Change `hosts:` in `docker-install.yml` for other servers.
 
-## Verificación
+## Verification
 
 ```bash
 docker --version

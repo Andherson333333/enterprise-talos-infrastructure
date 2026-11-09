@@ -1,54 +1,56 @@
+**English** | [Español](./Readme.es.md)
+
 # Certificates Ansible Role
 
 ![Ansible](https://img.shields.io/badge/Ansible-Automation-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 ![SSL](https://img.shields.io/badge/SSL-Certificates-4CAF50?style=for-the-badge&logo=letsencrypt&logoColor=white)
 
-Configuración automática de certificados SSL/TLS para sistema y Docker mediante playbook de Ansible.
+Automatic SSL/TLS certificate configuration for the system and Docker using an Ansible playbook.
 
-## ¿Qué hace?
+## What does it do?
 
-Instala certificados personalizados en el sistema y los configura para Docker. Actualiza la confianza de certificados del sistema operativo.
+Installs custom certificates on the system and configures them for Docker, updating the operating system certificate trust store.
 
-### Certificados incluidos
+### Included certificates
 
 - harbor-ca.crt (Harbor Registry)
 - gitea-ca.crt (Gitea Server) 
-- ca.crt (Certificado raíz para Docker)
+- ca.crt (Root certificate for Docker)
 
-## Uso
+## Usage
 
 ```bash
-# Ejecutar configuración
+# Apply configuration
 ansible-playbook -i inventory certificados.yml
 ```
 
-## Estructura
+## Structure
 
 ```
 certificados/
-├── files/                           # Certificados SSL
-│   ├── ca.crt                       # CA raíz para Docker
-│   ├── harbor-ca.crt                # Certificado Harbor
-│   └── gitea-ca.crt                 # Certificado Gitea
-└── tasks/main.yml                   # Tareas de instalación
+├── files/                           # SSL certificates
+│   ├── ca.crt                       # Root CA for Docker
+│   ├── harbor-ca.crt                # Harbor certificate
+│   └── gitea-ca.crt                 # Gitea certificate
+└── tasks/main.yml                   # Installation tasks
 ```
 
-## Verificación
+## Verification
 
 ```bash
-# Verificar certificados del sistema
+# Check system certificates
 ansible all -i inventory -m shell -a "ls /usr/local/share/ca-certificates/"
 
-# Verificar certificados Docker
+# Check Docker certificates
 ansible all -i inventory -m shell -a "ls /etc/docker/certs.d/"
 
-# Probar confianza SSL
+# Test SSL trust
 ansible all -i inventory -m shell -a "curl -k https://registry.harbor.local"
 ```
 
-## Actualización
+## Updating
 
-Para actualizar certificados:
-1. Reemplazar archivos .crt en `files/`
-2. Ejecutar playbook nuevamente
-3. Docker se reinicia automáticamente
+To update certificates:
+1. Replace the .crt files in `files/`
+2. Run the playbook again
+3. Docker restarts automatically

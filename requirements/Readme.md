@@ -1,30 +1,32 @@
-# Requirements - Guía de Despliegue
+**English** | [Español](./Readme.es.md)
+
+# Requirements - Deployment Guide
 
 ![Infrastructure](https://img.shields.io/badge/Infrastructure-Setup-4B8BBE?style=for-the-badge)
 ![Proxmox](https://img.shields.io/badge/Proxmox-VE-E52F1F?style=for-the-badge&logo=proxmox&logoColor=white)
 ![Terraform](https://img.shields.io/badge/Terraform-Ready-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)
 ![SSL](https://img.shields.io/badge/SSL_Certificates-Generated-28a745?style=for-the-badge)
 
-Guía paso a paso para preparar todos los requisitos necesarios antes del despliegue de infraestructura.
+Step-by-step guide to prepare every requirement before deploying the infrastructure.
 
-## Orden de Despliegue
+## Deployment Order
 
-### 1. Preparar Imágenes Base
-**Carpeta**: [`iso/`](./iso/)
+### 1. Prepare Base Images
+**Folder**: [`iso/`](./iso/)
 
-Descargar y verificar imágenes ISO para instalación base:
-- Proxmox VE (hipervisor)
-- Debian GNU/Linux (template VMs)
+Download and verify the ISO images for the base installation:
+- Proxmox VE (hypervisor)
+- Debian GNU/Linux (VM templates)
 
 ```bash
 cd iso/
-# Seguir README.md para descargar ISOs verificadas
+# Follow README.md to download verified ISOs
 ```
 
-### 2. Instalar Herramientas de Trabajo
-**Carpeta**: [`install/`](./install/)
+### 2. Install Working Tools
+**Folder**: [`install/`](./install/)
 
-Instalar stack de herramientas DevOps en tu máquina de trabajo:
+Install the DevOps toolset on your workstation:
 - kubectl, Terraform, Ansible, Helm
 
 ```bash
@@ -33,70 +35,70 @@ chmod +x install.sh
 ./install.sh
 ```
 
-### 3. Preparar Terraform Air-gapped
-**Carpeta**: [`terraform-images/`](./terraform-images/)
+### 3. Prepare Air-gapped Terraform
+**Folder**: [`terraform-images/`](./terraform-images/)
 
-Crear bundle offline de Terraform con providers y módulos:
+Build an offline Terraform bundle with providers and modules:
 - Providers: BPG, Telmate, Talos
-- Módulos populares pre-descargados
-- Imagen Docker portable
+- Popular modules pre-downloaded
+- Portable Docker image
 
 ```bash
 cd terraform-images/
-# Seguir proceso de 2 fases (online → offline)
+# Follow the 2-phase process (online → offline)
 ```
 
-### 4. Configurar API de Proxmox
-**Carpeta**: [`proxmox-api-token/`](./proxmox-api-token/)
+### 4. Configure the Proxmox API
+**Folder**: [`proxmox-api-token/`](./proxmox-api-token/)
 
-Crear usuario y token API para automatización con Terraform:
-- Usuario `terraform@pam`
-- Rol con permisos completos
-- Token API para provider BPG
+Create a user and API token for Terraform automation:
+- User `terraform@pam`
+- Role with full permissions
+- API token for the BPG provider
 
 ```bash
-# Ejecutar comandos desde README.md
+# Run the commands from README.md
 ```
 
-### 5. Generar Certificados SSL
-**Carpeta**: [`certificate-server-config/`](./certificate-server-config/)
+### 5. Generate SSL Certificates
+**Folder**: [`certificate-server-config/`](./certificate-server-config/)
 
-Crear certificados SSL para servicios (elegir un método):
-- **Automatizado**: Ansible + mkcert containers
-- **Manual**: Comandos directos OpenSSL
+Create SSL certificates for the services (choose one method):
+- **Automated**: Ansible + mkcert containers
+- **Manual**: Direct OpenSSL commands
 
 ```bash
-cd certific-server/
-# Elegir: ansible-ssl/ o open-ssl/
+cd certificate-server-config/
+# Choose: ansible-ssl/ or open-ssl/
 ```
 
-### 6. Crear template debian 12
-**Carpeta**: [`debian12-templates/`](./debian12-templates/)
+### 6. Create the Debian 12 template
+**Folder**: [`debian12-templates/`](./debian12-templates/)
 
-Crear Template para debian12 
-- **Storage**: Docker sdb para guardar la data
-- **Automatizado**: sdb automatico en funcion al tamaño
+Create the Debian 12 template
+- **Storage**: Docker on sdb to store data
+- **Automated**: sdb resized automatically based on its size
 
-## Estado de Preparación
+## Readiness State
 
-Al completar todos los pasos tendrás:
+After all the steps you will have:
 
--  **Proxmox VE** instalado y funcionando
--  **Herramientas DevOps** en máquina de trabajo
--  **Bundle Terraform** listo para entornos air-gapped
--  **API Token** configurado para Terraform
--  **Certificados SSL** para todos los servicios
--  **Template debia12** templates para vm
+-  **Proxmox VE** installed and running
+-  **DevOps tools** on the workstation
+-  **Terraform bundle** ready for air-gapped environments
+-  **API token** configured for Terraform
+-  **SSL certificates** for every service
+-  **Debian 12 template** for VMs
 
-## Siguiente Paso
+## Next Step
 
-Una vez completados estos requisitos, dirigirse a:
-- **`../terraform/`** - Implementación y despliegues
-- **`../services/`** - Configuración de aplicaciones
+Once these requirements are complete, go to:
+- **`../terraform/`** - Implementation and deployments
+- **`../services/`** - Application configuration
 
-## Dependencias
+## Dependencies
 
-Cada paso puede tener dependencias del anterior:
-- **Paso 3** requiere herramientas instaladas (Paso 2)
-- **Paso 4** requiere Proxmox funcionando (Paso 1) y bundle Terraform (Paso 3)
-- **Paso 5** (certificados SSL) pueden ejecutarse independientemente
+Each step may depend on the previous one:
+- **Step 3** requires the tools installed (Step 2)
+- **Step 4** requires Proxmox running (Step 1) and the Terraform bundle (Step 3)
+- **Step 5** (SSL certificates) can run independently

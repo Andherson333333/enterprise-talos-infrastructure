@@ -1,3 +1,5 @@
+**English** | [Español](./Readme.es.md)
+
 # Enterprise Talos Infrastructure (Air-Gapped)
 ![Proxmox](https://img.shields.io/badge/Proxmox-VE-E57000?style=for-the-badge&logo=proxmox&logoColor=white)
 ![Talos](https://img.shields.io/badge/Talos-Linux-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
@@ -6,89 +8,89 @@
 ![Cilium](https://img.shields.io/badge/Cilium-CNI_%2B_BGP-F8C517?style=for-the-badge&logo=cilium&logoColor=black)
 ![ArgoCD](https://img.shields.io/badge/ArgoCD-GitOps-EF7B4D?style=for-the-badge&logo=argo&logoColor=white)
 
-Plataforma Kubernetes on-premise sobre **Proxmox VE** con **Talos Linux**, diseñada para funcionar en entorno **air-gapped**: todas las imágenes, paquetes, charts y actions se sirven desde servicios internos (Harbor, Gitea, apt-cacher-ng), sin depender de internet una vez preparado el entorno.
+On-premise Kubernetes platform on **Proxmox VE** with **Talos Linux**, designed to run in an **air-gapped** environment: every image, package, chart and CI action is served from internal services (Harbor, Gitea, apt-cacher-ng), with no internet dependency once the environment is prepared.
 
-## Arquitectura
+## Architecture
 
-![Arquitectura general](./images/Arquitectura%20general%20-1.png)
-![Arquitectura general](./images/Arquitectura%20general%20-2.png)
+![General architecture](./images/Arquitectura%20general%20-1.png)
+![General architecture](./images/Arquitectura%20general%20-2.png)
 
-## Componentes
+## Components
 
-| Capa | Componente | Propósito |
-|------|------------|-----------|
-| Hipervisor | Proxmox VE | Host de todas las VMs |
-| IaC | Terraform (provider BPG) | Provisión de VMs desde templates |
-| Configuración | Ansible | Instalación de servicios en las VMs de soporte |
-| Registry | Harbor (+ Trivy) | Imágenes OCI y Helm charts, proxy cache de Docker Hub |
-| Git / CI | Gitea + act_runner | Repositorios, Gitea Actions con actions mirroreadas offline |
-| Paquetes | apt-cacher-ng | Cache APT para las VMs Debian |
-| Secrets | OpenBao (Raft x3 + HAProxy) | Gestión de secrets, integrado con ArgoCD (AVP) |
-| Routing | FRR x2 | Peers BGP para Cilium (anuncio de IPs LoadBalancer vía ECMP) |
-| Kubernetes | Talos Linux | Control plane + workers de infraestructura y de aplicación |
-| CNI | Cilium | CNI sin kube-proxy, BGP Control Plane, Gateway API, Hubble |
-| GitOps | ArgoCD | Despliegue de aplicaciones del cluster |
-| Plataforma | Longhorn, Prometheus, Loki, Tempo, Alloy, Tetragon | Storage, observabilidad y seguridad |
+| Layer | Component | Purpose |
+|-------|-----------|---------|
+| Hypervisor | Proxmox VE | Hosts every VM |
+| IaC | Terraform (BPG provider) | VM provisioning from templates |
+| Configuration | Ansible | Service installation on the support VMs |
+| Registry | Harbor (+ Trivy) | OCI images and Helm charts, Docker Hub proxy cache |
+| Git / CI | Gitea + act_runner | Repositories, Gitea Actions with offline-mirrored actions |
+| Packages | apt-cacher-ng | APT cache for the Debian VMs |
+| Secrets | OpenBao (Raft x3 + HAProxy) | Secrets management, integrated with ArgoCD (AVP) |
+| Routing | FRR x2 | BGP peers for Cilium (LoadBalancer IPs advertised via ECMP) |
+| Kubernetes | Talos Linux | Control plane + infrastructure and application workers |
+| CNI | Cilium | kube-proxy-free CNI, BGP Control Plane, Gateway API, Hubble |
+| GitOps | ArgoCD | Cluster application delivery |
+| Platform | Longhorn, Prometheus, Loki, Tempo, Alloy, Tetragon | Storage, observability and security |
 
-## Estructura del Repositorio
+## Repository Structure
 
-| Carpeta | Contenido | README |
-|---------|-----------|--------|
-| `requirements/` | ISOs, herramientas, bundle Terraform offline, token API Proxmox, CA/certificados, template Debian 12 | [`requirements/Readme.md`](./requirements/Readme.md) |
-| `terraform/` | Conexión a Proxmox y definición de las VMs | [`terraform/code/Readme.md`](./terraform/code/Readme.md) |
-| `services/` | Roles Ansible de los servicios de soporte (Harbor, Gitea, apt-cacher-ng, FRR, OpenBao) | [`services/Readme.md`](./services/Readme.md) |
-| `talos-linux/` | ISO air-gapped, installer con extensions y configuración del cluster | [`talos-linux/Readme.md`](./talos-linux/Readme.md) |
-| `infrastructure-applications/` | Charts y manifiestos que corren dentro del cluster | Ver README de cada app |
-| `images/` | Diagramas y capturas de evidencia | — |
+| Folder | Contents | README |
+|--------|----------|--------|
+| `requirements/` | ISOs, tooling, offline Terraform bundle, Proxmox API token, CA/certificates, Debian 12 template | [`requirements/Readme.md`](./requirements/Readme.md) |
+| `terraform/` | Proxmox connection and VM definitions | [`terraform/Readme.md`](./terraform/Readme.md) |
+| `services/` | Ansible roles for the support services (Harbor, Gitea, apt-cacher-ng, FRR, OpenBao) | [`services/Readme.md`](./services/Readme.md) |
+| `talos-linux/` | Air-gapped ISO, installer with extensions and cluster configuration | [`talos-linux/Readme.md`](./talos-linux/Readme.md) |
+| `infrastructure-applications/` | Charts and manifests running inside the cluster | [`infrastructure-applications/Readme.md`](./infrastructure-applications/Readme.md) |
+| `images/` | Diagrams and evidence screenshots | — |
 
-## Orden de Despliegue
+## Deployment Order
 
-### 1. Requisitos
-**Carpeta**: [`requirements/`](./requirements/)
+### 1. Requirements
+**Folder**: [`requirements/`](./requirements/)
 
-ISOs, herramientas de trabajo, bundle Terraform offline, token de API de Proxmox, certificados y template Debian 12.
+ISOs, workstation tools, offline Terraform bundle, Proxmox API token, certificates and the Debian 12 template.
 
-### 2. Provisionar VMs
-**Carpeta**: [`terraform/`](./terraform/)
+### 2. Provision the VMs
+**Folder**: [`terraform/`](./terraform/)
 
 ```bash
 cd terraform/proxmox-connection/
-# Configurar conexión (ver README)
+# Configure the connection (see README)
 cd ../code/
 terraform init
 terraform plan
 terraform apply
 ```
 
-### 3. Servicios de Soporte
-**Carpeta**: [`services/`](./services/)
+### 3. Support Services
+**Folder**: [`services/`](./services/)
 
-`shared-infrastructure` (proxy APT, Docker, certificados) → Harbor → Gitea → apt-cacher-ng → FRR → OpenBao.
+`shared-infrastructure` (APT proxy, Docker, certificates) → Harbor → Gitea → apt-cacher-ng → FRR → OpenBao.
 
-### 4. Cluster Talos
-**Carpeta**: [`talos-linux/`](./talos-linux/)
+### 4. Talos Cluster
+**Folder**: [`talos-linux/`](./talos-linux/)
 
-ISO air-gapped → installer con extensions → configs y bootstrap del cluster.
+Air-gapped ISO → installer with extensions → cluster configs and bootstrap.
 
-### 5. Aplicaciones de Infraestructura
-**Carpeta**: [`infrastructure-applications/`](./infrastructure-applications/)
+### 5. Infrastructure Applications
+**Folder**: [`infrastructure-applications/`](./infrastructure-applications/)
 
-| Orden | App | README |
+| Order | App | README |
 |-------|-----|--------|
 | 1 | Cilium (CNI + BGP) | [`cilium/`](./infrastructure-applications/cilium/Readme.md) |
 | 2 | Gateway API (Gateways, IP pools) | [`gateway-api/`](./infrastructure-applications/gateway-api/Readme.md) |
 | 3 | Longhorn, Metrics Server | [`longhorn/`](./infrastructure-applications/longhorn/Readme.md), [`metrics-server/`](./infrastructure-applications/metrics-server/Readme.md) |
-| 4 | ArgoCD (+ imagen con AVP) | [`argocd/`](./infrastructure-applications/argocd/Readme.md), [`argocd-docker-build/`](./infrastructure-applications/argocd-docker-build/Readme.md) |
+| 4 | ArgoCD (+ AVP image) and its Applications | [`argocd/`](./infrastructure-applications/argocd/Readme.md), [`argocd-docker-build/`](./infrastructure-applications/argocd-docker-build/Readme.md), [`argocd-applications/`](./infrastructure-applications/argocd-applications/Readme.md) |
 | 5 | Prometheus Stack | [`prometheus-stack/`](./infrastructure-applications/prometheus-stack/Readme.md) |
 | 6 | Loki, Tempo, Grafana Alloy | [`loki/`](./infrastructure-applications/loki/Readme.md), [`tempo/`](./infrastructure-applications/tempo/Readme.md), [`grafana-alloy/`](./infrastructure-applications/grafana-alloy/Readme.md) |
 | 7 | Tetragon | [`tetragon/`](./infrastructure-applications/tetragon/Readme.md) |
 | 8 | OTel Demo | [`otel-demo/`](./infrastructure-applications/otel-demo/Readme.md) |
 
-## Estado Final
+## End State
 
-Al completar todos los pasos tendrás:
-- **Servicios de soporte** air-gapped: registry, Git/CI, cache APT, secrets y routing BGP
-- **Cluster Talos** separado en tiers de infraestructura y aplicación
-- **Cilium** como CNI con IPs LoadBalancer anunciadas por BGP hacia FRR
-- **GitOps** con ArgoCD leyendo secrets desde OpenBao
-- **Observabilidad** completa: métricas, logs y trazas
+After all the steps you will have:
+- **Air-gapped support services**: registry, Git/CI, APT cache, secrets and BGP routing
+- **Talos cluster** split into infrastructure and application tiers
+- **Cilium** as CNI with LoadBalancer IPs advertised via BGP to FRR
+- **GitOps** with ArgoCD reading secrets from OpenBao
+- **Full observability**: metrics, logs and traces

@@ -1,34 +1,36 @@
+**English** | [Español](./Readme.es.md)
+
 # OpenSSL Certificate Generator (Simple)
 
 ![OpenSSL](https://img.shields.io/badge/OpenSSL-Latest-721412?style=for-the-badge&logo=openssl&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-Required-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 ![SSL](https://img.shields.io/badge/SSL_Certificates-Generated-28a745?style=for-the-badge)
 
-Comandos directos de OpenSSL para generar certificados SSL para Gitea, Harbor y wildcard.
+Direct OpenSSL commands to generate SSL certificates for Gitea, Harbor and wildcard.
 
-## 1. Crear Certificate Authority
+## 1. Create the Certificate Authority
 
 ```bash
-# Crear directorios
+# Create directories
 mkdir -p certs/{ca,gitea,harbor,wildcard}
 
-# Generar CA key
+# Generate CA key
 openssl genrsa -out certs/ca/rootCA.key 4096
 
-# Generar CA certificate
+# Generate CA certificate
 openssl req -x509 -new -nodes -key certs/ca/rootCA.key -sha256 -days 3650 -out certs/ca/rootCA.pem -subj "/CN=Local CA"
 ```
 
-## 2. Certificados para Gitea
+## 2. Gitea Certificates
 
 ```bash
-# Generar key
+# Generate key
 openssl genrsa -out certs/gitea/gitea.key 2048
 
-# Generar CSR
+# Generate CSR
 openssl req -new -key certs/gitea/gitea.key -out certs/gitea/gitea.csr -subj "/CN=gitea.server.local"
 
-# Crear config SAN
+# Create SAN config
 cat > certs/gitea/gitea.ext << EOF
 authorityKeyIdentifier=keyid,issuer
 basicConstraints=CA:FALSE
@@ -41,23 +43,23 @@ IP.1 = 127.0.0.1
 IP.2 = 192.168.253.11
 EOF
 
-# Generar certificate
+# Generate certificate
 openssl x509 -req -in certs/gitea/gitea.csr -CA certs/ca/rootCA.pem -CAkey certs/ca/rootCA.key -CAcreateserial -out certs/gitea/gitea.crt -days 365 -sha256 -extfile certs/gitea/gitea.ext
 
-# Limpiar
+# Clean up
 rm certs/gitea/gitea.csr certs/gitea/gitea.ext
 ```
 
-## 3. Certificados para Harbor
+## 3. Harbor Certificates
 
 ```bash
-# Generar key
+# Generate key
 openssl genrsa -out certs/harbor/harbor.key 2048
 
-# Generar CSR
+# Generate CSR
 openssl req -new -key certs/harbor/harbor.key -out certs/harbor/harbor.csr -subj "/CN=registry.harbor.local"
 
-# Crear config SAN
+# Create SAN config
 cat > certs/harbor/harbor.ext << EOF
 authorityKeyIdentifier=keyid,issuer
 basicConstraints=CA:FALSE
@@ -72,23 +74,23 @@ IP.2 = 192.168.133.20
 IP.3 = 192.168.253.12
 EOF
 
-# Generar certificate
+# Generate certificate
 openssl x509 -req -in certs/harbor/harbor.csr -CA certs/ca/rootCA.pem -CAkey certs/ca/rootCA.key -CAcreateserial -out certs/harbor/harbor.crt -days 365 -sha256 -extfile certs/harbor/harbor.ext
 
-# Limpiar
+# Clean up
 rm certs/harbor/harbor.csr certs/harbor/harbor.ext
 ```
 
-## 4. Certificados Wildcard
+## 4. Wildcard Certificates
 
 ```bash
-# Generar key
+# Generate key
 openssl genrsa -out certs/wildcard/wildcard.key 2048
 
-# Generar CSR
+# Generate CSR
 openssl req -new -key certs/wildcard/wildcard.key -out certs/wildcard/wildcard.csr -subj "/CN=*.local"
 
-# Crear config SAN
+# Create SAN config
 cat > certs/wildcard/wildcard.ext << EOF
 authorityKeyIdentifier=keyid,issuer
 basicConstraints=CA:FALSE
@@ -101,24 +103,24 @@ DNS.3 = localhost
 IP.1 = 127.0.0.1
 EOF
 
-# Generar certificate
+# Generate certificate
 openssl x509 -req -in certs/wildcard/wildcard.csr -CA certs/ca/rootCA.pem -CAkey certs/ca/rootCA.key -CAcreateserial -out certs/wildcard/wildcard.crt -days 365 -sha256 -extfile certs/wildcard/wildcard.ext
 
-# Limpiar
+# Clean up
 rm certs/wildcard/wildcard.csr certs/wildcard/wildcard.ext
 ```
 
-## Verificar
+## Verify
 
 ```bash
-# Ver certificado
+# Show certificate
 openssl x509 -in certs/gitea/gitea.crt -text -noout
 
-# Verificar con CA
+# Verify against the CA
 openssl verify -CAfile certs/ca/rootCA.pem certs/gitea/gitea.crt
 ```
 
-## Instalar CA
+## Install the CA
 
 ```bash
 # Ubuntu/Debian
@@ -126,7 +128,7 @@ sudo cp certs/ca/rootCA.pem /usr/local/share/ca-certificates/rootCA.crt
 sudo update-ca-certificates
 ```
 
-## Limpiar todo
+## Clean up everything
 
 ```bash
 rm -rf certs/

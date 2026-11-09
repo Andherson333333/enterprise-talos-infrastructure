@@ -1,3 +1,5 @@
+**English** | [Español](./Readme.es.md)
+
 # Gitea Actions Air-Gapped Deployment
 ![Ansible](https://img.shields.io/badge/Ansible-Automation-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 ![Gitea](https://img.shields.io/badge/Gitea-Actions-609926?style=for-the-badge&logo=gitea&logoColor=white)
@@ -5,47 +7,47 @@
 ![Air-Gapped](https://img.shields.io/badge/Air_Gapped-Environment-FF6B35?style=for-the-badge)
 
 
-Solución automatizada para desplegar GitHub Actions en entornos air-gapped usando Gitea con Ansible. Diseñado para infraestructuras sin acceso a internet donde las actions deben residir localmente.
+Automated solution to deploy GitHub Actions in air-gapped environments using Gitea and Ansible. Designed for infrastructures without internet access where actions must live locally.
 
-## El Problema
-En entornos air-gapped, `uses: actions/checkout@v4` falla porque no puede acceder a GitHub.com. Esta solución pre-descarga las actions y las despliega como repositorios locales en Gitea.
+## The Problem
+In air-gapped environments, `uses: actions/checkout@v4` fails because it cannot reach GitHub.com. This solution pre-downloads the actions and deploys them as local repositories in Gitea.
 
-## Estructura del Proyecto
+## Project Structure
 ```
 gitea-actions/
-├── vars/main.yml              # Variables principales
+├── vars/main.yml              # Main variables
 ├── files/github-actions-airgap-full-repos.tar.gz
-├── tasks/main.yml             # Extracción y setup
-├── tasks/push.yml             # Push a Gitea
-└── gitea-actions.yml          # Playbook principal
+├── tasks/main.yml             # Extraction and setup
+├── tasks/push.yml             # Push to Gitea
+└── gitea-actions.yml          # Main playbook
 ```
 
-## Arquitectura
+## Architecture
 ```
 Internet → GitHub Repos → tar.gz → Air-Gapped Server → Gitea Local Repos
 Pipeline: uses: https://192.168.253.11/actions/checkout@v4
 ```
 
-## Características
-- **25+ GitHub Actions** pre-descargadas (checkout, setup-node, docker-build, etc.)
-- **Despliegue selectivo** opcional para actions específicas
-- **Zero internet dependency** después del setup inicial
-- **Full Git history** con tags para compatibilidad completa
+## Features
+- **25+ GitHub Actions** pre-downloaded (checkout, setup-node, docker-build, etc.)
+- **Optional selective deployment** for specific actions
+- **Zero internet dependency** after the initial setup
+- **Full Git history** with tags for complete compatibility
 
-## Configuración Inicial
+## Initial Setup
 
-### 1. Token de Gitea
-Generar token de administrador en: `https://192.168.253.11/user/settings/applications`
+### 1. Gitea Token
+Generate an admin token at: `https://192.168.253.11/user/settings/applications`
 - Scopes: `repo`, `admin:org`, `admin:repo_hook`
 
 ### 2. Variables (vars/main.yml)
 ```yaml
 ---
 gitea_url: "https://192.168.253.11"
-gitea_admin_password: "TU_TOKEN_DE_ADMINISTRADOR_AQUI"
+gitea_admin_password: "YOUR_ADMIN_TOKEN_HERE"
 gitea_actions_org: "actions"
 
-# Opcional: Despliegue selectivo
+# Optional: selective deployment
 # selected_actions:
 #   - checkout
 #   - setup-node
@@ -54,46 +56,46 @@ gitea_actions_org: "actions"
 
 ![Gitea](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner-5.png)
 
-## Despliegue
+## Deployment
 
-### Método Completo
+### Full Method
 ```bash
-# 1. Descargar actions (servidor con internet)
+# 1. Download actions (server with internet)
 ./git.sh
 
-# 2. Transferir a servidor air-gapped
+# 2. Transfer to the air-gapped server
 scp /tmp/github-actions-airgap-full-repos.tar.gz root@192.168.253.11:/opt/
 
-# 3. Ejecutar ansible
+# 3. Run ansible
 ansible-playbook -i inventory gitea-actions.yml
 ```
 ![Gitea](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner-4.png)
 
-### Verificación
+### Verification
 ```bash
-# Verificar organización
+# Check the organization
 curl -k https://192.168.253.11/api/v1/orgs/actions \
-  -H "Authorization: token TU_TOKEN"
+  -H "Authorization: token YOUR_TOKEN"
 
-# Ver actions en web
+# Browse the actions on the web
 https://192.168.253.11/actions
 ```
 
 ![Gitea](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner-11.png)
 
 
-## Uso en Pipelines
+## Usage in Pipelines
 
-### Cambio Necesario
+### Required Change
 ```yaml
-# NO FUNCIONA (requiere internet)
+# DOES NOT WORK (requires internet)
 - uses: actions/checkout@v4
 
-# CORRECTO (repositorio local)
+# CORRECT (local repository)
 - uses: https://192.168.253.11/actions/checkout@v4
 ```
 
-### Ejemplo Pipeline
+### Example Pipeline
 ```yaml
 name: Air-Gapped CI
 on: [push]
@@ -108,15 +110,15 @@ jobs:
       - run: npm ci && npm run build
 ```
 
-## Actions Incluidas
+## Included Actions
 
-### Críticas
-- `checkout v4` - Checkout código
-- `upload-artifact v4` - Subir artefactos  
-- `download-artifact v4` - Descargar artefactos
-- `cache v4` - Sistema de caché
+### Critical
+- `checkout v4` - Code checkout
+- `upload-artifact v4` - Upload artifacts  
+- `download-artifact v4` - Download artifacts
+- `cache v4` - Cache system
 
-### Setup Lenguajes
+### Language Setup
 - `setup-node v4`, `setup-python v5`, `setup-go v5`, `setup-java v4`
 
 ### Docker
@@ -124,7 +126,3 @@ jobs:
 
 ### Utilities
 - `github-script v7`, `release-action v1.13.0`, `codeql-action v3`
-
-
-
-

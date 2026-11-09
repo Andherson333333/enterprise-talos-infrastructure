@@ -1,62 +1,64 @@
+**English** | [Español](./Readme.es.md)
+
 # Proxmox User and Token for Terraform
 
 ![Proxmox](https://img.shields.io/badge/Proxmox-VE-E52F1F?style=for-the-badge&logo=proxmox&logoColor=white)
 ![Terraform](https://img.shields.io/badge/Terraform-BPG_Provider-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)
 ![API](https://img.shields.io/badge/API_Token-Authentication-28a745?style=for-the-badge)
 
-Comandos para crear usuario y token API en Proxmox para automatización con Terraform usando el provider BPG.
+Commands to create a user and API token in Proxmox for Terraform automation with the BPG provider.
 
-## 1. Crear Usuario
+## 1. Create the User
 
 ```bash
-# Crear usuario terraform en dominio PAM
+# Create the terraform user in the PAM realm
 pveum user add terraform@pam
 
 ```
 
-## 2. Crear Rol con Permisos
+## 2. Create a Role with Permissions
 
 ```bash
-# Crear rol TerraformProv con todos los permisos necesarios
+# Create the TerraformProv role with every required permission
 pveum role add TerraformProv --privs "Datastore.AllocateSpace,Datastore.Audit,Pool.Allocate,SDN.Use,Sys.Audit,Sys.Console,Sys.Modify,VM.Allocate,VM.Audit,VM.Clone,VM.Config.CDROM,VM.Config.CPU,VM.Config.Cloudinit,VM.Config.Disk,VM.Config.HWType,VM.Config.Memory,VM.Config.Network,VM.Config.Options,VM.Migrate,VM.Monitor,VM.PowerMgmt"
 ```
 
-## 3. Asignar Rol al Usuario
+## 3. Assign the Role to the User
 
 ```bash
-# Asignar rol en path raíz con propagación
+# Assign the role at the root path with propagation
 pveum acl modify / --roles TerraformProv --users terraform@pam --propagate
 ```
 
-## 4. Crear Token API
+## 4. Create the API Token
 
 ```bash
-# Crear token que herede permisos del usuario
+# Create a token that inherits the user's permissions
 pveum user token add terraform@pam terraform --privsep 0 --comment "Terraform automation token"
 ```
 
-**Resultado esperado:**
+**Expected result:**
 ```
 ┌──────────────┬──────────────────────────────────────┐
 │ key          │ value                                │
 ├──────────────┼──────────────────────────────────────┤
 │ full-tokenid │ terraform@pam!terraform              │
 ├──────────────┼──────────────────────────────────────┤
-│ value        │ 1160238f-41a8-49a8-99f3-3e5692324cca │
+│ value        │ xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx │
 └──────────────┴──────────────────────────────────────┘
 ```
 
-## 5. Usar Token en Terraform
+## 5. Use the Token in Terraform
 
-### Entender el Token API
+### Understanding the API Token
 
-El token generado tiene **dos partes**:
-- **Token ID**: `terraform@pam!terraform` (identificador)  
-- **Token Secret**: `1160238f-41a8-49a8-99f3-3e5692324cca` (valor secreto)
+The generated token has **two parts**:
+- **Token ID**: `terraform@pam!terraform` (identifier)  
+- **Token Secret**: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` (secret value)
 
-**Para BPG provider**: Se combinan con `=` → `terraform@pam!terraform=1160238f-41a8-49a8-99f3-3e5692324cca`
+**For the BPG provider**: they are joined with `=` → `terraform@pam!terraform=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
 
-### Configuración del Provider
+### Provider Configuration
 
 ```hcl
 terraform {
@@ -70,18 +72,18 @@ terraform {
 
 provider "proxmox" {
   endpoint = "https://192.168.1.100:8006/"
-  api_token = "terraform@pam!terraform=1160238f-41a8-49a8-99f3-3e5692324cca"
-  insecure = true  # Si usas certificados auto-firmados
+  api_token = "terraform@pam!terraform=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  insecure = true  # If you use self-signed certificates
 }
 ```
 
-### Variables de Entorno (Recomendado)
+### Environment Variables (Recommended)
 
 ```bash
-# Configurar variables de entorno
+# Set environment variables
 export PM_API_URL="https://192.168.1.100:8006/api2/json"
 export PM_API_TOKEN_ID="terraform@pam!terraform"
-export PM_API_TOKEN_SECRET="1160238f-41a8-49a8-99f3-3e5692324cca"
+export PM_API_TOKEN_SECRET="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ```
 
 ```hcl
@@ -95,37 +97,37 @@ terraform {
 }
 
 provider "proxmox" {
-  # Las variables de entorno se usan automáticamente
-  insecure = true  # Si usas certificados auto-firmados
+  # Environment variables are picked up automatically
+  insecure = true  # If you use self-signed certificates
 }
 ```
 
-## Verificar Configuración
+## Verify the Configuration
 
 ```bash
-# Ver permisos del usuario
+# Show user permissions
 pveum user permissions terraform@pam
 
-# Ver permisos del token
+# Show token permissions
 pveum user token permissions terraform@pam terraform
 
-# Listar tokens
+# List tokens
 pveum user token list terraform@pam
 ```
-Tambien puedes verificar via web con promox
+You can also verify it from the Proxmox web UI
 
-Verificacion de usuario 
+User verification 
 ![Terraform](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/config-token-1.png)
 
-Verificacion permisos usarios
+User permissions verification
 ![Terraform](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/config-token-2.png)
 
-Verificacion permisos token
+Token permissions verification
 ![Terraform](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/config-token-3.png)
 
-## Datos de Conexión
+## Connection Data
 
-- **API URL**: `https://tu-proxmox-ip:8006/api2/json`
+- **API URL**: `https://your-proxmox-ip:8006/api2/json`
 - **Token ID**: `terraform@pam!terraform`
-- **Token Secret**: El valor generado en el paso 4
-- **Insecure**: `true` (si usas certificados auto-firmados)
+- **Token Secret**: The value generated in step 4
+- **Insecure**: `true` (if you use self-signed certificates)

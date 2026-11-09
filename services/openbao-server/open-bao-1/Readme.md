@@ -1,87 +1,89 @@
-# OpenBao - Instalación de Nodo Raft
+**English** | [Español](./Readme.es.md)
+
+# OpenBao - Raft Node Installation
 ![OpenBao](https://img.shields.io/badge/OpenBao-Vault_Fork-FFEC6E?style=for-the-badge)
 ![Raft](https://img.shields.io/badge/Storage-Raft_Integrated-4B8BBE?style=for-the-badge)
 ![Debian](https://img.shields.io/badge/Debian-13-A81D33?style=for-the-badge&logo=debian&logoColor=white)
 
-Este README aplica a los 3 nodos del cluster (`open-bao-1`, `open-bao-2`, `open-bao-3`). El procedimiento es idéntico — solo cambian la IP, el hostname y el `node_id` en `openbao.hcl`. No se repite en las otras carpetas.
+This README applies to all 3 cluster nodes (`open-bao-1`, `open-bao-2`, `open-bao-3`). The procedure is identical — only the IP, hostname and `node_id` in `openbao.hcl` change. It is not repeated in the other folders.
 
-## Especificaciones por Nodo
+## Per-node Specifications
 
-| Nodo | IP | node_id |
+| Node | IP | node_id |
 |------|-----|---------|
 | open-bao-1 | 192.168.253.30 | open-bao-1 |
 | open-bao-2 | 192.168.253.31 | open-bao-2 |
 | open-bao-3 | 192.168.253.32 | open-bao-3 |
 
 - VM: Debian 13, 2 vCPU / 2GB RAM
-- Storage: disco dedicado de 10GB, particionado y montado en `/opt/openbao/data`
+- Storage: dedicated 10GB disk, partitioned and mounted at `/opt/openbao/data`
 
-## Orden de Despliegue
+## Deployment Order
 
-### 1. Provisionar la VM
-Ver `../../../terraform/` para el despliegue base, o crear manualmente sobre el template Debian 13.
+### 1. Provision the VM
+See `../../../terraform/` for the base deployment, or create it manually from the Debian 13 template.
 
-### 2. Generar Certificado Multi-SAN
-**Carpeta**: [`../../../requirements/certificate-server-config/`](../../../requirements/certificate-server-config/)
+### 2. Generate a Multi-SAN Certificate
+**Folder**: [`../../../requirements/certificate-server-config/`](../../../requirements/certificate-server-config/)
 
-Un solo certificado cubriendo las 3 IPs + hostnames (sin SAN, Go TLS rechaza la validación):
+A single certificate covering the 3 IPs + hostnames (without SANs, Go TLS rejects validation):
 ```bash
-# Generado en certificate-server con mkcert + Harbor CA
-# Salida en /opt/generated_certs/openbao/
+# Generated on certificate-server with mkcert + Harbor CA
+# Output in /opt/generated_certs/openbao/
 ```
 
-### 3. Instalar OpenBao
+### 3. Install OpenBao
 ```bash
-# Descargar binario/paquete en pve-1 (internet) y transferir, o vía apt-cacher-ng
+# Download the binary/package on pve-1 (internet) and transfer it, or via apt-cacher-ng
 apt install openbao
 ```
 
-### 4. Aplicar Configuración
-Copiar `openbao.hcl` de esta carpeta (ajustando IP/node_id para cada nodo) a `/etc/openbao/openbao.hcl`:
+### 4. Apply Configuration
+Copy `openbao.hcl` from this folder (adjusting IP/node_id for each node) to `/etc/openbao/openbao.hcl`:
 ```bash
 systemctl enable --now openbao
 ```
 
-### 5. Inicializar el Cluster (solo una vez, desde open-bao-1)
+### 5. Initialize the Cluster (only once, from open-bao-1)
 ```bash
 bao operator init
 # 5 Shamir unseal keys, threshold 3
 ```
 
-### 6. Unir y Unseal los Demás Nodos
+### 6. Join and Unseal the Other Nodes
 ```bash
-# En open-bao-2 y open-bao-3
+# On open-bao-2 and open-bao-3
 bao operator raft join https://192.168.253.30:8200
 bao operator unseal
 ```
 
-### 7. Habilitar Secrets Engine y AppRole
+### 7. Enable the Secrets Engine and AppRole
 ```bash
 bao secrets enable -path=secret kv-v2
 bao auth enable approle
-# Policy de solo lectura sobre secret/data/* y secret/metadata/* para ArgoCD
+# Read-only policy on secret/data/* and secret/metadata/* for ArgoCD
 ```
 
-## Estado de Preparación
+## Readiness State
 
-Al completar todos los pasos tendrás:
-- **3 nodos** en cluster Raft, unsealed
-- **KV v2** habilitado en `secret/`
-- **AppRole** listo para consumo desde ArgoCD
+After all the steps you will have:
+- **3 nodes** in a Raft cluster, unsealed
+- **KV v2** enabled at `secret/`
+- **AppRole** ready for ArgoCD
 
-## Verificación
+## Verification
 
 ```bash
 bao operator status
 bao kv get secret/test
 ```
 
-## Siguiente Paso
+## Next Step
 
-- **`../proxy-open-bao/`** - Configurar HAProxy como endpoint HA
+- **`../proxy-open-bao/`** - Configure HAProxy as the HA endpoint
 
-## Dependencias
+## Dependencies
 
-- **Paso 2** requiere certificados generados antes de instalar
-- **Paso 5** solo se ejecuta una vez, desde el primer nodo levantado
-- **Paso 6** requiere que open-bao-1 ya esté inicializado
+- **Step 2** requires certificates generated before installing
+- **Step 5** runs only once, from the first node brought up
+- **Step 6** requires open-bao-1 to be already initialized

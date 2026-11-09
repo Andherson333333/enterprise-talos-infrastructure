@@ -1,3 +1,5 @@
+**English** | [Español](./Readme.es.md)
+
 # Ansible mkcert Certificate Generator
 
 ![Ansible](https://img.shields.io/badge/Ansible-Latest-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
@@ -6,94 +8,93 @@
 ![Harbor](https://img.shields.io/badge/Harbor-Registry-60B932?style=for-the-badge&logo=harbor&logoColor=white)
 ![Gitea](https://img.shields.io/badge/Gitea-Git_Service-609926?style=for-the-badge&logo=gitea&logoColor=white)
 
-Role de Ansible para automatizar la generación de certificados SSL usando mkcert para Gitea, Harbor y dominios wildcard.
+Ansible role that automates SSL certificate generation with mkcert for Gitea, Harbor and wildcard domains.
 
-## Arquictecura 
+## Architecture 
 
 
 ![Gitea](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/certificado-1.png)
 
 
-## Características
+## Features
 
-- **Certificados para Gitea**: `gitea.server.local`, IPs locales
-- **Certificados para Harbor**: `registry.harbor.local`, `harbor.server.local`, IPs
-- **Certificados Wildcard**: `*.local` para múltiples servicios
-- **CA compartida**: Usa la misma Certificate Authority de Harbor
+- **Gitea certificates**: `gitea.server.local`, local IPs
+- **Harbor certificates**: `registry.harbor.local`, `harbor.server.local`, IPs
+- **Wildcard certificates**: `*.local` for multiple services
+- **Shared CA**: Uses the same Certificate Authority as Harbor
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 mkcert-ca/
-├── inventory                     # Inventario de hosts
-├── mkcer.yml                    # Playbook principal
-└── mkcert-ca/                   # Role de Ansible
-    ├── defaults/main.yml        # Variables por defecto
-    ├── tasks/main.yml          # Tareas principales
+├── inventory                     # Host inventory
+├── mkcer.yml                    # Main playbook
+└── mkcert-ca/                   # Ansible role
+    ├── defaults/main.yml        # Default variables
+    ├── tasks/main.yml          # Main tasks
     └── files/                  # Docker compose files
         ├── gitea-compose.yml
         ├── harbor-compose.yml
         └── wildcard-local-compose.yml
 ```
 
-## Requisitos
+## Requirements
 
-- Ansible instalado en máquina de control
-- Host destino Linux (Debian/Ubuntu recomendado)
-- Docker y Docker Compose en host destino
-- Imagen Docker `iamluc/mkcert:latest` disponible
-- CA de Harbor en `/opt/harbor/mkcert-ca` en host destino
+- Ansible installed on the control machine
+- Linux target host (Debian/Ubuntu recommended)
+- Docker and Docker Compose on the target host
+- Docker image `iamluc/mkcert:latest` available
+- Harbor CA at `/opt/harbor/mkcert-ca` on the target host
 
-## Uso
+## Usage
 
-### 1. Configurar inventario
+### 1. Configure the inventory
 
-Edita el archivo `inventory` con tu host Linux destino:
+Edit the `inventory` file with your target Linux host:
 
 ```ini
 [certificate_servers]
 linux-server ansible_host=192.168.1.100 ansible_user=root
 ```
 
-### 2. Preparar host destino
+### 2. Prepare the target host
 
 ```bash
-# En el host Linux destino, asegurar imagen Docker
+# On the target Linux host, make sure the Docker image is present
 docker pull iamluc/mkcert:latest
 ```
 
-### 3. Ejecutar playbook
+### 3. Run the playbook
 
 ```bash
-# Ejecutar desde el directorio mkcert-ca/
+# Run from the mkcert-ca/ directory
 ansible-playbook -i inventory mkcert-ca/mkcer.yml
 ```
 
-### 4. Verificar certificados
+### 4. Verify the certificates
 
 ![Gitea](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/certificado-2.png)
 
 
-Los certificados se generan en:
+Certificates are generated in:
 - `/opt/generated_certs/gitea/` (gitea.pem, gitea.key)
 - `/opt/generated_certs/harbor/` (harbor.pem, harbor.key)
 - `/opt/generated_certs/wildcard-local/` (wildcard-local.pem, wildcard-local.key)
 
-Archivos de CA compartidos:
-- `/opt/harbor/mkcert-ca/rootCA.pem` (Certificado raíz de CA)
-- `/opt/harbor/mkcert-ca/rootCA-key.pem` (Clave privada de CA)
+Shared CA files:
+- `/opt/harbor/mkcert-ca/rootCA.pem` (CA root certificate)
+- `/opt/harbor/mkcert-ca/rootCA-key.pem` (CA private key)
 
 ## Variables
 
-Define en `defaults/main.yml` o al ejecutar:
+Define them in `defaults/main.yml` or at runtime:
 
 ```yaml
-cert_base_dir: "/opt/generated_certs"  # Directorio base de certificados
+cert_base_dir: "/opt/generated_certs"  # Base certificate directory
 ```
 
-## Dominios Soportados
+## Supported Domains
 
 - **Gitea**: `gitea.server.local`, `localhost`, `127.0.0.1`
 - **Harbor**: `registry.harbor.local`, `harbor.server.local`, `localhost`
 - **Wildcard**: `*.local`, `local`, `localhost`
-

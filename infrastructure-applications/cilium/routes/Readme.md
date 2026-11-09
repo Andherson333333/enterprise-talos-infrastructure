@@ -1,15 +1,17 @@
+**English** | [Español](./Readme.es.md)
+
 # Routes - Hubble UI
 ![Gateway API](https://img.shields.io/badge/Gateway_API-HTTPRoute-60B932?style=for-the-badge)
 
-`HTTPRoute` para exponer Hubble UI a través del Gateway API.
+`HTTPRoute` that exposes the Hubble UI through the Gateway API.
 
-## Recursos
+## Resources
 
-| Archivo | Detalle |
-|---------|---------|
-| `https.yaml` | `HTTPRoute` de `hubble.local` vía `infra-gateway` (sección `https`), más redirect HTTP → HTTPS (sección `http`) |
+| File | Detail |
+|------|--------|
+| `https.yaml` | `HTTPRoute` for `hubble.local` via `infra-gateway` (`https` section), plus HTTP → HTTPS redirect (`http` section) |
 
-## Dependencias
+## Dependencies
 
-- `infra-gateway` desplegado en el namespace `gateway-system` (ver `../../gateway-api/`)
-- Hubble UI habilitado en `values.yaml` del chart principal (`hubble.ui.enabled: true`)
+- `infra-gateway` deployed in the `gateway-system` namespace (see `../../gateway-api/`)
+- Hubble UI enabled in the main chart `values.yaml` (`hubble.ui.enabled: true`)

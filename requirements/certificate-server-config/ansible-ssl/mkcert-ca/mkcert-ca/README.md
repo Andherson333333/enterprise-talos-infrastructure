@@ -1,40 +1,42 @@
+**English** | [Español](./README.es.md)
+
 # Role: mkcert-ca
 
-Genera certificados TLS para los servicios internos firmados con la CA local de mkcert, usando contenedores `iamluc/mkcert` con Docker Compose.
+Generates TLS certificates for internal services, signed by the local mkcert CA, using `iamluc/mkcert` containers with Docker Compose.
 
-## Qué hace
+## What it does
 
-1. Crea `/opt/generated_certs/{gitea,harbor,wildcard-local}`
-2. Copia el `docker-compose.yml` de cada generador
-3. Ejecuta `docker compose up` en cada carpeta para emitir los certificados
+1. Creates `/opt/generated_certs/{gitea,harbor,wildcard-local}`
+2. Copies the `docker-compose.yml` for each generator
+3. Runs `docker compose up` in each folder to issue the certificates
 
-| Certificado | Archivos | SANs |
-|-------------|----------|------|
+| Certificate | Files | SANs |
+|-------------|-------|------|
 | Gitea | `gitea/gitea.pem`, `gitea.key` | `gitea.server.local`, `localhost`, `127.0.0.1`, `192.168.253.11` |
 | Harbor | `harbor/harbor.pem`, `harbor.key` | `registry.harbor.local`, `harbor.server.local`, `harbor.local`, `localhost`, IPs |
 | Wildcard | `wildcard-local/wildcard-local.pem`, `.key` | `*.local`, `local`, `localhost` |
 
-`files/` también incluye `openbao-compose.yml` y `proxy-openbao-compose.yml` (nodos OpenBao y HAProxy); hoy no los ejecuta el role, se lanzan a mano.
+`files/` also includes `openbao-compose.yml` and `proxy-openbao-compose.yml` (OpenBao nodes and HAProxy); the role does not run them today, they are launched manually.
 
-## Requisitos
+## Requirements
 
-- Docker + Compose en el host
-- CA de mkcert en `/opt/harbor/mkcert-ca` (la montan los compose como solo lectura)
+- Docker + Compose on the host
+- mkcert CA in `/opt/harbor/mkcert-ca` (mounted read-only by the compose files)
 
 ## Variables (`vars/main.yml`)
 
-| Variable | Default | Descripción |
+| Variable | Default | Description |
 |----------|---------|-------------|
-| `cert_base_dir` | `/opt/generated_certs` | Directorio de salida |
-| `mkcert_ca_path` | `/opt/mkcert-ca` | No se usa: los compose montan `/opt/harbor/mkcert-ca` fijo |
+| `cert_base_dir` | `/opt/generated_certs` | Output directory |
+| `mkcert_ca_path` | `/opt/mkcert-ca` | Not used: the compose files mount `/opt/harbor/mkcert-ca` directly |
 
-## Uso
+## Usage
 
 ```bash
 ansible-playbook -i ../inventory mkcer.yml
 ```
 
-## Verificación
+## Verification
 
 ```bash
 openssl x509 -in /opt/generated_certs/harbor/harbor.pem -noout -subject -ext subjectAltName

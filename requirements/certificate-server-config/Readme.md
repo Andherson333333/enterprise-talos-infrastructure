@@ -1,68 +1,70 @@
+**English** | [Español](./Readme.es.md)
+
 # Certificate Server Generator
 
 ![SSL](https://img.shields.io/badge/SSL_Certificates-Multiple_Methods-28a745?style=for-the-badge)
 ![Ansible](https://img.shields.io/badge/Ansible-Automated-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 ![OpenSSL](https://img.shields.io/badge/OpenSSL-Manual-721412?style=for-the-badge&logo=openssl&logoColor=white)
 
-Generación de certificados SSL para Gitea, Harbor y dominios wildcard usando dos métodos diferentes.
+SSL certificate generation for Gitea, Harbor and wildcard domains using two different methods.
 
-## Métodos Disponibles
+## Available Methods
 
-### 1. Automatizado con Ansible
+### 1. Automated with Ansible
 
-**Ubicación**: [`ansible-ssl/`](./ansible-ssl/)
+**Location**: [`ansible-ssl/`](./ansible-ssl/)
 
-**Características**:
-- Automatización completa con Ansible
-- Usa contenedores Docker con mkcert
-- Configuración mediante playbooks
-- Ideal para múltiples hosts
+**Features**:
+- Fully automated with Ansible
+- Uses Docker containers with mkcert
+- Configured through playbooks
+- Ideal for multiple hosts
 
-**Cuando usar**:
-- Tienes múltiples servidores
-- Quieres automatización repetible
-- Prefieres gestión de configuración
+**When to use**:
+- You have multiple servers
+- You want repeatable automation
+- You prefer configuration management
 
-### 2. Manual con OpenSSL
+### 2. Manual with OpenSSL
 
-**Ubicación**: [`open-ssl/`](./open-ssl/)
+**Location**: [`open-ssl/`](./open-ssl/)
 
-**Características**:
-- Comandos directos de OpenSSL
-- Control total del proceso
-- No requiere Docker ni Ansible
-- Comandos copy-paste simples
+**Features**:
+- Direct OpenSSL commands
+- Full control over the process
+- No Docker or Ansible required
+- Simple copy-paste commands
 
-**Cuando usar**:
-- Un solo servidor o pocos
-- Prefieres control manual
-- Entorno sin Docker/Ansible
+**When to use**:
+- A single server or just a few
+- You prefer manual control
+- Environment without Docker/Ansible
 
-## Comparación Rápida
+## Quick Comparison
 
-| Aspecto | Ansible (ansible-ssl/) | OpenSSL (open-ssl/) |
-|---------|------------------------|---------------------|
-| **Automatización** | Alta | Manual |
-| **Requisitos** | Ansible + Docker | Solo OpenSSL |
-| **Configuración** | Playbook YAML | Comandos directos |
+| Aspect | Ansible (ansible-ssl/) | OpenSSL (open-ssl/) |
+|--------|------------------------|---------------------|
+| **Automation** | High | Manual |
+| **Requirements** | Ansible + Docker | OpenSSL only |
+| **Configuration** | YAML playbook | Direct commands |
 
 
-## Certificados Generados
+## Generated Certificates
 
-Ambos métodos generan los mismos certificados:
+Both methods generate the same certificates:
 
-- **CA Root**: Certificate Authority compartida
-- **Gitea**: `gitea.server.local` + IPs locales
+- **Root CA**: Shared Certificate Authority
+- **Gitea**: `gitea.server.local` + local IPs
 - **Harbor**: `registry.harbor.local`, `harbor.server.local` + IPs
-- **Wildcard**: `*.local` para múltiples servicios
+- **Wildcard**: `*.local` for multiple services
 
-## Elección Recomendada
+## Recommended Choice
 
-- **Principiante o prueba rápida**: Usar [`open-ssl/`](./open-ssl/)
-- **Producción o múltiples hosts**: Usar [`ansible-ssl/`](./ansible-ssl/)
+- **Beginner or quick test**: Use [`open-ssl/`](./open-ssl/)
+- **Production or multiple hosts**: Use [`ansible-ssl/`](./ansible-ssl/)
 
-## Dominios Soportados
+## Supported Domains
 
 - `gitea.server.local`, `registry.harbor.local`, `harbor.server.local`
-- `*.local` (wildcard para cualquier subdominio)
-- `localhost`, `127.0.0.1` y direcciones IP específicas
+- `*.local` (wildcard for any subdomain)
+- `localhost`, `127.0.0.1` and specific IP addresses

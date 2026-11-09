@@ -1,51 +1,53 @@
+**English** | [Español](./Readme.es.md)
+
 # Talos Cluster Deployment on Proxmox
 
 ![Talos](https://img.shields.io/badge/Talos-v1.10.6-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![Proxmox](https://img.shields.io/badge/Proxmox-VE-E57000?style=for-the-badge&logo=proxmox&logoColor=white)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-Cluster-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
 
-Automatización completa para desplegar clusters Talos Kubernetes en Proxmox con configuraciones personalizadas y registry mirrors.
+Full automation to deploy Talos Kubernetes clusters on Proxmox with custom configurations and registry mirrors.
 
-## ¿Qué es?
+## What is it?
 
-Despliega un cluster Kubernetes usando Talos OS en infraestructura Proxmox con configuraciones modulares mediante patches YAML. Soporta registry mirrors locales para entornos offline.
+Deploys a Kubernetes cluster using Talos OS on Proxmox infrastructure with modular configuration through YAML patches. Supports local registry mirrors for offline environments.
 
-### Beneficios Principales
+### Main Benefits
 
-- **Configuración modular**: Patches reutilizables para diferentes nodos
-- **Registry mirrors**: Soporte para Harbor local (offline)
-- **Storage personalizado**: Configuración Longhorn preintegrada
-- **Multi-nodo**: 1 control plane + 2 workers
-- **Reproducible**: Misma configuración para toda la infraestructura
+- **Modular configuration**: Reusable patches for different nodes
+- **Registry mirrors**: Support for a local Harbor (offline)
+- **Custom storage**: Pre-integrated Longhorn configuration
+- **Multi-node**: 1 control plane + 2 workers
+- **Reproducible**: The same configuration for the whole infrastructure
 
-## Prerequisitos
+## Prerequisites
 
-- Proxmox VE con VMs creadas
-- talosctl CLI instalado
-- kubectl instalado
-- Registry local (Harbor) - opcional para offline
-- Acceso SSH a nodos Proxmox
+- Proxmox VE with the VMs created
+- talosctl CLI installed
+- kubectl installed
+- Local registry (Harbor) - optional for offline use
+- SSH access to the Proxmox nodes
 
-## Estructura de Archivos
+## File Structure
 
 ```
 .
 ├── customs/
-│   ├── custom.yml                  # Configuración base común
-│   ├── controlplane-patch-1.yml    # Patch para control plane
-│   ├── worker-patch-1.yml          # Patch para worker 1
-│   ├── worker-patch-2.yml          # Patch para worker 2
-│   ├── storage.yml                 # Configuración Longhorn
-│   └── registry-mirrors.yml        # Mirrors para Harbor
+│   ├── custom.yml                  # Common base configuration
+│   ├── controlplane-patch-1.yml    # Control plane patch
+│   ├── worker-patch-1.yml          # Worker 1 patch
+│   ├── worker-patch-2.yml          # Worker 2 patch
+│   ├── storage.yml                 # Longhorn configuration
+│   └── registry-mirrors.yml        # Harbor mirrors
 └── _out/
-    ├── controlplane.yaml           # Config generada control plane
-    ├── worker.yaml                 # Config generada workers
-    └── talosconfig                 # Credentials del cluster
+    ├── controlplane.yaml           # Generated control plane config
+    ├── worker.yaml                 # Generated worker config
+    └── talosconfig                 # Cluster credentials
 ```
 
-## Instalación
+## Installation
 
-### 1. Generar Configuración Base
+### 1. Generate the Base Configuration
 
 ```bash
 talosctl gen config promox-cluster https://192.168.253.100:6443 \
@@ -55,7 +57,7 @@ talosctl gen config promox-cluster https://192.168.253.100:6443 \
   --output-dir _out
 ```
 
-### 2. Aplicar Configuración Inicial
+### 2. Apply the Initial Configuration
 
 #### Control Plane Node
 ```bash
@@ -90,62 +92,62 @@ talosctl apply-config \
   --file _out/worker.yaml
 ```
 
-### 3. Configurar Acceso al Cluster
+### 3. Configure Cluster Access
 
 ```bash
-# Exportar talosconfig
+# Export talosconfig
 export TALOSCONFIG=_out/talosconfig
 
-# Configurar endpoints
+# Configure endpoints
 talosctl config endpoint 192.168.253.101,192.168.253.100
 ```
 
-### 4. Bootstrap Cluster
+### 4. Bootstrap the Cluster
 
 ```bash
 talosctl bootstrap -n 192.168.253.101
 ```
 
-### 5. Obtener Kubeconfig
+### 5. Get the Kubeconfig
 
 ```bash
-# Desde control plane primario
+# From the primary control plane
 talosctl kubeconfig -n 192.168.253.101
 
-# Verificar acceso
+# Verify access
 kubectl get nodes
 ```
 
-## Configuración
+## Configuration
 
-### Topology del Cluster
+### Cluster Topology
 
-| Nodo | IP | Rol | Patches |
+| Node | IP | Role | Patches |
 |------|-------|-------------|---------|
 | **talos-cp-01** | 192.168.253.101 | Control Plane | custom, controlplane-patch-1, storage |
-| **talos-infrastructure-dt-01** | 192.168.253.111 | Worker infra | custom, worker-patch-1, storage |
-| **talos-infrastructure-dt-02** | 192.168.253.112 | Worker infra | custom, worker-patch-2, storage |
-| **talos-infrastructure-dt-03** | 192.168.253.113 | Worker infra | custom, worker-patch-3, storage |
-| **talos-application-dt-01** | 192.168.253.120 | Worker app | custom, worker-patch-5, storage |
-| **talos-application-dt-02** | 192.168.253.121 | Worker app | custom, worker-patch-6, storage |
+| **talos-infrastructure-dt-01** | 192.168.253.111 | Infra worker | custom, worker-patch-1, storage |
+| **talos-infrastructure-dt-02** | 192.168.253.112 | Infra worker | custom, worker-patch-2, storage |
+| **talos-infrastructure-dt-03** | 192.168.253.113 | Infra worker | custom, worker-patch-3, storage |
+| **talos-application-dt-01** | 192.168.253.120 | App worker | custom, worker-patch-5, storage |
+| **talos-application-dt-02** | 192.168.253.121 | App worker | custom, worker-patch-6, storage |
 
-![Nodos del cluster](../../images/talos-nodes.png)
+![Cluster nodes](../../images/talos-nodes.png)
 
-### Patches Disponibles
+### Available Patches
 
 ```yaml
 customs/
 ├── custom.yml              # Hostname, timezone, NTP
-├── controlplane-patch-1    # Config control plane
-├── worker-patch-1          # Config worker 1
-├── worker-patch-2          # Config worker 2
+├── controlplane-patch-1    # Control plane config
+├── worker-patch-1          # Worker 1 config
+├── worker-patch-2          # Worker 2 config
 ├── storage.yml             # Longhorn storage
 └── registry-mirrors.yml    # Harbor mirrors
 ```
 
-## Uso
+## Usage
 
-### Upgrade Nodos
+### Upgrade Nodes
 
 ```bash
 # Upgrade workers
@@ -153,7 +155,7 @@ talosctl upgrade --nodes 192.168.253.111,192.168.253.112 \
   --image registry.harbor.local/docker-images/installer-base:v1.10.6
 ```
 
-### Aplicar Registry Mirrors
+### Apply Registry Mirrors
 
 #### Control Plane
 ```bash
@@ -187,52 +189,52 @@ talosctl apply-config \
   --file _out/worker.yaml
 ```
 
-## Administración
+## Administration
 
-### Verificación
+### Verification
 
 ```bash
-# Estado del cluster
+# Cluster health
 talosctl health --nodes 192.168.253.101
 
-# Ver nodos Kubernetes
+# Kubernetes nodes
 kubectl get nodes
 
-# Verificar extensions
+# Check extensions
 talosctl get extensions --nodes 192.168.253.101
 
-# Logs del sistema
+# System logs
 talosctl logs --nodes 192.168.253.101
 ```
 
-### Comandos Útiles
+### Useful Commands
 
 ```bash
-# Dashboard Talos
+# Talos dashboard
 talosctl dashboard --nodes 192.168.253.101
 
-# Shell en nodo
+# Shell on a node
 talosctl shell --nodes 192.168.253.101
 
-# Reiniciar nodo
+# Reboot a node
 talosctl reboot --nodes 192.168.253.111
 
-# Reset completo (¡DESTRUCTIVO!)
+# Full reset (DESTRUCTIVE!)
 talosctl reset --nodes 192.168.253.111
 ```
 
-## Workflow Completo
+## Full Workflow
 
 ```bash
-# 1. Generar configs
+# 1. Generate configs
 talosctl gen config promox-cluster https://192.168.253.100:6443 -f --with-docs=false --install-disk /dev/sda --output-dir _out
 
-# 2. Aplicar configs (control plane + workers)
+# 2. Apply configs (control plane + workers)
 talosctl apply-config --insecure --nodes 192.168.253.236 --config-patch @customs/custom.yml --config-patch @customs/controlplane-patch-1.yml --config-patch @customs/storage.yml --file _out/controlplane.yaml
 talosctl apply-config --insecure --nodes 192.168.253.239 --config-patch @customs/custom.yml --config-patch @customs/worker-patch-1.yml --config-patch @customs/storage.yml --file _out/worker.yaml
 talosctl apply-config --insecure --nodes 192.168.253.238 --config-patch @customs/custom.yml --config-patch @customs/worker-patch-2.yml --config-patch @customs/storage.yml --file _out/worker.yaml
 
-# 3. Configurar acceso
+# 3. Configure access
 export TALOSCONFIG=_out/talosconfig
 talosctl config endpoint 192.168.253.101,192.168.253.100
 
@@ -245,18 +247,18 @@ talosctl kubeconfig -n 192.168.253.101
 
 ## Troubleshooting
 
-| Problema | Solución |
+| Problem | Solution |
 |----------|----------|
-| **Nodo no responde** | Verificar IP y conectividad: `ping 192.168.253.101` |
-| **Bootstrap falla** | Esperar 2-3 min, verificar logs: `talosctl logs -n 192.168.253.101` |
-| **Upgrade colgado** | Reiniciar nodo: `talosctl reboot -n <NODE_IP>` |
-| **Registry no funciona** | Verificar mirrors en: `talosctl get machinestatus -n <NODE_IP>` |
+| **Node not responding** | Check IP and connectivity: `ping 192.168.253.101` |
+| **Bootstrap fails** | Wait 2-3 min, check logs: `talosctl logs -n 192.168.253.101` |
+| **Upgrade stuck** | Reboot the node: `talosctl reboot -n <NODE_IP>` |
+| **Registry not working** | Check the mirrors in: `talosctl get machinestatus -n <NODE_IP>` |
 
-## Limitaciones
+## Limitations
 
-| Escenario | Funcionalidad |
+| Scenario | Functionality |
 |-----------|---------------|
-| **Con internet** | Pull directo de ghcr.io |
-| **Sin internet** | Requiere Harbor con mirrors |
-| **Versiones** | Talos v1.10.6+ recomendado |
-| **Storage** | Requiere discos adicionales para Longhorn |
+| **With internet** | Direct pull from ghcr.io |
+| **Without internet** | Requires Harbor with mirrors |
+| **Versions** | Talos v1.10.6+ recommended |
+| **Storage** | Requires extra disks for Longhorn |

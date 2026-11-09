@@ -1,60 +1,62 @@
-# Storage Classes - Observabilidad
+**English** | [Español](./Readme.es.md)
+
+# Storage Classes - Observability
 ![Longhorn](https://img.shields.io/badge/Longhorn-StorageClass-5F224B?style=for-the-badge&logo=rancher&logoColor=white)
 
-StorageClasses de Longhorn dedicadas al stack de observabilidad, con réplicas solo en nodos de infraestructura.
+Longhorn StorageClasses dedicated to the observability stack, with replicas only on infrastructure nodes.
 
-## Recursos
+## Resources
 
-| Archivo | StorageClass | Usada por |
-|---------|--------------|-----------|
+| File | StorageClass | Used by |
+|------|--------------|---------|
 | `prometheus-storageclass.yaml` | `prometheus-longhorn` | Prometheus (`../../prometheus-stack/`) |
 | `grafana-storageclass.yaml` | `grafana-longhorn` | Grafana (`../../prometheus-stack/`) |
 | `loki-storageclass.yaml` | `loki-longhorn` | Loki (`../../loki/`) |
 | `tempo-storageclass.yaml` | `tempo-longhorn` | Tempo (`../../tempo/`) |
 
-## Parámetros comunes
+## Common parameters
 
-| Parámetro | Valor | Detalle |
-|-----------|-------|---------|
-| `numberOfReplicas` | `2` | Réplicas de cada volumen |
-| `nodeSelector` | `infrastructure` | Réplicas solo en nodos Longhorn con tag `infrastructure` |
-| `dataLocality` | `best-effort` | Intenta mantener una réplica en el nodo del pod |
+| Parameter | Value | Detail |
+|-----------|-------|--------|
+| `numberOfReplicas` | `2` | Replicas per volume |
+| `nodeSelector` | `infrastructure` | Replicas only on Longhorn nodes tagged `infrastructure` |
+| `dataLocality` | `best-effort` | Tries to keep one replica on the pod's node |
 | `fsType` | `ext4` | |
-| `reclaimPolicy` | `Retain` | El volumen no se borra al eliminar el PVC |
+| `reclaimPolicy` | `Retain` | The volume is not deleted when the PVC is removed |
 | `allowVolumeExpansion` | `true` | |
 
-`tempo-longhorn` además asocia los volúmenes al grupo de recurring jobs `prometheus-monitoring` (en `loki-longhorn` está comentado).
+`tempo-longhorn` also attaches its volumes to the `prometheus-monitoring` recurring job group (commented out in `loki-longhorn`).
 
-## Tags de nodos en Longhorn
+## Longhorn node tags
 
-El `nodeSelector: "infrastructure"` de las StorageClasses se refiere a tags de nodo en Longhorn (no labels de Kubernetes):
+The StorageClasses' `nodeSelector: "infrastructure"` refers to Longhorn node tags (not Kubernetes labels):
 
-| Nodo | Tag |
+| Node | Tag |
 |------|-----|
 | `talos-infrastructure-dt-01` | `infrastructure` |
 | `talos-infrastructure-dt-02` | `infrastructure` |
 | `talos-infrastructure-dt-03` | `infrastructure` |
 | `talos-application-dt-01` / `02` | — |
 
-Asignar el tag (o vía UI → Node → Edit node → Node Tags):
+Assign the tag (or via UI → Node → Edit node → Node Tags):
 
 ```bash
 for n in 01 02 03; do kubectl -n longhorn-system patch nodes.longhorn.io talos-infrastructure-dt-$n --type merge -p '{"spec":{"tags":["infrastructure"]}}'; done
 ```
 
-Verificar:
+Verify:
 
 ```bash
 kubectl -n longhorn-system get nodes.longhorn.io -o custom-columns=NAME:.metadata.name,TAGS:.spec.tags
 ```
 
-## Despliegue
+## Deployment
 
 ```bash
 kubectl apply -f infrastructure-applications/longhorn/storage-classes/
 ```
 
-## Verificación
+## Verification
 
 ```bash
 kubectl get storageclass
@@ -62,9 +64,9 @@ kubectl get storageclass
 
 ![StorageClasses](../../../images/storage-classes.png)
 
-## Dependencias
+## Dependencies
 
-- Longhorn desplegado (`../`)
-- Nodos de infraestructura con tag `infrastructure` en Longhorn (UI → Node → Edit node → Node Tags)
-- Recurring job group `prometheus-monitoring` creado en Longhorn, para `tempo-longhorn`
-- Con `reclaimPolicy: Retain`, los PV liberados se borran a mano
+- Longhorn deployed (`../`)
+- Infrastructure nodes tagged `infrastructure` in Longhorn (UI → Node → Edit node → Node Tags)
+- `prometheus-monitoring` recurring job group created in Longhorn, for `tempo-longhorn`
+- With `reclaimPolicy: Retain`, released PVs must be deleted manually

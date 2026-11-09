@@ -1,53 +1,55 @@
+**English** | [Español](./Readme.es.md)
+
 # Talos Custom Installer Builder
 
 ![Talos](https://img.shields.io/badge/Talos-Kubernetes_OS-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Container-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![OCI](https://img.shields.io/badge/OCI-Image_Cache-FF6B35?style=for-the-badge&logo=containerd&logoColor=white)
 
-Herramienta para crear installers personalizados de Talos con system extensions incluidas para uso offline.
+Tool to build custom Talos installers with system extensions included, for offline use.
 
-## ¿Qué es?
+## What is it?
 
-Genera installers de Talos que incluyen system extensions (iscsi-tools, util-linux-tools, qemu-guest-agent) preinstaladas. Ideal para entornos sin internet o con registry local.
+Builds Talos installers with system extensions (iscsi-tools, util-linux-tools, qemu-guest-agent) preinstalled. Ideal for environments without internet or with a local registry.
 
-### Beneficios Principales
+### Main Benefits
 
-- **Uso offline**: Funciona sin acceso a internet usando registry local
-- **Extensions preinstaladas**: iscsi-tools, util-linux-tools, qemu-guest-agent incluidas
-- **Cache optimizado**: Imágenes en cache OCI para builds rápidos
-- **Upgrades simplificados**: Un solo comando para actualizar nodos
-- **Reproducible**: Mismo installer para toda la infraestructura
+- **Offline use**: Works without internet access using a local registry
+- **Preinstalled extensions**: iscsi-tools, util-linux-tools, qemu-guest-agent included
+- **Optimized cache**: Images in an OCI cache for fast builds
+- **Simplified upgrades**: A single command to update nodes
+- **Reproducible**: The same installer for the whole infrastructure
 
-## Prerequisitos
+## Prerequisites
 
-- Docker instalado
-- Acceso a internet (solo para build inicial)
+- Docker installed
+- Internet access (initial build only)
 - talosctl CLI
-- Registry local (Harbor recomendado para uso offline)
+- Local registry (Harbor recommended for offline use)
 
-## Estructura de Archivos
+## File Structure
 
 ```
 ~/talos-images-tools/
-├── images.txt              # Lista de imágenes para cache
-├── image-cache.oci/        # Cache de imágenes generado
-└── _out/                   # Archivos de salida
-    └── installer-amd64.tar # Installer personalizado
+├── images.txt              # Image list for the cache
+├── image-cache.oci/        # Generated image cache
+└── _out/                   # Output files
+    └── installer-amd64.tar # Custom installer
 ```
 
-## Instalación
+## Installation
 
-### 1. Preparar Workspace
+### 1. Prepare the Workspace
 
 ```bash
 mkdir ~/talos-images-tools
 cd ~/talos-images-tools
 ```
 
-### 2. Crear Image Cache
+### 2. Create the Image Cache
 
 ```bash
-# Lista de imágenes necesarias
+# Required image list
 cat > images.txt << EOF
 ghcr.io/siderolabs/flannel:v0.26.7
 registry.k8s.io/coredns/coredns:v1.12.1
@@ -68,14 +70,14 @@ EOF
 cat images.txt | talosctl images cache-create --image-cache-path ./image-cache.oci --images=-
 ```
 ```
-# Generar cache OCI
+# Build the OCI cache
 docker run --rm -v $PWD/image-cache.oci:/image-cache.oci \
   ghcr.io/siderolabs/imager:v1.10.6 image-cache \
   --images @images.txt \
   --output /image-cache.oci
 ```
 
-### 3. Generar Installer Custom
+### 3. Build the Custom Installer
 
 ```bash
 docker run --rm -t \
@@ -89,79 +91,79 @@ docker run --rm -t \
   --image-cache /image-cache.oci
 ```
 
-## Configuración
+## Configuration
 
-### Variables por Defecto
+### Default Variables
 
 ```yaml
-# System Extensions incluidas
+# Included system extensions
 qemu-guest-agent: v10.0.2
 util-linux-tools: v2.40.4
 iscsi-tools: v0.2.0
 
-# Arquitectura
+# Architecture
 arch: amd64
 
-# Versión Talos
+# Talos version
 talos_version: v1.10.6
 ```
 
-### Registry Local (para uso offline)
+### Local Registry (for offline use)
 
 ```bash
-# Cargar imagen en Docker
+# Load the image into Docker
 cd _out/
 docker load -i installer-amd64.tar
 
-# Tagear para registry local
+# Tag it for the local registry
 docker tag ghcr.io/siderolabs/installer-base:v1.10.6 \
   registry.harbor.local/docker-images/installer-base:v1.10.6
 
-# Subir a Harbor
+# Push to Harbor
 docker push registry.harbor.local/docker-images/installer-base:v1.10.6
 ```
 
-## Uso
+## Usage
 
-### Upgrade Nodos Talos
+### Upgrade Talos Nodes
 
 ```bash
-# Upgrade nodo único
+# Upgrade a single node
 talosctl upgrade --nodes 192.168.253.101 \
   --image registry.harbor.local/docker-images/installer-base:v1.10.6
 
-# Upgrade múltiples nodos
+# Upgrade multiple nodes
 talosctl upgrade --nodes 192.168.253.101,192.168.253.111,192.168.253.112 \
   --image registry.harbor.local/docker-images/installer-base:v1.10.6
 ```
 
-### Verificación
+### Verification
 
 ```bash
-# Verificar extensions activas
+# Check active extensions
 talosctl get extensions --nodes 192.168.253.101
 
-# Estado del nodo
+# Node status
 talosctl get machinestatus --nodes 192.168.253.101
 ```
 
-## Administración
+## Administration
 
 ```bash
-# Verificar imagen cargada
+# Check the loaded image
 docker images | grep installer
 
-# Listar archivos generados
+# List generated files
 ls -la _out/
 
-# Ver espacio usado por cache
+# Show cache disk usage
 du -sh image-cache.oci/
 ```
 
-## Comandos Resumidos
+## Command Summary
 
 ```bash
-# Build completo
+# Full build
 mkdir ~/talos-images-tools && cd ~/talos-images-tools
 
 # 1. Cache
@@ -175,13 +177,12 @@ docker load -i _out/installer-amd64.tar
 talosctl upgrade --nodes <NODE_IP> --image <INSTALLER_IMAGE>
 ```
 
-![Extensions instaladas](../../images/talos-extensions.png)
+![Installed extensions](../../images/talos-extensions.png)
 
-## Limitaciones
+## Limitations
 
-| Escenario | Funcionalidad |
-|-----------|---------------|
-| **Con internet** | Funcionamiento completo |
-| **Sin internet** | Solo con registry local |
-| **Versiones** | SHAs deben coincidir con Talos |
-
+| Scenario | Functionality |
+|----------|---------------|
+| **With internet** | Fully functional |
+| **Without internet** | Only with a local registry |
+| **Versions** | SHAs must match the Talos version |

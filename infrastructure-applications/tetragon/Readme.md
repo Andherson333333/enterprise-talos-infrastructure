@@ -1,48 +1,50 @@
+**English** | [Español](./Readme.es.md)
+
 # Tetragon - eBPF Security Enforcement
 ![Tetragon](https://img.shields.io/badge/Tetragon-1.7.1-F8C517?style=for-the-badge&logo=cilium&logoColor=black)
 ![eBPF](https://img.shields.io/badge/eBPF-Runtime_Security-4B8BBE?style=for-the-badge)
 ![Chart](https://img.shields.io/badge/Chart-1.7.1-0F1689?style=for-the-badge&logo=helm&logoColor=white)
 
-Wrapper chart de Tetragon para observabilidad de seguridad y enforcement en runtime basado en eBPF (procesos, syscalls, red y archivos) en todos los nodos del cluster.
+Tetragon wrapper chart for eBPF-based runtime security observability and enforcement (processes, syscalls, network and files) on every cluster node.
 
-## Componentes
+## Components
 
-| Componente | Detalle |
-|------------|---------|
-| Chart base | `tetragon` 1.7.1, vía OCI desde `oci://registry.harbor.local/helm-charts` |
-| Agente | DaemonSet en **todos** los nodos (`tolerations: Exists`), imagen `registry.harbor.local/proxy-ghcr/cilium/tetragon` |
-| Operator | Imagen `registry.harbor.local/proxy-ghcr/cilium/tetragon-operator`, nodos de infraestructura |
-| Export | Archivo JSON deshabilitado (`exportFilename: ""`) |
-| Métricas | Agente en `:2112`, ServiceMonitor habilitado |
+| Component | Detail |
+|-----------|--------|
+| Base chart | `tetragon` 1.7.1, via OCI from `oci://registry.harbor.local/helm-charts` |
+| Agent | DaemonSet on **all** nodes (`tolerations: Exists`), image `registry.harbor.local/proxy-ghcr/cilium/tetragon` |
+| Operator | Image `registry.harbor.local/proxy-ghcr/cilium/tetragon-operator`, infrastructure nodes |
+| Export | JSON export file disabled (`exportFilename: ""`) |
+| Metrics | Agent on `:2112`, ServiceMonitor enabled |
 
-### Recursos
+### Resources
 
-| Componente | Requests | Limits |
-|------------|----------|--------|
-| Agente | 100m / 128Mi | 500m / 512Mi |
+| Component | Requests | Limits |
+|-----------|----------|--------|
+| Agent | 100m / 128Mi | 500m / 512Mi |
 | Operator | 50m / 64Mi | 200m / 256Mi |
 
-## Orden de Despliegue
+## Deployment Order
 
-### 1. Requisitos previos
-- Prometheus Stack desplegado (CRD `ServiceMonitor`)
-- Chart `tetragon` 1.7.1 subido a Harbor
+### 1. Prerequisites
+- Prometheus Stack deployed (`ServiceMonitor` CRD)
+- `tetragon` 1.7.1 chart pushed to Harbor
 
-### 2. Instalar/Actualizar el Release
+### 2. Install/Upgrade the Release
 ```bash
 cd infrastructure-applications/tetragon/
 helm dependency update
 helm upgrade --install tetragon . -n tetragon
 ```
 
-## Estado de Preparación
+## Readiness State
 
-Al completar el despliegue tendrás:
-- **Tetragon** observando eventos de seguridad en todos los nodos
-- **TracingPolicy** CRDs disponibles para definir políticas
-- Métricas en Prometheus
+After the deployment you will have:
+- **Tetragon** observing security events on every node
+- **TracingPolicy** CRDs available to define policies
+- Metrics in Prometheus
 
-## Verificación
+## Verification
 
 ```bash
 kubectl get ds,deploy -n tetragon | grep tetragon
@@ -56,8 +58,8 @@ kubectl get crd | grep cilium.io | grep -i tracingpolic
 kubectl logs -n tetragon ds/tetragon -c export-stdout --tail 5
 ```
 
-![Eventos de Tetragon (process/exit en tiempo real)](../../images/tetragon-events.png)
+![Tetragon events (real-time process/exit)](../../images/tetragon-events.png)
 
-## Dependencias
+## Dependencies
 
-- **Prometheus Stack** (`../prometheus-stack/`) para los ServiceMonitors
+- **Prometheus Stack** (`../prometheus-stack/`) for the ServiceMonitors

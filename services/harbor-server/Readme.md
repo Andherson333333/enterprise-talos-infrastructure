@@ -1,3 +1,5 @@
+**English** | [Español](./Readme.es.md)
+
 # Harbor Enterprise Suite
 
 ![Ansible](https://img.shields.io/badge/Ansible-Automation-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
@@ -7,94 +9,94 @@
 ![SBOM](https://img.shields.io/badge/SBOM-Enabled-4CAF50?style=for-the-badge)
 ![Air-Gapped](https://img.shields.io/badge/Air_Gapped-Ready-FF6B35?style=for-the-badge)
 
-Suite completa de automatización para desplegar y gestionar infraestructura Harbor empresarial con proxy cache, escaneo de seguridad y generación de SBOM.
+Complete automation suite to deploy and manage an enterprise Harbor infrastructure with proxy cache, security scanning and SBOM generation.
 
-## Tabla de Contenidos
+## Table of Contents
 
-- [Inicio Rápido](#inicio-rápido)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Arquitectura y Modos de Operación](#arquitectura-y-modos-de-operación)
-- [Proceso Completo de Implementación](#proceso-completo-de-implementación)
-- [Documentación Específica](#documentación-específica)
+- [Quick Start](#quick-start)
+- [Project Structure](#project-structure)
+- [Architecture and Operating Modes](#architecture-and-operating-modes)
+- [Full Implementation Process](#full-implementation-process)
+- [Module Documentation](#module-documentation)
 
-## Inicio Rápido
+## Quick Start
 
-**¿Nuevo en Harbor Enterprise Suite?** Sigue este flujo:
+**New to the Harbor Enterprise Suite?** Follow this flow:
 
-1. **Lee esta introducción** (estás aquí)
-2. **Instala Harbor** → Ve a [`harbor-install/README.md`](./harbor-install/Readme.md)
-3. **Aprende a usarlo** → Ve a [`harbor-use/README.md`](./harbor-use/Readme.md)
+1. **Read this introduction** (you are here)
+2. **Install Harbor** → Go to [`harbor-install/README.md`](./harbor-install/Readme.md)
+3. **Learn how to use it** → Go to [`harbor-use/README.md`](./harbor-use/Readme.md)
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 harbor-enterprise-suite/
-├── README.md                    # Guía principal (estás aquí)
-├── harbor-install/              # Módulo de Instalación
-│   ├── README.md                #    Guía completa de instalación
-│   ├── files/                   #    Archivos de Harbor y certificados
-│   ├── tasks/main.yml           #    Tareas Ansible
-│   └── defaults/main.yml        #    Variables de configuración
-└── harbor-use/                  # Módulo de Uso
-    ├── README.md                #    Guía completa de uso diario
-    └── scripts/                 #    Scripts de administración
+├── README.md                    # Main guide (you are here)
+├── harbor-install/              # Installation module
+│   ├── README.md                #    Full installation guide
+│   ├── files/                   #    Harbor files and certificates
+│   ├── tasks/main.yml           #    Ansible tasks
+│   └── defaults/main.yml        #    Configuration variables
+└── harbor-use/                  # Usage module
+    ├── README.md                #    Full day-to-day usage guide
+    └── scripts/                 #    Administration scripts
 ```
 
-### Documentación por Módulos
+### Documentation by Module
 
-| Módulo | Propósito | Documentación |
-|--------|-----------|---------------|
-| **Principal** | Introducción y arquitectura | `README.md` (este archivo) |
-| **harbor-install** | Instalación automatizada | [`harbor-install/README.md`](./harbor-install/Readme.md) |
-| **harbor-use** | Uso operacional diario | [`harbor-use/README.md`](./harbor-use/Readme.md) |
+| Module | Purpose | Documentation |
+|--------|---------|---------------|
+| **Main** | Introduction and architecture | `README.md` (this file) |
+| **harbor-install** | Automated installation | [`harbor-install/README.md`](./harbor-install/Readme.md) |
+| **harbor-use** | Day-to-day operations | [`harbor-use/README.md`](./harbor-use/Readme.md) |
 
-## Arquitectura y Modos de Operación
+## Architecture and Operating Modes
 
 ![Air-Gapped](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Harbor-server.png)
 
-### Modo 1: Acceso a Internet (Proxy Cache)
+### Mode 1: Internet Access (Proxy Cache)
 
-**Capacidades**:
-- Proxy cache activo para 4 registries externos
-- Descargas automáticas desde Docker Hub, Quay, Kubernetes y GitHub
-- Actualizaciones automáticas de la base de datos Trivy
-- Requiere acceso permanente a internet
+**Capabilities**:
+- Active proxy cache for 4 external registries
+- Automatic downloads from Docker Hub, Quay, Kubernetes and GitHub
+- Automatic Trivy database updates
+- Requires permanent internet access
 
-**Casos de Uso**:
-- Entornos de desarrollo con conectividad
-- Reducción de ancho de banda y mitigación de límites de tasa
-- Aceleración de pulls recurrentes
+**Use Cases**:
+- Development environments with connectivity
+- Bandwidth reduction and rate-limit mitigation
+- Faster recurring pulls
 
 ![Air-Gapped](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Arquitectura%20general%20-1.png)
 
-### Modo 2: Completamente Air-Gapped (Sin Internet)
+### Mode 2: Fully Air-Gapped (No Internet)
 
-**Capacidades**:
-- Solo repositorios locales (docker-images, helm-charts)
-- Push manual de imágenes previamente descargadas
-- Base de datos Trivy offline (requiere actualizaciones manuales)
-- Operación completamente interna sin acceso externo
+**Capabilities**:
+- Local repositories only (docker-images, helm-charts)
+- Manual push of previously downloaded images
+- Offline Trivy database (requires manual updates)
+- Fully internal operation without external access
 
-**Casos de Uso**:
-- Entornos de producción completamente aislados
-- Sectores de alta seguridad (finanzas, gobierno, defensa)
-- Requisitos estrictos de cumplimiento sin conectividad externa
+**Use Cases**:
+- Fully isolated production environments
+- High-security sectors (finance, government, defense)
+- Strict compliance requirements with no external connectivity
 
 ![Air-Gapped](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/Arquitectura%20general%20-2.png)
 
-### Modo 3: Híbrido
+### Mode 3: Hybrid
 
-**Proceso**:
-1. Instalación inicial con acceso a internet
-2. Configuración de proxy cache y pre-población
-3. Desconexión completa de internet
-4. Operación exclusivamente local
+**Process**:
+1. Initial installation with internet access
+2. Proxy cache configuration and pre-population
+3. Full disconnection from the internet
+4. Local-only operation
 
-## Proceso Completo de Implementación
+## Full Implementation Process
 
-### Fase 1: Preparación de Infraestructura
+### Phase 1: Infrastructure Preparation
 
-Ejecutar en orden estos playbooks base:
+Run these base playbooks in order:
 
 ```bash
 ansible-playbook host-network-1ip.yml
@@ -103,100 +105,99 @@ ansible-playbook ansible-proxy.yaml
 ansible-playbook certificados.yml
 ```
 
-### Fase 2: Instalación de Harbor
+### Phase 2: Harbor Installation
 
-**Documentación completa**: [`harbor-install/README.md`](./harbor-install/Readme.md)
+**Full documentation**: [`harbor-install/README.md`](./harbor-install/Readme.md)
 
 ```bash
-# 1. Ir al módulo de instalación
+# 1. Go to the installation module
 cd harbor-install/
 
-# 2. Seguir la guía detallada
-# Ver: harbor-install/README.md
+# 2. Follow the detailed guide
+# See: harbor-install/README.md
 
-# 3. Ejecutar instalación
+# 3. Run the installation
 ansible-playbook -i inventory harbor-install.yml
 ```
 
-### Fase 3: Configuración y Uso Operacional
+### Phase 3: Configuration and Day-to-Day Use
 
-**Documentación completa**: [`harbor-use/README.md`](./harbor-use/Readme.md)
+**Full documentation**: [`harbor-use/README.md`](./harbor-use/Readme.md)
 
 ```bash
-# 1. Verificar instalación
+# 1. Verify the installation
 curl -k https://registry.harbor.local/api/v2.0/health
 
-# 2. Seguir guía de uso diario
-# Ver: harbor-use/README.md
+# 2. Follow the day-to-day usage guide
+# See: harbor-use/README.md
 
-# 3. Configurar proyectos y proxy cache
-# Ver ejemplos completos en harbor-use/README.md
+# 3. Configure projects and proxy cache
+# See full examples in harbor-use/README.md
 ```
 
-## Componentes Principales
+## Main Components
 
 ### Harbor Registry
-Registry privado de contenedores open-source desarrollado por VMware con características empresariales avanzadas.
+Open-source private container registry originally developed by VMware, with advanced enterprise features.
 
 ### Trivy Security Scanner
-Escáner de vulnerabilidades open-source que proporciona detección automatizada de CVEs y análisis de dependencias.
+Open-source vulnerability scanner providing automated CVE detection and dependency analysis.
 
 ### Software Bill of Materials (SBOM)
-Inventario detallado de componentes de software con cumplimiento de estándares SPDX y CycloneDX.
+Detailed inventory of software components, compliant with the SPDX and CycloneDX standards.
 
-## Configuración de Red
+## Network Configuration
 
-### Servicios y Puertos
+### Services and Ports
 - **Web UI**: `https://registry.harbor.local` (443)
 - **Docker API**: `https://registry.harbor.local/v2/` (443)
 - **Notary**: `https://registry.harbor.local:4443`
 
-### Endpoints Proxy Cache
+### Proxy Cache Endpoints
 - **Docker Hub**: `registry.harbor.local/proxy-docker/*`
 - **Quay.io**: `registry.harbor.local/proxy-quay/*`
 - **Kubernetes**: `registry.harbor.local/proxy-k8s/*`
 - **GitHub**: `registry.harbor.local/proxy-ghcr/*`
 
-### Configuración de Hosts
+### Hosts Configuration
 ```bash
-# Agregar a /etc/hosts en todos los nodos
+# Add to /etc/hosts on every node
 192.168.253.12    registry.harbor.local harbor.local
 ```
 
-## Documentación Específica
+## Module Documentation
 
-### Instalación Automatizada
-**Archivo**: [`harbor-install/README.md`](./harbor-install/Readme.md)
+### Automated Installation
+**File**: [`harbor-install/README.md`](./harbor-install/Readme.md)
 
-**Contiene**:
-- Preparación e instalación completa
-- Configuración de variables
-- Estructura de archivos necesarios
-- Verificación post-instalación
-- Backup y actualización
+**Contains**:
+- Full preparation and installation
+- Variable configuration
+- Required file structure
+- Post-installation verification
+- Backup and upgrade
 
-### Uso Operacional Diario
-**Archivo**: [`harbor-use/README.md`](./harbor-use/Readme.md)
+### Day-to-Day Operations
+**File**: [`harbor-use/README.md`](./harbor-use/Readme.md)
 
-**Contiene**:
-- Proxy cache para 4 registries
-- Gestión de proyectos y repositorios
-- Security scanning con Trivy
-- Generación y descarga de SBOM
-- Scripts de administración
-- Resolución de problemas
+**Contains**:
+- Proxy cache for 4 registries
+- Project and repository management
+- Security scanning with Trivy
+- SBOM generation and download
+- Administration scripts
+- Troubleshooting
 
-## Características Empresariales
+## Enterprise Features
 
-### Seguridad
-- **Integración Trivy**: Escaneo automático de vulnerabilidades
-- **Generación SBOM**: Inventario completo de componentes
-- **Bloqueo CVE**: Prevención de despliegue de imágenes vulnerables
-- **Certificados Corporativos**: Integración con PKI empresarial
+### Security
+- **Trivy integration**: Automatic vulnerability scanning
+- **SBOM generation**: Full component inventory
+- **CVE blocking**: Prevents deployment of vulnerable images
+- **Corporate certificates**: Integration with the enterprise PKI
 
-### Rendimiento
-- **Proxy Cache**: Cache local para 4 registries principales
-- **Bypass de Límites**: Evita limitaciones de Docker Hub
-- **Alta Disponibilidad**: Almacenamiento persistente
-- **API First**: Integración completa vía REST API
-
+### Performance
+- **Proxy cache**: Local cache for 4 main registries
+- **Rate-limit bypass**: Avoids Docker Hub limits
+- **High availability**: Persistent storage
+- **API first**: Full integration via the REST API

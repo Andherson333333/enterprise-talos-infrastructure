@@ -1,3 +1,5 @@
+**English** | [Español](./Readme.es.md)
+
 # Gitea Enterprise Suite
 ![Ansible](https://img.shields.io/badge/Ansible-Automation-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 ![Gitea](https://img.shields.io/badge/Gitea-1.24.2-609926?style=for-the-badge&logo=gitea&logoColor=white)
@@ -5,83 +7,83 @@
 ![Traefik](https://img.shields.io/badge/Traefik-Proxy-00ADD8?style=for-the-badge&logo=traefik&logoColor=white)
 ![Air-Gapped](https://img.shields.io/badge/Air_Gapped-Ready-FF6B35?style=for-the-badge)
 
-Suite completa de automatización para desplegar y gestionar infraestructura Gitea empresarial con soporte para entornos air-gapped. Incluye servidor, runners y actions locales.
+Complete automation suite to deploy and manage an enterprise Gitea infrastructure with air-gapped support. Includes the server, runners and local actions.
 
-## Arquitectura General
+## General Architecture
 ![Architecture](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner.png)
 
-## Componentes de la Suite
+## Suite Components
 
 ### 1. Gitea Install ([gitea-install-ansible/](./gitea-install-ansible/))
-**Servidor Gitea con proxy reverso y certificados TLS**
+**Gitea server with reverse proxy and TLS certificates**
 
 ```
-Funciones:
-- Servidor Gitea 1.24.2 con Docker Compose
-- Proxy reverso Traefik con SSL/TLS
-- Integración con Harbor Registry
-- Configuración automática para Actions
+Functions:
+- Gitea 1.24.2 server with Docker Compose
+- Traefik reverse proxy with SSL/TLS
+- Harbor Registry integration
+- Automatic configuration for Actions
 
-Resultado: https://gitea.server.local (con certificados TLS)
+Result: https://gitea.server.local (with TLS certificates)
 ```
 
 ### 2. Gitea Runners ([gitea-runners-ansible/](./gitea-runners-ansible/))  
-**Runners para CI/CD con soporte Docker-in-Docker**
+**CI/CD runners with Docker-in-Docker support**
 
 ```
-Funciones:
-- Despliegue automatizado de runners
-- Configuración Docker-in-Docker
-- Conectividad con registry Harbor
-- SSL strict y certificados corporativos
+Functions:
+- Automated runner deployment
+- Docker-in-Docker configuration
+- Connectivity with the Harbor registry
+- Strict SSL and corporate certificates
 
-Resultado: Runners registrados y listos para pipelines
+Result: Runners registered and ready for pipelines
 ```
 
 ### 3. Gitea Actions ([gitea-actions-ansible/](./gitea-actions-ansible/))
-**GitHub Actions para entornos air-gapped**
+**GitHub Actions for air-gapped environments**
 
 ```
-Funciones:
-- Pre-descarga de 25+ GitHub Actions
-- Despliegue como repositorios locales
-- Soporte completo air-gapped
-- Organización automática en Gitea
+Functions:
+- Pre-download of 25+ GitHub Actions
+- Deployment as local repositories
+- Full air-gapped support
+- Automatic organization in Gitea
 
-Resultado: Actions locales en https://192.168.253.11/actions/
+Result: Local actions at https://192.168.253.11/actions/
 ```
 
-## Flujo de Despliegue Completo
+## Full Deployment Flow
 
-### Infraestructura Base (Prerequisitos)
+### Base Infrastructure (Prerequisites)
 ```bash
-# Ejecutar en orden (prerequisitos para toda la suite):
+# Run in order (prerequisites for the whole suite):
 ansible-playbook host-network-1ip.yml
 ansible-playbook docker-install.yml  
 ansible-playbook ansible-proxy.yaml
 ansible-playbook certificados.yml
 ```
 
-### Despliegue de la Suite Gitea
+### Gitea Suite Deployment
 ```bash
-# 1. Instalar servidor Gitea
+# 1. Install the Gitea server
 cd gitea-install-ansible/
 ansible-playbook -i inventory gitea-install.yml
 
-# 2. Configurar runners  
+# 2. Configure runners  
 cd ../gitea-runners-ansible/
 ansible-playbook -i inventory gitea-runner.yml
 
-# 3. Desplegar actions (air-gapped)
+# 3. Deploy actions (air-gapped)
 cd ../gitea-actions-ansible/
-./git.sh  # Ejecutar desde servidor con internet
+./git.sh  # Run from a server with internet
 scp /tmp/github-actions-airgap-full-repos.tar.gz root@192.168.253.11:/opt/
 ansible-playbook -i inventory gitea-actions.yml
 ```
 
-## Configuración de Red
+## Network Configuration
 
-### Servicios y Puertos
+### Services and Ports
 ```
 Gitea Server:
 - Web: https://gitea.server.local (443)
@@ -98,14 +100,14 @@ Traefik:
 
 ### Hosts Configuration
 ```bash
-# Agregar a /etc/hosts en todos los nodos:
+# Add to /etc/hosts on every node:
 192.168.253.11    gitea.server.local
 192.168.253.12    registry.harbor.local harbor.local
 ```
 
-## Ejemplo de Pipeline Completo
+## Full Pipeline Example
 
-### Pipeline CI/CD usando Actions Locales
+### CI/CD Pipeline using Local Actions
 ```yaml
 # .gitea/workflows/ci.yml
 name: Enterprise CI Pipeline
@@ -115,14 +117,14 @@ jobs:
   build:
     runs-on: gitea-runner-docker
     steps:
-      # Usar actions locales (air-gapped)
+      # Use local actions (air-gapped)
       - uses: https://192.168.253.11/actions/checkout@v4
       
       - uses: https://192.168.253.11/actions/setup-node@v4
         with:
           node-version: '18'
           
-      # Build con registry Harbor
+      # Build with the Harbor registry
       - uses: https://192.168.253.11/actions/docker-build-push-action@v6
         with:
           push: true
@@ -134,41 +136,41 @@ jobs:
           path: dist/
 ```
 
-## Características Empresariales
+## Enterprise Features
 
-### Seguridad
-- **Certificados TLS**: Integración completa con PKI corporativo
-- **Air-Gapped Support**: Operación sin internet después del setup
-- **Registry Privado**: Imágenes Docker desde Harbor local
-- **SSH Security**: Operaciones Git via SSH en puerto dedicado
+### Security
+- **TLS certificates**: Full integration with the corporate PKI
+- **Air-gapped support**: Operation without internet after the setup
+- **Private registry**: Docker images from the local Harbor
+- **SSH security**: Git operations over SSH on a dedicated port
 
-### Alta Disponibilidad  
-- **Health Checks**: Monitoreo automatizado de servicios
-- **Persistent Storage**: Volúmenes Docker persistentes
-- **Auto Recovery**: Restart policies en contenedores
-- **Load Balancing**: Traefik como proxy reverso
+### High Availability  
+- **Health checks**: Automated service monitoring
+- **Persistent storage**: Persistent Docker volumes
+- **Auto recovery**: Container restart policies
+- **Load balancing**: Traefik as reverse proxy
 
 ### DevOps Integration
-- **Docker-in-Docker**: Soporte completo para pipelines containerizadas  
-- **25+ Actions**: Biblioteca completa de GitHub Actions locales
-- **API First**: Integración via API REST de Gitea
-- **Webhook Support**: Integración con sistemas externos
+- **Docker-in-Docker**: Full support for containerized pipelines  
+- **25+ Actions**: Complete library of local GitHub Actions
+- **API first**: Integration via the Gitea REST API
+- **Webhook support**: Integration with external systems
 
-## Estructura del Repositorio
+## Repository Structure
 ```
 gitea-server/
-├── gitea-install-ansible/     # Servidor Gitea + Traefik
+├── gitea-install-ansible/     # Gitea server + Traefik
 │   ├── files/
 │   │   ├── docker-compose.yml
 │   │   ├── tls.yml  
 │   │   └── certificados/
 │   └── tasks/main.yml
-├── gitea-runners-ansible/     # Runners CI/CD
+├── gitea-runners-ansible/     # CI/CD runners
 │   ├── files/
 │   │   ├── docker-compose.yml
 │   │   └── config.yaml
 │   └── tasks/main.yml  
-└── gitea-actions-ansible/     # Actions Air-Gapped
+└── gitea-actions-ansible/     # Air-gapped actions
     ├── files/
     │   └── github-actions-airgap-full-repos.tar.gz
     ├── tasks/
@@ -176,4 +178,3 @@ gitea-server/
     │   └── push.yml
     └── vars/main.yml
 ```
-

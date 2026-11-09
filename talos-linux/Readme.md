@@ -1,58 +1,60 @@
-# Talos Linux - Cluster Kubernetes Air-Gapped
+**English** | [Español](./Readme.es.md)
+
+# Talos Linux - Air-Gapped Kubernetes Cluster
 ![Talos](https://img.shields.io/badge/Talos-v1.10-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![Proxmox](https://img.shields.io/badge/Proxmox-VE-E57000?style=for-the-badge&logo=proxmox&logoColor=white)
 ![Air-Gapped](https://img.shields.io/badge/Mode-Air--Gapped-4B8BBE?style=for-the-badge)
 
-Todo lo necesario para levantar el cluster Talos sin acceso a internet: ISO con imágenes cacheadas, installer con system extensions y la configuración de los nodos.
+Everything needed to bring up the Talos cluster without internet access: ISO with cached images, installer with system extensions and node configuration.
 
 ![Talos VM](../images/talos-linux-vm.png)
 
-## Contenido
+## Contents
 
-| Carpeta | Propósito | README |
-|---------|-----------|--------|
-| `talos-base-airgap/` | Genera la ISO de Talos con cache OCI de las imágenes base | [`talos-base-airgap/Readme.md`](./talos-base-airgap/Readme.md) |
-| `talos-extensions/` | Genera un installer custom con system extensions, subido a Harbor | [`talos-extensions/Readme.md`](./talos-extensions/Readme.md) |
-| `talos-cluster-configs/` | Generación de configs, patches por nodo, bootstrap y kubeconfig | [`talos-cluster-configs/Readme.md`](./talos-cluster-configs/Readme.md) |
-| `talos-cluster-configs/customs/` | Patches: base, control plane, workers infra/app, registry mirrors, storage, CNI none | [`customs/Readme.md`](./talos-cluster-configs/customs/Readme.md) |
+| Folder | Purpose | README |
+|--------|---------|--------|
+| `talos-base-airgap/` | Builds the Talos ISO with an OCI cache of the base images | [`talos-base-airgap/Readme.md`](./talos-base-airgap/Readme.md) |
+| `talos-extensions/` | Builds a custom installer with system extensions, pushed to Harbor | [`talos-extensions/Readme.md`](./talos-extensions/Readme.md) |
+| `talos-cluster-configs/` | Config generation, per-node patches, bootstrap and kubeconfig | [`talos-cluster-configs/Readme.md`](./talos-cluster-configs/Readme.md) |
+| `talos-cluster-configs/customs/` | Patches: base, control plane, infra/app workers, registry mirrors, storage, CNI none, logging | [`customs/Readme.md`](./talos-cluster-configs/customs/Readme.md) |
 
-## Topología
+## Topology
 
-| Nodo | IP | Rol |
-|------|-----|-----|
-| VIP API | 192.168.253.100 | Endpoint `https://192.168.253.100:6443` |
+| Node | IP | Role |
+|------|-----|------|
+| API VIP | 192.168.253.100 | Endpoint `https://192.168.253.100:6443` |
 | control-plane-1 | 192.168.253.101 | Control plane |
 | worker-1..n | 192.168.253.111+ | Workers (`workload-type: infrastructure` / `application`) |
 
-Las VMs se crean con Terraform (`../terraform/code/vm-taloscp-infra.tf`, `vm-talosdt-infra.tf`, `vm-talosdt-application.tf`) desde el template 9000.
+The VMs are created with Terraform (`../terraform/code/vm-taloscp-infra.tf`, `vm-talosdt-infra.tf`, `vm-talosdt-application.tf`) from template 9000.
 
-## Orden de Despliegue
+## Deployment Order
 
-### 1. Generar la ISO air-gapped
+### 1. Build the air-gapped ISO
 ```bash
 cd talos-base-airgap/
-# Seguir README: extraer imágenes → cache OCI → ISO
+# Follow the README: extract images → OCI cache → ISO
 ```
 
-### 2. Generar el installer con extensions
+### 2. Build the installer with extensions
 ```bash
 cd talos-extensions/
-# Seguir README: cache → installer → push a Harbor
+# Follow the README: cache → installer → push to Harbor
 ```
 
-### 3. Configurar y levantar el cluster
+### 3. Configure and bring up the cluster
 ```bash
 cd talos-cluster-configs/
 talosctl gen config promox-cluster https://192.168.253.100:6443 \
   -f --with-docs=false --install-disk /dev/sda --output-dir _out
-# Aplicar configs con patches de customs/ (ver comands y README)
+# Apply configs with the customs/ patches (see comands and README)
 talosctl bootstrap --nodes 192.168.253.101
 talosctl kubeconfig --nodes 192.168.253.101
 ```
 
-El cluster arranca **sin CNI** (`cni-none.yaml`); los nodos quedan `NotReady` hasta instalar Cilium.
+The cluster boots **without a CNI** (`cni-none.yaml`); nodes stay `NotReady` until Cilium is installed.
 
-## Verificación
+## Verification
 
 ```bash
 talosctl health --nodes 192.168.253.101
@@ -62,12 +64,12 @@ talosctl health --nodes 192.168.253.101
 kubectl get nodes -o wide
 ```
 
-## Siguiente Paso
+## Next Step
 
-Instalar Gateway API y Cilium desde [`../infrastructure-applications/`](../infrastructure-applications/).
+Install Cilium and then Gateway API from [`../infrastructure-applications/`](../infrastructure-applications/).
 
-## Dependencias
+## Dependencies
 
-- Harbor operativo (registry mirrors e installer custom)
-- VMs creadas con Terraform
-- **Importante**: `_out/` contiene CAs y tokens del cluster, no debe subirse a Git
+- Harbor running (registry mirrors and custom installer)
+- VMs created with Terraform
+- **Important**: `_out/` contains the cluster CAs and tokens, it must not be committed to Git

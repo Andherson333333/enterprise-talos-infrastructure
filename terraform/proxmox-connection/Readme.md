@@ -1,160 +1,163 @@
+**English** | [Español](./Readme.es.md)
+
 # Terraform Proxmox Connection
 ![Terraform](https://img.shields.io/badge/Terraform-Latest-623CE4?style=for-the-badge&logo=terraform&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Required-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Proxmox](https://img.shields.io/badge/Proxmox-VE-E57000?style=for-the-badge&logo=proxmox&logoColor=white)
 ![Docker Compose](https://img.shields.io/badge/Docker_Compose-2.39+-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-## Parte del proyecto: Enterprise Infrastructure
+## Part of the project: Enterprise Infrastructure
 
-Este módulo maneja la **conexión base** entre Terraform y Proxmox VE vía Docker para el despliegue automatizado de infraestructura.
+This module handles the **base connection** between Terraform and Proxmox VE via Docker for automated infrastructure deployment.
 
 
-## Arquitectura 
+## Architecture 
 
 ![Docker Compose](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/promox-api.png)
 
-## Características
+## Features
 
-- **Imagen Airgap**: `andherson1039/terraform-complete-airgap:2.0` con todos los providers incluidos
-- **Conexión API**: Configuración de token y endpoint para Proxmox VE
-- **Variables Flexibles**: Control de nodos, cluster y configuraciones vía `.env`
-- **Escalamiento**: Agregar/quitar VMs modificando variables
+- **Airgap image**: `andherson1039/terraform-complete-airgap:2.0` with every provider bundled
+- **API connection**: Token and endpoint configuration for Proxmox VE
+- **Flexible variables**: Control nodes, cluster and settings via `.env`
+- **Scaling**: Add/remove VMs by changing variables
 
-## Estructura del Módulo
+## Module Structure
 
 ```
 terraform/
-├── docker-compose.yml          # Configuración de servicios Docker
-├── .env                        # Variables de entorno para conexión
-├── provider.tf                 # Providers y versiones requeridas
-├── variables.tf                # Definición de variables
+├── docker-compose.yml          # Docker services configuration
+├── .env                        # Connection environment variables
+├── provider.tf                 # Required providers and versions
+├── variables.tf                # Variable definitions
 ```
 
-## Requisitos
+## Requirements
 
 - Docker Engine 20.10+
 - Docker Compose v2.39+
-- Proxmox VE 7.0+ con API habilitada
-- Token de API de Proxmox configurado (ver `requirements/proxmox-api-token/`)
-- Red accesible entre Docker host y Proxmox
+- Proxmox VE 7.0+ with the API enabled
+- Proxmox API token configured (see `requirements/proxmox-api-token/`)
+- Network reachability between the Docker host and Proxmox
 
-## Configuración
+## Configuration
 
-### 1. Configurar variables de entorno
+### 1. Configure environment variables
 
-Crea el archivo `.env` con tu configuración de Proxmox:
+Create the `.env` file with your Proxmox configuration:
 
 ```bash
-# Variables TF_VAR_* que siempre funcionan en Docker
+# TF_VAR_* variables always work inside Docker
 TF_VAR_proxmox_endpoint=https://192.168.1.100:8006
-TF_VAR_proxmox_api_token=terraform@pam!terraform=1160238f-41a8-49a8-99f3-3e5692324cca
+TF_VAR_proxmox_api_token=terraform@pam!terraform=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 TF_VAR_proxmox_insecure=true
 TF_VAR_node_name=pve-1
 ```
 
-### 2. Verificar imagen Docker
+### 2. Check the Docker image
 
 ```bash
-# Verificar que la imagen esté disponible
+# Make sure the image is available
 docker pull andherson1039/terraform-complete-airgap:2.0
 ```
 
-## Verificar Conexión
+## Verify the Connection
 
-### Probar conectividad a Proxmox
+### Test Proxmox connectivity
 
 ```bash
-# Probar que Proxmox API responde
+# Check that the Proxmox API responds
 curl -k https://192.168.1.100:8006/api2/extjs/access/domains
 
-# Probar conexión desde el contenedor
+# Test the connection from the container
 docker compose run --rm terraform bash -c "curl -k \$TF_VAR_proxmox_endpoint/api2/extjs/version"
 ```
 
-### Validar configuración de Terraform
+### Validate the Terraform configuration
 
 ```bash
-# Inicializar y validar configuración
+# Initialize and validate the configuration
 docker compose run --rm terraform init
 docker compose run --rm terraform validate
 ```
 
 ![Docker Compose](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/promox-api-2.png)
 
-## Uso
+## Usage
 
-### Inicializar Terraform
+### Initialize Terraform
 
 ```bash
-# Levantar el contenedor y inicializar
+# Start the container and initialize
 docker compose run --rm terraform init
 ```
 
-### Planificar despliegue
+### Plan the deployment
 
 ```bash
-# Ver cambios propuestos
+# Show proposed changes
 docker compose run --rm terraform plan
 ```
 
-### Aplicar infraestructura
+### Apply the infrastructure
 
 ```bash
-# Aplicar cambios
+# Apply changes
 docker compose run --rm terraform apply
 ```
 
-### Escalar cluster
+### Scale the cluster
 
 ```bash
-# Modificar variables en .env o usar override
+# Change variables in .env or use an override
 TF_VAR_control_plane_count=3 TF_VAR_worker_count=2 docker compose run --rm terraform apply
 ```
 
-### Destruir recursos
+### Destroy resources
 
 ```bash
-# Eliminar toda la infraestructura
+# Remove all the infrastructure
 docker compose run --rm terraform destroy
 ```
 
-## Variables de Entorno
+## Environment Variables
 
-| Variable | Descripción | Ejemplo | Default |
+| Variable | Description | Example | Default |
 |----------|-------------|---------|---------|
-| `TF_VAR_proxmox_endpoint` | URL del API de Proxmox | `https://192.168.1.100:8006` | - |
-| `TF_VAR_proxmox_api_token` | Token de API de Proxmox | `terraform@pam!terraform=1160238f...` | - |
-| `TF_VAR_proxmox_insecure` | Permitir certificados SSL no válidos | `true` o `false` | `true` |
-| `TF_VAR_node_name` | Nombre del nodo Proxmox destino | `pve-1` | `pve-1` |
+| `TF_VAR_proxmox_endpoint` | Proxmox API URL | `https://192.168.1.100:8006` | - |
+| `TF_VAR_proxmox_api_token` | Proxmox API token | `terraform@pam!terraform=xxxxxxxx...` | - |
+| `TF_VAR_proxmox_insecure` | Allow invalid SSL certificates | `true` or `false` | `true` |
+| `TF_VAR_node_name` | Target Proxmox node name | `pve-1` | `pve-1` |
 
-## Providers Incluidos
+## Included Providers
 
-- **proxmox** (bpg/proxmox ~> 0.80.0) - Gestión de VMs en Proxmox
-- **talos** (siderolabs/talos ~> 0.8.0) - Configuraciones de Talos Linux
-- **local, http, random, null, time** - Providers auxiliares
+- **proxmox** (bpg/proxmox ~> 0.80.0) - VM management on Proxmox
+- **talos** (siderolabs/talos ~> 0.8.0) - Talos Linux configurations
+- **local, http, random, null, time** - Helper providers
 
 ## Troubleshooting
 
-### Error de conexión
+### Connection error
 
 ```bash
-# Verificar conectividad básica
+# Check basic connectivity
 ping 192.168.1.100
 
-# Probar API manualmente
+# Test the API manually
 curl -k https://192.168.1.100:8006/api2/extjs/version
 ```
 
-### Token inválido
+### Invalid token
 
 ```bash
-# Verificar que el token existe en Proxmox
-# Datacenter → API Tokens → verificar terraform@pam!terraform
+# Check that the token exists in Proxmox
+# Datacenter → API Tokens → check terraform@pam!terraform
 ```
 
-### Limpiar estado
+### Clean state
 
 ```bash
-# Limpiar estado de Terraform
+# Clean the Terraform state
 docker compose run --rm terraform bash -c "rm -rf .terraform .terraform.lock.hcl"
 docker compose run --rm terraform init
+```

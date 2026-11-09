@@ -1,124 +1,126 @@
+**English** | [Español](./Readme.es.md)
+
 # Talos Cluster Configuration Architecture
 
 ![Talos](https://img.shields.io/badge/Talos-Linux_OS-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-Container_Platform-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![YAML](https://img.shields.io/badge/YAML-Configuration-CB171E?style=for-the-badge&logo=yaml&logoColor=white)
 
-Sistema de configuración modular para clusters Talos Linux que define arquitectura de nodos, separación de workloads y configuraciones air-gapped.
+Modular configuration system for Talos Linux clusters that defines the node architecture, workload separation and air-gapped settings.
 
-## ¿Qué es?
+## What is it?
 
-Conjunto de patches de configuración YAML que define la topología completa de un cluster Talos Linux. Cada archivo tiene un propósito específico para crear una arquitectura multi-tier con separación de workloads y capacidades air-gapped.
+A set of YAML configuration patches that define the full topology of a Talos Linux cluster. Each file has a specific purpose, building a multi-tier architecture with workload separation and air-gapped capabilities.
 
-### Beneficios Principales
+### Main Benefits
 
-- **Arquitectura definida**: Separación clara entre infrastructure y application workloads
-- **Configuración air-gapped**: Registry privado y DNS customizado incluido
-- **Alta disponibilidad**: VIP automático y interfaces de red redundantes
-- **Escalabilidad**: Templates reutilizables para múltiples nodos
-- **Production ready**: Labels, taints y políticas preconfiguradas
-- **Modularidad**: Cada archivo define un aspecto específico del cluster
+- **Defined architecture**: Clear separation between infrastructure and application workloads
+- **Air-gapped configuration**: Private registry and custom DNS included
+- **High availability**: Automatic VIP and redundant network interfaces
+- **Scalability**: Reusable templates for multiple nodes
+- **Production ready**: Preconfigured labels, taints and policies
+- **Modularity**: Each file defines one specific aspect of the cluster
 
-## Prerequisitos
+## Prerequisites
 
-- Comprensión de arquitectura Kubernetes
-- Conocimiento de networking dual (management + cluster)
-- Certificados CA para registries privados
-- Planificación de IPs y VLANs
+- Understanding of Kubernetes architecture
+- Knowledge of dual networking (management + cluster)
+- CA certificates for private registries
+- IP and VLAN planning
 
-## Estructura de Configuraciones
+## Configuration Structure
 
 ```
 customs/
-├── custom.yml                 # Configuración base compartida
-├── controlplane-patch-1.yml   # Control plane con HA y DNS
-├── worker-patch-1.yml         # Worker infrastructure tipo A
-├── worker-patch-2.yml         # Worker infrastructure tipo B  
-├── worker-patch-3.yml         # Worker infrastructure tipo C
-├── worker-patch-5.yml         # Worker application production
-├── registry-mirrors.yml       # Mirrors para registries públicos
-└── storage.yml                # Configuración de volúmenes adicionales
+├── custom.yml                 # Shared base configuration
+├── controlplane-patch-1.yml   # Control plane with HA and DNS
+├── worker-patch-1.yml         # Infrastructure worker type A
+├── worker-patch-2.yml         # Infrastructure worker type B  
+├── worker-patch-3.yml         # Infrastructure worker type C
+├── worker-patch-5.yml         # Production application worker
+├── registry-mirrors.yml       # Mirrors for public registries
+└── storage.yml                # Extra volume configuration
 ```
 
-## Arquitectura de Configuraciones
+## Configuration Architecture
 
 ### Base Configuration (custom.yml)
 
-**Propósito**: Configuración compartida aplicada a todos los nodos del cluster.
+**Purpose**: Shared configuration applied to every node in the cluster.
 
-**Componentes principales**:
-- **extraHostEntries**: Define resolución DNS local para servicios air-gapped (Harbor registry, Gitea)
-- **imageCache**: Habilita cache local de imágenes para instalaciones offline
-- **TrustedRootsConfig**: Integra certificados CA personalizados para registries privados
-- **VolumeConfig**: Configura volúmenes específicos como IMAGECACHE para optimización
+**Main components**:
+- **extraHostEntries**: Defines local DNS resolution for air-gapped services (Harbor registry, Gitea)
+- **imageCache**: Enables the local image cache for offline installations
+- **TrustedRootsConfig**: Integrates custom CA certificates for private registries
+- **VolumeConfig**: Configures specific volumes such as IMAGECACHE for optimization
 
-**Función en la arquitectura**: Establece las bases para operación air-gapped y trust chain de certificados.
+**Role in the architecture**: Lays the foundation for air-gapped operation and the certificate trust chain.
 
 ### Control Plane Configuration (controlplane-patch-1.yml)
 
-**Propósito**: Define el nodo maestro con alta disponibilidad y servicios core customizados.
+**Purpose**: Defines the master node with high availability and customized core services.
 
-**Componentes clave**:
-- **VIP (Virtual IP)**: IP flotante `192.168.253.100` para alta disponibilidad del API server
-- **Dual networking**: Interface primaria (ens18) + secundaria (ens19) para separación de tráfico
-- **CoreDNS inline manifest**: ConfigMap customizado que integra hosts air-gapped directamente en CoreDNS
-- **Prometheus metrics**: Configuración de controller-manager y scheduler para observabilidad
-- **Node classification**: Labels específicos `workload-type: infrastructure` y tier `control-plane`
+**Key components**:
+- **VIP (Virtual IP)**: Floating IP `192.168.253.100` for API server high availability
+- **Dual networking**: Primary (ens18) + secondary (ens19) interface for traffic separation
+- **CoreDNS inline manifest**: Custom ConfigMap that adds the air-gapped hosts directly to CoreDNS
+- **Prometheus metrics**: controller-manager and scheduler configuration for observability
+- **Node classification**: Specific labels `workload-type: infrastructure` and tier `control-plane`
 
-**Función en la arquitectura**: Punto de control central con capacidades air-gapped y HA nativa.
+**Role in the architecture**: Central control point with air-gapped capabilities and native HA.
 
 ### Infrastructure Workers (worker-patch-1/2/3.yml)
 
-**Propósito**: Nodos dedicados para workloads de infraestructura del cluster (monitoring, logging, ingress, storage).
+**Purpose**: Nodes dedicated to cluster infrastructure workloads (monitoring, logging, ingress, storage).
 
-**Características comunes**:
-- **Hostnames únicos**: `talos-dt-01/02/03` para identificación clara
-- **Networking dual**: Misma estrategia que control plane (ens18 + ens19)
-- **Node labels**: `workload-type: infrastructure` y `tier: infrastructure`
-- **Taints específicos**: `workload-type=infrastructure:PreferNoSchedule` para reservar recursos
-- **IP assignment**: Rango `192.168.253.111-113` en red cluster
+**Common features**:
+- **Unique hostnames**: `talos-dt-01/02/03` for clear identification
+- **Dual networking**: Same strategy as the control plane (ens18 + ens19)
+- **Node labels**: `workload-type: infrastructure` and `tier: infrastructure`
+- **Specific taints**: `workload-type=infrastructure:PreferNoSchedule` to reserve resources
+- **IP assignment**: Range `192.168.253.111-113` on the cluster network
 
-**Función en la arquitectura**: Tier dedicado para componentes críticos del cluster, separado de aplicaciones de usuario.
+**Role in the architecture**: Dedicated tier for critical cluster components, separated from user applications.
 
 ### Application Workers (worker-patch-5.yml)
 
-**Propósito**: Nodos especializados para workloads de aplicación production con políticas estrictas.
+**Purpose**: Nodes specialized for production application workloads with strict policies.
 
-**Características distintivas**:
-- **Labels extendidos**: `workload-type: application`, `environment: production`, `criticality: high`
-- **Multi-taint strategy**: Combinación de taints application + production para aislamiento total
-- **Resource isolation**: Separación completa de workloads de infraestructura
-- **Production hardening**: Configuración optimizada para cargas críticas
+**Distinctive features**:
+- **Extended labels**: `workload-type: application`, `environment: production`, `criticality: high`
+- **Multi-taint strategy**: Combination of application + production taints for full isolation
+- **Resource isolation**: Full separation from infrastructure workloads
+- **Production hardening**: Configuration optimized for critical loads
 
-**Función en la arquitectura**: Tier aislado para aplicaciones de usuario con SLA estrictos.
+**Role in the architecture**: Isolated tier for user applications with strict SLAs.
 
 ### Registry Mirrors Configuration (registry-mirrors.yml)
 
-**Propósito**: Define mirrors para registries públicos a través de Harbor registry privado como proxy.
+**Purpose**: Defines mirrors for public registries through the private Harbor registry acting as a proxy.
 
-**Componentes específicos**:
-- **docker.io mirror**: Redirecciona pulls de Docker Hub a `https://registry.harbor.local/v2/proxy-docker`
-- **ghcr.io mirror**: Redirecciona GitHub Container Registry a `https://registry.harbor.local/v2/proxy-ghcr`  
-- **registry.k8s.io mirror**: Redirecciona Kubernetes registry a `https://registry.harbor.local/v2/proxy-k8s`
-- **overridePath**: Fuerza redirección completa del path original
+**Specific components**:
+- **docker.io mirror**: Redirects Docker Hub pulls to `https://registry.harbor.local/v2/proxy-docker`
+- **ghcr.io mirror**: Redirects GitHub Container Registry to `https://registry.harbor.local/v2/proxy-ghcr`  
+- **registry.k8s.io mirror**: Redirects the Kubernetes registry to `https://registry.harbor.local/v2/proxy-k8s`
+- **overridePath**: Forces full redirection of the original path
 
-**Función en la arquitectura**: Habilita operación completamente air-gapped utilizando Harbor como proxy cache para registries externos.
+**Role in the architecture**: Enables fully air-gapped operation using Harbor as a proxy cache for external registries.
 
 ### Storage Configuration (storage.yml)
 
-**Propósito**: Configura volúmenes de usuario adicionales en nodos que tengan discos secundarios.
+**Purpose**: Configures extra user volumes on nodes that have secondary disks.
 
-**Componentes de configuración**:
-- **UserVolumeConfig**: Define volumen llamado `sdb-storage` para uso específico
-- **diskSelector**: Selecciona automáticamente `/dev/sdb` que no sea disco del sistema
-- **Size constraints**: Limita volumen entre 18-19GB para control de recursos  
-- **Filesystem type**: Utiliza XFS para performance y confiabilidad
+**Configuration components**:
+- **UserVolumeConfig**: Defines a volume named `sdb-storage` for a specific use
+- **diskSelector**: Automatically selects `/dev/sdb` as long as it is not the system disk
+- **Size constraints**: Limits the volume to 18-19GB for resource control  
+- **Filesystem type**: Uses XFS for performance and reliability
 
-**Función en la arquitectura**: Proporciona almacenamiento adicional estructurado para workloads que requieren persistent volumes.
+**Role in the architecture**: Provides structured extra storage for workloads that need persistent volumes.
 
-## Conceptos de Configuración
+## Configuration Concepts
 
-### Separación de Workloads por Tiers
+### Workload Separation by Tiers
 
 #### **Infrastructure Tier**
 ```yaml
@@ -128,7 +130,7 @@ nodeLabels:
 nodeTaints:
   workload-type: "infrastructure:PreferNoSchedule"
 ```
-**Propósito**: Garantiza que componentes como Prometheus, Grafana, Ingress Controllers, y storage systems ejecuten en nodos dedicados.
+**Purpose**: Ensures components such as Prometheus, Grafana, Ingress Controllers and storage systems run on dedicated nodes.
 
 #### **Application Tier**  
 ```yaml
@@ -140,20 +142,20 @@ nodeTaints:
   workload-type: "application:PreferNoSchedule"
   environment: "production:PreferNoSchedule"
 ```
-**Propósito**: Aísla completamente las aplicaciones de usuario de componentes de infraestructura.
+**Purpose**: Fully isolates user applications from infrastructure components.
 
 ### Networking Architecture
 
 #### **Dual Interface Strategy**
-- **ens18**: Red cluster primaria (192.168.253.x/24) - Tráfico Kubernetes
-- **ens19**: Red management secundaria (192.168.141.x/24) - Administración y backup
+- **ens18**: Primary cluster network (192.168.253.x/24) - Kubernetes traffic
+- **ens19**: Secondary management network (192.168.141.x/24) - Administration and backup
 
 #### **VIP Implementation**
 ```yaml
 vip:
   ip: 192.168.253.100
 ```
-**Función**: Proporciona endpoint único para API server con failover automático entre control planes.
+**Role**: Provides a single API server endpoint with automatic failover between control planes.
 
 ### Air-Gapped DNS Integration
 
@@ -165,49 +167,49 @@ hosts {
   fallthrough
 }
 ```
-**Propósito**: Integra resolución DNS customizada directamente en CoreDNS sin dependencias externas.
+**Purpose**: Adds custom DNS resolution directly in CoreDNS with no external dependencies.
 
-## Relaciones entre Configuraciones
+## Relationships Between Configurations
 
-### Flujo de Aplicación de Patches
+### Patch Application Flow
 
-1. **custom.yml** → Se aplica a TODOS los nodos (base común)
-2. **controlplane-patch-1.yml** → Se combina con custom.yml para control plane
-3. **worker-patch-X.yml** → Se combina con custom.yml para cada worker específico
+1. **custom.yml** → Applied to ALL nodes (common base)
+2. **controlplane-patch-1.yml** → Combined with custom.yml for the control plane
+3. **worker-patch-X.yml** → Combined with custom.yml for each specific worker
 
-### Interdependencias
+### Interdependencies
 
-- **custom.yml** define CA certificates necesarios para todos los nodos
-- **controlplane-patch-1.yml** establece VIP que otros nodos usan como endpoint
-- **worker patches** referencian subnets y gateways definidos en la arquitectura general
-- **CoreDNS config** en control plane proporciona resolución para hosts definidos en custom.yml
-- **registry-mirrors.yml** requiere CA certificates de custom.yml para comunicación con Harbor
-- **storage.yml** se aplica solo a nodos que tengan el disco `/dev/sdb` disponible
+- **custom.yml** defines the CA certificates every node needs
+- **controlplane-patch-1.yml** sets the VIP that other nodes use as endpoint
+- **worker patches** reference subnets and gateways defined in the overall architecture
+- **CoreDNS config** on the control plane resolves the hosts defined in custom.yml
+- **registry-mirrors.yml** needs the CA certificates from custom.yml to talk to Harbor
+- **storage.yml** applies only to nodes that have the `/dev/sdb` disk available
 
-## Estrategias de Escalabilidad
+## Scalability Strategies
 
 ### Template-Based Workers
 
-Los worker-patch-1/2/3.yml siguen el mismo template con variaciones mínimas:
-- **Hostname**: Incremento secuencial (`talos-dt-01`, `talos-dt-02`)  
-- **IP addresses**: Incremento en ambas redes (253.111→112→113, 141.11→12→13)
-- **Configuración idéntica**: Labels, taints, y kubelet settings consistentes
+worker-patch-1/2/3.yml follow the same template with minimal variations:
+- **Hostname**: Sequential increment (`talos-dt-01`, `talos-dt-02`)  
+- **IP addresses**: Increment on both networks (253.111→112→113, 141.11→12→13)
+- **Identical configuration**: Consistent labels, taints and kubelet settings
 
 ### Application Worker Templates
 
-worker-patch-5.yml establece el patrón para workers de aplicación:
-- **Labels específicos**: environment, criticality tags
-- **Taint strategy**: Multiple taints para aislamiento
-- **Naming pattern**: Preparado para worker-patch-6, 7, etc.
+worker-patch-5.yml sets the pattern for application workers:
+- **Specific labels**: environment, criticality tags
+- **Taint strategy**: Multiple taints for isolation
+- **Naming pattern**: Ready for worker-patch-6, 7, etc.
 
-## Configuraciones Futuras
+## Future Configurations
 
 ### registry-mirrors.yml
-**Propósito planificado**: Definir mirrors para registries públicos en entornos air-gapped.
+**Planned purpose**: Define mirrors for public registries in air-gapped environments.
 
 ### storage.yml  
-**Propósito planificado**: Configuraciones específicas de storage classes y persistent volumes.
+**Planned purpose**: Specific storage class and persistent volume configurations.
 
 ---
 
-**Nota**: Esta arquitectura implementa un cluster production-ready con separación completa de workloads, capacidades air-gapped, y alta disponibilidad nativa mediante VIP y dual networking.
+**Note**: This architecture implements a production-ready cluster with full workload separation, air-gapped capabilities and native high availability through VIP and dual networking.

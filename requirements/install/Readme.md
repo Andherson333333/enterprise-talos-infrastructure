@@ -1,4 +1,6 @@
-# Instalador de Herramientas DevOps
+**English** | [Español](./Readme.es.md)
+
+# DevOps Tools Installer
 
 ![Kubernetes](https://img.shields.io/badge/kubectl-Latest-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![Terraform](https://img.shields.io/badge/Terraform-Latest-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)
@@ -6,46 +8,46 @@
 ![Helm](https://img.shields.io/badge/Helm-Latest-0F1689?style=for-the-badge&logo=helm&logoColor=white)
 ![Debian](https://img.shields.io/badge/Debian-Ubuntu-A81D33?style=for-the-badge&logo=debian&logoColor=white)
 
-Script automatizado para instalar herramientas esenciales de DevOps, Kubernetes y automatización en sistemas Debian/Ubuntu.
+Automated script that installs essential DevOps, Kubernetes and automation tools on Debian/Ubuntu systems.
 
-## Herramientas Incluidas
+## Included tools
 
-- **kubectl**: Cliente de línea de comandos de Kubernetes
-- **Terraform**: Herramienta de infraestructura como código
-- **Ansible**: Plataforma de automatización de TI
-- **Helm**: Gestor de paquetes para Kubernetes
+- **kubectl**: Kubernetes command-line client
+- **Terraform**: Infrastructure as code tool
+- **Ansible**: IT automation platform
+- **Helm**: Kubernetes package manager
 
-## Instalación
+## Installation
 
-### 1. Clonar repositorio
+### 1. Clone the repository
 
 ```bash
 git clone 
 cd enterprise-talos-infrastructure/Requirements/install
 ```
 
-### 2. Ejecutar instalador
+### 2. Run the installer
 
 ```bash
-# Dar permisos de ejecución
+# Make scripts executable
 chmod +x install.sh
 chmod +x install-argocd-cli.sh
 chmod +x install-k9s.sh
 
 
-# Ejecutar script
+# Run script
 ./install.sh
 ```
 
-## Requisitos
+## Requirements
 
-- Sistema operativo: Debian/Ubuntu
-- Permisos sudo
-- Conexión a internet
+- Operating system: Debian/Ubuntu
+- sudo permissions
+- Internet access
 
-## Verificación
+## Verification
 
-El script automáticamente verifica las instalaciones mostrando las versiones:
+The script automatically verifies the installations by printing the versions:
 
 ```bash
 kubectl version --client
@@ -56,8 +58,8 @@ argocd-cli
 k9s
 ```
 
-## Compatibilidad
+## Compatibility
 
 - Debian 11+
 - Ubuntu 20.04+
-- Arquitectura: amd64
+- Architecture: amd64

@@ -1,10 +1,12 @@
+**English** | [Español](./Readme.es.md)
+
 # OpenBao - open-bao-2
 
-Nodo Raft `open-bao-2` (`192.168.253.31`). El procedimiento de instalación es el mismo que en [`open-bao-1`](../open-bao-1/Readme.md).
+Raft node `open-bao-2` (`192.168.253.31`). The installation procedure is the same as in [`open-bao-1`](../open-bao-1/Readme.md).
 
-Solo cambia `openbao.hcl` de esta carpeta: `node_id`, `api_addr`, `cluster_addr` y las IPs de `retry_join`.
+Only `openbao.hcl` in this folder changes: `node_id`, `api_addr`, `cluster_addr` and the `retry_join` IPs.
 
-Se une al cluster con:
+Join the cluster with:
 
 ```bash
 bao operator raft join https://192.168.253.30:8200

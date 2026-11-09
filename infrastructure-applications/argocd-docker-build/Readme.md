@@ -1,62 +1,64 @@
+**English** | [Español](./Readme.es.md)
+
 # ArgoCD Custom Image - AVP Baked In
 ![Docker](https://img.shields.io/badge/Docker-Custom_Build-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![ArgoCD](https://img.shields.io/badge/ArgoCD-v3.5.2-EF7B4D?style=for-the-badge&logo=argo&logoColor=white)
 ![AVP](https://img.shields.io/badge/AVP-1.18.1-FFEC6E?style=for-the-badge)
 ![Harbor](https://img.shields.io/badge/Harbor-Registry-60B932?style=for-the-badge&logo=harbor&logoColor=white)
 
-Imagen custom de ArgoCD con `argocd-vault-plugin` (AVP) integrado, necesaria porque la imagen oficial no incluye `curl`/`wget` para descargar el binario en runtime.
+Custom ArgoCD image with `argocd-vault-plugin` (AVP) built in, needed because the official image does not include `curl`/`wget` to download the binary at runtime.
 
-## Orden de Build
+## Build Order
 
-### 1. Descargar Binario AVP
-Descargar en `pve-1` (tiene acceso a internet), ya que la imagen base de ArgoCD no tiene herramientas de descarga:
+### 1. Download the AVP Binary
+Download on `pve-1` (it has internet access), since the ArgoCD base image has no download tools:
 ```bash
 wget https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v1.18.1/argocd-vault-plugin_1.18.1_linux_amd64
 ```
 
-### 2. Build de la Imagen
-**Carpeta**: [`./`](./)
+### 2. Build the Image
+**Folder**: [`./`](./)
 ```bash
 cd infrastructure-applications/argocd-docker-build/
 docker build -t registry.harbor.local/docker-images/argocd:v3.5.2-custom .
 ```
 
-El `Dockerfile` hace:
-- `COPY` del binario AVP descargado manualmente (no `curl` en build)
-- `update-ca-certificates` con la CA de Harbor baked in, para pull/push interno con TLS
+The `Dockerfile`:
+- `COPY`s the manually downloaded AVP binary (no `curl` during build)
+- Runs `update-ca-certificates` with the Harbor CA baked in, for internal TLS pull/push
 
-### 3. Push a Harbor
+### 3. Push to Harbor
 ```bash
 docker push registry.harbor.local/docker-images/argocd:v3.5.2-custom
 ```
 
-## Estado de Preparación
+## Readiness State
 
-Al completar el build tendrás:
-- **Imagen ArgoCD** con AVP 1.18.1 embebido
-- **CA de Harbor** confiada dentro del contenedor
-- **Imagen publicada** en `registry.harbor.local/docker-images/argocd:v3.5.2-custom`
+After the build you will have:
+- **ArgoCD image** with AVP 1.18.1 embedded
+- **Harbor CA** trusted inside the container
+- **Image published** at `registry.harbor.local/docker-images/argocd:v3.5.2-custom`
 
-## Verificación
+## Verification
 
 ```bash
-# Exec en el sidecar avp del repo-server
+# Exec into the avp sidecar of the repo-server
 kubectl exec -it <argocd-repo-server-pod> -c avp -n argocd -- sh
 
-# Dentro del pod, contra un manifest de prueba con <path:secret/data/test#hello>
+# Inside the pod, against a test manifest with <path:secret/data/test#hello>
 argocd-vault-plugin generate .
-# Debe resolver a: world
+# Must resolve to: world
 ```
 
-![Imagen argocd en Harbor](../../images/harbor-server-9.png)
+![argocd image in Harbor](../../images/harbor-server-9.png)
 
-## Siguiente Paso
+## Next Step
 
-Una vez la imagen está en Harbor, dirigirse a:
-- **`../argocd/`** - Referenciar la imagen en `values.yaml` del repo-server
+Once the image is in Harbor, go to:
+- **`../argocd/`** - Reference the image in the repo-server `values.yaml`
 
-## Dependencias
+## Dependencies
 
-- **Paso 1** requiere acceso a internet (solo disponible en `pve-1`)
-- **Paso 3** requiere Harbor funcionando y login configurado
-- **`../argocd/`** requiere esta imagen publicada antes de poder resolver secretos de OpenBao
+- **Step 1** requires internet access (only available on `pve-1`)
+- **Step 3** requires Harbor running and login configured
+- **`../argocd/`** requires this image published before it can resolve OpenBao secrets

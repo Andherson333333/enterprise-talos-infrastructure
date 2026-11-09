@@ -1,32 +1,34 @@
+**English** | [Español](./README.es.md)
+
 # Role: apt-cacher-ng
 
-Despliega apt-cacher-ng en Docker como cache de paquetes APT para las VMs Debian del entorno.
+Deploys apt-cacher-ng in Docker as an APT package cache for the Debian VMs in the environment.
 
-## Qué hace
+## What it does
 
-1. Crea `/opt/apt-cacher-ng`
-2. Copia `files/docker-compose.yml`
-3. Levanta el servicio con `docker compose up -d`
+1. Creates `/opt/apt-cacher-ng`
+2. Copies `files/docker-compose.yml`
+3. Starts the service with `docker compose up -d`
 
-| Parámetro | Valor |
+| Parameter | Value |
 |-----------|-------|
-| Imagen | `sameersbn/apt-cacher-ng` |
-| Puerto | `80` (host) → `3142` (contenedor) |
-| Volumen | `apt-cacher-ng` → `/var/cache/apt-cacher-ng` |
+| Image | `sameersbn/apt-cacher-ng` |
+| Port | `80` (host) → `3142` (container) |
+| Volume | `apt-cacher-ng` → `/var/cache/apt-cacher-ng` |
 | Healthcheck | `http://localhost:3142/acng-report.html` |
 
-## Requisitos
+## Requirements
 
-- Docker + Compose instalados (`shared-infrastructure/docker-install-ansible`)
-- Grupo `apt_ng` en el inventario
+- Docker + Compose installed (`shared-infrastructure/docker-install-ansible`)
+- `apt_ng` group in the inventory
 
-## Uso
+## Usage
 
 ```bash
 ansible-playbook -i inventory apt-cacher-ng.yml
 ```
 
-## Verificación
+## Verification
 
 ```bash
 docker ps --filter name=apt-cacher-ng

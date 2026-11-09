@@ -1,16 +1,18 @@
+**English** | [Español](./Readme.es.md)
+
 # Docker Install Ansible Role
 
 ![Ansible](https://img.shields.io/badge/Ansible-Automation-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Install-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Offline](https://img.shields.io/badge/Offline-Ready-4CAF50?style=for-the-badge)
 
-Instalación offline de Docker mediante archivos .deb preconfigurados usando Ansible playbook.
+Offline Docker installation from pre-downloaded .deb files using an Ansible playbook.
 
-## ¿Qué hace?
+## What does it do?
 
-Instala Docker y componentes desde archivos .deb locales mediante playbook de Ansible. No requiere acceso a internet ni repositorios APT.
+Installs Docker and its components from local .deb files with an Ansible playbook. No internet access or APT repositories required.
 
-### Componentes incluidos
+### Included components
 
 - containerd.io (1.7.27)
 - docker-ce (28.3.2) 
@@ -18,41 +20,41 @@ Instala Docker y componentes desde archivos .deb locales mediante playbook de An
 - docker-buildx-plugin (0.25.0)
 - docker-compose-plugin (2.38.2)
 
-## Uso
+## Usage
 
 ```bash
-# Ejecutar instalación
+# Run installation
 ansible-playbook -i inventory docker-install.yml
 ```
 
-## Estructura
+## Structure
 
 ```
 docker-install/
-├── files/                           # Archivos .deb
+├── files/                           # .deb files
 │   ├── containerd.io_1.7.27-1_amd64.deb
 │   ├── docker-ce_5%3a28.3.2-1~debian.12~bookworm_amd64.deb
 │   ├── docker-ce-cli_5%3a28.3.2-1~debian.12~bookworm_amd64.deb
 │   ├── docker-buildx-plugin_0.25.0-1~debian.12~bookworm_amd64.deb
 │   └── docker-compose-plugin_2.38.2-1~debian.12~bookworm_amd64.deb
-└── tasks/main.yml                   # Tareas de instalación
+└── tasks/main.yml                   # Installation tasks
 ```
 
-## Verificación
+## Verification
 
 ```bash
-# Comprobar instalación
+# Check installation
 ansible all -i inventory -m shell -a "docker --version"
 ansible all -i inventory -m shell -a "docker compose --version"
 
-# Verificar servicio
+# Check service
 ansible all -i inventory -m shell -a "systemctl status docker"
 ```
 ![Docker](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/gitea-server%2Brunner-1.png)
 
-## Actualización
+## Updating
 
-Para actualizar Docker:
-1. Reemplazar archivos .deb en `files/`
-2. Actualizar nombres en `defaults/main.yml` 
-3. Ejecutar playbook nuevamente
+To update Docker:
+1. Replace the .deb files in `files/`
+2. Update the names in `defaults/main.yml` 
+3. Run the playbook again

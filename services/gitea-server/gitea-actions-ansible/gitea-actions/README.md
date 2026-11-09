@@ -1,37 +1,39 @@
+**English** | [Español](./README.es.md)
+
 # Role: gitea-actions
 
-Publica en Gitea un mirror offline de GitHub Actions para usar Gitea Actions en entorno air-gapped.
+Publishes an offline mirror of GitHub Actions into Gitea so Gitea Actions works in an air-gapped environment.
 
-## Qué hace
+## What it does
 
-1. Descomprime `files/github-actions-airgap-full-repos.tar.gz` en `/opt/gitea-actions-source`
-2. Crea la organización `actions` vía API (ignora si ya existe)
-3. Crea un repositorio por cada action encontrada
-4. Hace `git push --all --force` de cada action a su repo
+1. Extracts `files/github-actions-airgap-full-repos.tar.gz` into `/opt/gitea-actions-source`
+2. Creates the `actions` organization via API (ignored if it already exists)
+3. Creates one repository per action found
+4. Runs `git push --all --force` of each action into its repo
 
-## Requisitos
+## Requirements
 
-- Gitea operativo (`gitea-install`)
-- Token de API de Gitea con permisos de admin
-- Paquete `.tar.gz` generado con `../download-actions.sh`
+- Gitea running (`gitea-install`)
+- Gitea API token with admin permissions
+- `.tar.gz` package generated with `../download-actions.sh`
 
 ## Variables (`vars/main.yml`)
 
-| Variable | Default | Descripción |
+| Variable | Default | Description |
 |----------|---------|-------------|
-| `gitea_url` | `https://192.168.253.11` | URL de Gitea |
-| `gitea_actions_org` | `actions` | Organización destino |
-| `gitea_actions_dir` | `/opt/gitea-actions-source` | Directorio de extracción |
-| `actions_tar_file` | `github-actions-airgap-full-repos.tar.gz` | Paquete de actions |
-| `gitea_user` / `gitea_group` | `gitea` | Dueño de los archivos |
-| `gitea_admin_user`, `gitea_admin_password`, token | — | **Secrets**: usar `ansible-vault` o `--extra-vars`, no dejarlos en texto plano |
+| `gitea_url` | `https://192.168.253.11` | Gitea URL |
+| `gitea_actions_org` | `actions` | Target organization |
+| `gitea_actions_dir` | `/opt/gitea-actions-source` | Extraction directory |
+| `actions_tar_file` | `github-actions-airgap-full-repos.tar.gz` | Actions package |
+| `gitea_user` / `gitea_group` | `gitea` | File owner |
+| `gitea_admin_user`, `gitea_admin_password`, token | — | **Secrets**: use `ansible-vault` or `--extra-vars`, never plain text |
 
-## Uso
+## Usage
 
 ```bash
 ansible-playbook -i inventory gitea-actions.yml
 ```
 
-## Verificación
+## Verification
 
-En Gitea: organización `actions` con un repo por action (p. ej. `actions/checkout`). En los workflows se referencian igual que en GitHub.
+In Gitea: the `actions` organization with one repo per action (e.g. `actions/checkout`). Workflows reference them exactly as on GitHub.

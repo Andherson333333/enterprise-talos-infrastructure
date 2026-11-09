@@ -1,74 +1,76 @@
-# Preparación de Imágenes ISO 
+**English** | [Español](./Readme.es.md)
+
+# ISO Image Preparation 
 
 ![Proxmox](https://img.shields.io/badge/Proxmox-VE-E52F1F?style=for-the-badge&logo=proxmox&logoColor=white)
 ![Debian](https://img.shields.io/badge/Debian-12+-A81D33?style=for-the-badge&logo=debian&logoColor=white)
 ![Virtualization](https://img.shields.io/badge/Virtualization-Lab-4B8BBE?style=for-the-badge)
 ![Checksums](https://img.shields.io/badge/SHA256-Verified-success?style=for-the-badge&logo=gnu-privacy-guard&logoColor=white)
 
-Guía para descargar y verificar imágenes ISO necesarias para un entorno de virtualización con Proxmox y Debian.
+Guide to download and verify the ISO images required for a virtualization environment with Proxmox and Debian.
 
-## Componentes
+## Components
 
-- **Proxmox VE**: Hipervisor de código abierto para bare-metal
-- **Debian GNU/Linux**: Sistema operativo base para plantillas VM
+- **Proxmox VE**: Open-source bare-metal hypervisor
+- **Debian GNU/Linux**: Base operating system for VM templates
 
-## Verificación de Integridad
+## Integrity Verification
 
-**Importante**: Siempre verificar checksums para garantizar seguridad e integridad.
+**Important**: Always verify checksums to guarantee security and integrity.
 
 ## 1. Proxmox Virtual Environment
 
-### Descargar
+### Download
 
 ```bash
-# Crear directorio de trabajo
+# Create working directory
 mkdir -p ~/iso-images && cd ~/iso-images
 
-# Descargar ISO (reemplazar con versión actual)
+# Download ISO (replace with current version)
 wget https://enterprise.proxmox.com/iso/proxmox-ve_8.2-1.iso
 
-# Descargar archivo de checksums
+# Download checksum file
 wget https://enterprise.proxmox.com/iso/sha256sum.txt
 ```
 
-### Verificar
+### Verify
 
 ```bash
 sha256sum -c sha256sum.txt --ignore-missing
 ```
 
-**Resultado esperado**: `proxmox-ve_8.2-1.iso: OK`
+**Expected result**: `proxmox-ve_8.2-1.iso: OK`
 
-## 2. Debian GNU/Linux (DVD Completo)
+## 2. Debian GNU/Linux (Full DVD)
 
-Imagen completa de instalación que incluye paquetes de software comunes para instalación offline.
+Full installation image including common software packages for offline installation.
 
-### Descargar
+### Download
 
 ```bash
-# Descargar ISO completa DVD-1 (reemplazar con versión actual)
+# Download full DVD-1 ISO (replace with current version)
 wget https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-12.5.0-amd64-dvd-1.iso
 
-# Descargar archivo de checksums
+# Download checksum file
 wget https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/SHA256SUMS
 ```
 
-### Verificar
+### Verify
 
 ```bash
-# Filtrar y verificar solo el DVD-1
+# Filter and verify DVD-1 only
 grep "dvd-1.iso" SHA256SUMS | sha256sum --check
 ```
 
-**Resultado esperado**: `debian-12.5.0-amd64-dvd-1.iso: OK`
+**Expected result**: `debian-12.5.0-amd64-dvd-1.iso: OK`
 
-## Enlaces de Referencia
+## Reference Links
 
 - [Proxmox Downloads](https://www.proxmox.com/en/downloads)
 - [Debian DVD Images](https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/)
 
-## Resultado
+## Result
 
-Con estos archivos verificados tendrás:
-- Instalador de Proxmox VE para servidor físico
-- Instalador completo de Debian para plantillas VM
+With these verified files you will have:
+- Proxmox VE installer for the physical server
+- Full Debian installer for VM templates

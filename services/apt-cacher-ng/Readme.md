@@ -1,39 +1,41 @@
+**English** | [Español](./Readme.es.md)
+
 # APT-Cacher-NG Service
 
 ![Ansible](https://img.shields.io/badge/Ansible-Automation-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![APT](https://img.shields.io/badge/APT-Cache-FF6B35?style=for-the-badge&logo=debian&logoColor=white)
 
-Proxy cache automatizado para paquetes APT/Debian mediante Ansible y Docker Compose.
+Automated cache proxy for APT/Debian packages using Ansible and Docker Compose.
 
-## ¿Qué es?
+## What is it?
 
-APT-Cacher-NG cachea paquetes APT localmente. Los clientes descargan una vez desde internet, las siguientes instalaciones son instantáneas desde el cache local.
+APT-Cacher-NG caches APT packages locally. Clients download a package from the internet once; subsequent installations are served instantly from the local cache.
 
-### Beneficios Principales
+### Main Benefits
 
-- **Ahorro de ancho de banda**: Los paquetes se descargan una sola vez desde internet
-- **Velocidad mejorada**: Instalaciones posteriores desde cache local son instantáneas
-- **Reducción de carga**: Menos peticiones a repositorios oficiales
-- **Disponibilidad offline**: Funciona aunque los repositorios externos estén inaccesibles
-- **Eficiencia de red**: Ideal para entornos con múltiples servidores Debian/Ubuntu
+- **Bandwidth savings**: Packages are downloaded from the internet only once
+- **Faster installs**: Subsequent installations from the local cache are instant
+- **Reduced load**: Fewer requests to official repositories
+- **Offline availability**: Works even when external repositories are unreachable
+- **Network efficiency**: Ideal for environments with many Debian/Ubuntu servers
 
-## Prerequisitos
+## Prerequisites
 
-- Docker y Docker Compose
+- Docker and Docker Compose
 - Ansible 2.9+
-- Acceso a internet
+- Internet access
 
-## Instalación
+## Installation
 
 ```bash
-# Ejecutar playbook
+# Run playbook
 ansible-playbook -i inventory apt-cacher-ng.yml
 ```
 ![APT](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/apt-cacher-ng%20server-2.png)
 
 
-## Configuración
+## Configuration
 
 ### Variables
 
@@ -43,52 +45,52 @@ apt_cacher_ng_port: 3142
 apt_cacher_ng_directory: /opt/apt-cacher-ng
 ```
 
-### Inventario
+### Inventory
 
 ```ini
 [apt_cache_servers]
 cache-server ansible_host=192.168.1.50 ansible_user=root
 ```
 
-## Uso
+## Usage
 
-### Configurar Cliente Ubuntu/Debian
+### Configure an Ubuntu/Debian Client
 
 ```bash
-# Configuración permanente
+# Permanent configuration
 echo 'Acquire::http::Proxy "http://CACHE_IP:3142";' | sudo tee /etc/apt/apt.conf.d/01proxy
 
-# Usar cache
+# Use the cache
 apt update
 apt install nginx
 ```
 
-### Panel Web
+### Web Panel
 
 ```
 http://CACHE_IP:3142/acng-report.html
 ```
 ![APT](https://github.com/Andherson333333/enterprise-talos-infrastructure/blob/main/images/apt-cacher-ng%20server-1.png)
 
-## Verificación
+## Verification
 
 ```bash
-# Estado del servicio
+# Service status
 docker ps | grep apt-cacher-ng
 
 # Logs
 docker logs apt-cacher-ng
 
-# Test desde cliente
+# Test from a client
 curl http://CACHE_IP:3142/acng-report.html
 ```
 
-## Administración
+## Administration
 
 ```bash
-# Reiniciar
+# Restart
 cd /opt/apt-cacher-ng && docker compose restart
 
-# Ver cache utilizado
+# Show cache usage
 docker exec apt-cacher-ng du -sh /var/cache/apt-cacher-ng
 ```

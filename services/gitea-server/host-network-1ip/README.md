@@ -1,60 +1,62 @@
+**English** | [Español](./README.es.md)
+
 # Host Network Configuration
 
 ![Ansible](https://img.shields.io/badge/Ansible-Automation-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 ![Network](https://img.shields.io/badge/Network-Static_IP-FF6B35?style=for-the-badge&logo=cisco&logoColor=white)
 
-Configuración automática de red estática y resolución DNS local mediante playbook de Ansible.
+Automatic static network configuration and local DNS resolution using an Ansible playbook.
 
-## ¿Qué hace?
+## What does it do?
 
-Configura IP estática y hostnames locales para servicios. Establece red fija y resolución DNS interna.
+Configures a static IP and local hostnames for services, giving a fixed network and internal DNS resolution.
 
-### Configuración incluida
+### Included configuration
 
-- **IP estática**: 192.168.253.11/24
+- **Static IP**: 192.168.253.11/24
 - **Gateway**: 192.168.253.1  
-- **DNS local**: Harbor Registry y Gitea Server
+- **Local DNS**: Harbor Registry and Gitea Server
 - **Hostname**: gitea-server
 
-## Uso
+## Usage
 
 ```bash
-# Ejecutar configuración
+# Apply configuration
 ansible-playbook -i inventory host-network-1ip.yml
 ```
 
-## Archivos de configuración
+## Configuration files
 
 ```
 host-network-1ip/
 ├── files/
-│   ├── hosts                        # Resolución DNS local
-│   └── interfaces                   # Configuración de red estática
-└── tasks/main.yml                   # Tareas de configuración
+│   ├── hosts                        # Local DNS resolution
+│   └── interfaces                   # Static network configuration
+└── tasks/main.yml                   # Configuration tasks
 ```
 
-### Hosts configurados
+### Configured hosts
 
 ```
 192.168.253.12 registry.harbor.local
 192.168.253.11 gitea.server.local
 ```
 
-## Verificación
+## Verification
 
 ```bash
-# Verificar IP configurada
+# Check configured IP
 ansible all -i inventory -m shell -a "ip addr show ens18"
 
-# Verificar resolución DNS
+# Check DNS resolution
 ansible all -i inventory -m shell -a "cat /etc/hosts"
 
-# Probar conectividad
+# Test connectivity
 ansible all -i inventory -m shell -a "ping -c 2 registry.harbor.local"
 ```
 
-## Personalización
+## Customization
 
-Para cambiar configuración, editar:
-- `files/interfaces` - Cambiar IP, gateway, netmask
-- `files/hosts` - Agregar/modificar hostnames
+To change the configuration, edit:
+- `files/interfaces` - IP, gateway, netmask
+- `files/hosts` - Add/modify hostnames

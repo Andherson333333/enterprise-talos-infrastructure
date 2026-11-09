@@ -1,29 +1,31 @@
+**English** | [Español](./README.es.md)
+
 # Host Network 2IP Configuration
 
 ![Ansible](https://img.shields.io/badge/Ansible-Automation-EE0000?style=for-the-badge&logo=ansible&logoColor=white)
 ![Network](https://img.shields.io/badge/Network-Dual_IP-FF6B35?style=for-the-badge&logo=cisco&logoColor=white)
 
-Configuración automática de red dual IP y resolución DNS para Harbor server mediante playbook de Ansible.
+Automatic dual-IP network configuration and DNS resolution for the Harbor server using an Ansible playbook.
 
-## ¿Qué hace?
+## What does it do?
 
-Configura dos interfaces de red estáticas y hostnames locales para servicios. Establece conectividad dual y resolución DNS interna.
+Configures two static network interfaces and local hostnames for services, giving dual connectivity and internal DNS resolution.
 
-### Configuración incluida
+### Included configuration
 
 - **Interface ens18**: 192.168.133.20/24 (gateway 192.168.133.2)
-- **Interface ens19**: 192.168.253.12/24 (sin gateway)
-- **DNS local**: Harbor Registry (doble IP) y Gitea Server
+- **Interface ens19**: 192.168.253.12/24 (no gateway)
+- **Local DNS**: Harbor Registry (dual IP) and Gitea Server
 - **Hostname**: harbor-server
 
-## Uso
+## Usage
 
 ```bash
-# Ejecutar configuración
+# Apply configuration
 ansible-playbook -i inventory network.yml
 ```
 
-### Hosts configurados
+### Configured hosts
 
 ```
 192.168.133.20 registry.harbor.local
@@ -31,23 +33,23 @@ ansible-playbook -i inventory network.yml
 192.168.253.11 gitea.server.local
 ```
 
-## Verificación
+## Verification
 
 ```bash
-# Verificar ambas interfaces
+# Check both interfaces
 ansible all -i inventory -m shell -a "ip addr show ens18"
 ansible all -i inventory -m shell -a "ip addr show ens19"
 
-# Verificar resolución DNS
+# Check DNS resolution
 ansible all -i inventory -m shell -a "cat /etc/hosts"
 
-# Probar conectividad dual
+# Test dual connectivity
 ansible all -i inventory -m shell -a "ping -c 2 192.168.133.20"
 ansible all -i inventory -m shell -a "ping -c 2 192.168.253.12"
 ```
 
-## Personalización
+## Customization
 
-Para cambiar configuración, editar:
-- `files/interfaces` - Modificar IPs, gateway, netmask
-- `files/hosts` - Agregar/cambiar hostnames
+To change the configuration, edit:
+- `files/interfaces` - IPs, gateway, netmask
+- `files/hosts` - Add/change hostnames
