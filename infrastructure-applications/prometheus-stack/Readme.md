@@ -30,13 +30,14 @@ Todos los componentes (excepto Node Exporter) usan:
 
 ### Datasources
 
-El sidecar de Grafana carga automáticamente los `ConfigMap` con label `grafana_datasource: "1"` (Loki y Tempo).
+El sidecar de Grafana carga automáticamente los `ConfigMap` con label `grafana_datasource: "1"`. Loki y Tempo están definidos en `templates/datasources.yaml`.
 
 ## Templates
 
 | Archivo | Detalle |
 |---------|---------|
 | `templates/https.yaml` | `HTTPRoute` vía `infra-gateway` (sección `https`) + redirect HTTP → HTTPS (sección `http`) |
+| `templates/datasources.yaml` | ConfigMap con datasources de Loki y Tempo (UIDs fijos, traces→logs y service map) |
 
 | Host | Service | Puerto |
 |------|---------|--------|

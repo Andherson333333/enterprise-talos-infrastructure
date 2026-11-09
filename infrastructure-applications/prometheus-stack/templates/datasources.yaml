@@ -1,0 +1,44 @@
+# Grafana datasources for Loki and Tempo (picked up by the Grafana sidecar)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources-loki-tempo
+  namespace: monitoring
+  labels:
+    grafana_datasource: "1"
+data:
+  loki-tempo.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: loki
+        uid: dfkypkdb1ebr4e
+        type: loki
+        access: proxy
+        url: http://loki.loki-system.svc.cluster.local:3100
+        jsonData:
+          derivedFields: []
+      - name: tempo
+        uid: aflnnkhpv3o5ca
+        type: tempo
+        access: proxy
+        url: http://tempo.tempo-system.svc.cluster.local:3200
+        jsonData:
+          nodeGraph:
+            enabled: true
+          serviceMap:
+            datasourceUid: prometheus
+          tracesToMetrics:
+            datasourceUid: prometheus
+          tracesToLogsV2:
+            datasourceUid: dfkypkdb1ebr4e
+            customQuery: false
+          search:
+            filters:
+              - id: service-name
+                operator: "="
+                scope: resource
+                tag: service.name
+              - id: span-name
+                operator: "="
+                scope: span
+                tag: name
