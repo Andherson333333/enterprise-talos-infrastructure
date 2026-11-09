@@ -11,7 +11,7 @@ Dos routers FRR (`frr-01`/`frr-02`) que actúan como peers BGP intermedios entre
 | Componente | Detalle |
 |------------|---------|
 | VMs | `frr-01` (192.168.253.20), `frr-02` (192.168.253.21) — clonadas de template 8002 (Debian 13) |
-| Terraform | `terraform/vm-frr.tf`, variable `frr_nodes` en `terraform/variables.tf` |
+| Terraform | `terraform/code/vm-frr.tf`, variable `frr_nodes` en `terraform/code/variables.tf` |
 | Ansible | `frr-ansible/` — role `frr-install`, un `frr.conf` estático por nodo en `frr-install/files/` |
 | ASN local | 65000 (peer iBGP entre frr-01 y frr-02) |
 | ASN remoto | 65001 (nodos Cilium, ver `../../infrastructure-applications/cilium/bgp/`) |

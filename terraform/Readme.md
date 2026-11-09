@@ -18,6 +18,7 @@ Crea las VMs del entorno en Proxmox con el provider BPG (`proxmox_virtual_enviro
 |---------|----|----------|
 | `vm-apt-ng.tf` | apt-cacher-ng | 8001 |
 | `vm-harbor.tf` | Harbor | 8001 |
+| `vm-frr.tf` | FRR x2 (`frr_nodes`) | 8002 |
 | `vm-gitea.tf` | Gitea | 8001 |
 | `vm-gitea-runners.tf` | Gitea runners (`gitea_count_runners`) | 8000 |
 | `vm-taloscp-infra.tf` | Talos control plane (`control_plane_count`) | 9000 |
@@ -25,6 +26,8 @@ Crea las VMs del entorno en Proxmox con el provider BPG (`proxmox_virtual_enviro
 | `vm-talosdt-application.tf` | Talos workers app (`app_worker_count`) | 9000 |
 
 Los conteos se ajustan en `code/terraform.tfvars`.
+
+Las VMs de OpenBao (`open-bao-1/2/3` y `proxy-open-bao`) se crearon manualmente desde el template 8002 (Debian 13); no están gestionadas por Terraform.
 
 ## Orden de Despliegue
 

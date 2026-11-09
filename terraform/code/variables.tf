@@ -65,3 +65,10 @@ variable "gitea_count_runners" {
   description = "Number of Gitea runners to deploy"
   type        = number
 }
+
+# Variables de FRR - con default sensato (nombres de las VM BGP)
+variable "frr_nodes" {
+  description = "Names of the FRR BGP router VMs to deploy"
+  type        = list(string)
+  default     = ["frr-01", "frr-02"]
+}

@@ -25,6 +25,29 @@ StorageClasses de Longhorn dedicadas al stack de observabilidad, con réplicas s
 
 `tempo-longhorn` además asocia los volúmenes al grupo de recurring jobs `prometheus-monitoring` (en `loki-longhorn` está comentado).
 
+## Tags de nodos en Longhorn
+
+El `nodeSelector: "infrastructure"` de las StorageClasses se refiere a tags de nodo en Longhorn (no labels de Kubernetes):
+
+| Nodo | Tag |
+|------|-----|
+| `talos-infrastructure-dt-01` | `infrastructure` |
+| `talos-infrastructure-dt-02` | `infrastructure` |
+| `talos-infrastructure-dt-03` | `infrastructure` |
+| `talos-application-dt-01` / `02` | — |
+
+Asignar el tag (o vía UI → Node → Edit node → Node Tags):
+
+```bash
+for n in 01 02 03; do kubectl -n longhorn-system patch nodes.longhorn.io talos-infrastructure-dt-$n --type merge -p '{"spec":{"tags":["infrastructure"]}}'; done
+```
+
+Verificar:
+
+```bash
+kubectl -n longhorn-system get nodes.longhorn.io -o custom-columns=NAME:.metadata.name,TAGS:.spec.tags
+```
+
 ## Despliegue
 
 ```bash
