@@ -56,6 +56,8 @@ kubectl get crd | grep cilium.io | grep -i tracingpolic
 kubectl logs -n tetragon ds/tetragon -c export-stdout --tail 5
 ```
 
+![Eventos de Tetragon (process/exit en tiempo real)](../../images/tetragon-events.png)
+
 ## Dependencias
 
 - **Prometheus Stack** (`../prometheus-stack/`) para los ServiceMonitors
