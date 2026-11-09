@@ -15,7 +15,7 @@ alloy:
     varlog: false
     dockercontainers: false
 
-  # --- Ports: OTLP gRPC/HTTP + syslog TCP for Talos OS logs ---
+  # --- Ports: OTLP gRPC/HTTP + TCP for Talos OS logs ---
   extraPorts:
     - name: otlp-grpc
       port: 4317
@@ -25,7 +25,7 @@ alloy:
       port: 4318
       targetPort: 4318
       protocol: TCP
-    - name: syslog-tcp
+    - name: talos-logs
       port: 5140
       targetPort: 5140
       protocol: TCP
@@ -71,3 +71,15 @@ alloy:
       - apiGroups: ["extensions"]
         resources: ["ingresses"]
         verbs: ["get", "list", "watch"]
+
+  # --- Disable chart Service (templates/service.yaml defines its own) ---
+  service:
+    enabled: false
+
+  # --- Subchart internal key (.Values.alloy.*) ---
+  alloy:
+    stabilityLevel: experimental  # required by otelcol.receiver.tcplog
+    configMap:
+      create: false
+      name: grafana-alloy
+      key: config.alloy

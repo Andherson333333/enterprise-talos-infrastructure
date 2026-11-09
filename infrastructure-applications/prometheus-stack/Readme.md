@@ -82,6 +82,8 @@ kubectl get pvc -n monitoring
 kubectl get httproute -n monitoring
 ```
 
+![Prometheus targets](../../images/prometheus-targets.png)
+
 ## Siguiente Paso
 
 Desplegar Loki y Tempo (`../loki/`, `../tempo/`) y luego Grafana Alloy (`../grafana-alloy/`) para completar el stack de observabilidad.

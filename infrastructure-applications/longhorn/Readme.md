@@ -69,6 +69,8 @@ kubectl get nodes.longhorn.io -n longhorn-system
 kubectl get storageclass
 ```
 
+![Longhorn dashboard](../../images/longhorn-dashboard.png)
+
 ## Siguiente Paso
 
 Aplicar las StorageClasses custom de [`storage-classes/`](./storage-classes/Readme.md) (`prometheus-longhorn`, `grafana-longhorn`, `loki-longhorn`, `tempo-longhorn`) usadas por el stack de observabilidad.

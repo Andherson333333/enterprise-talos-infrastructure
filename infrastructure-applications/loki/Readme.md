@@ -71,6 +71,9 @@ kubectl port-forward -n loki-system svc/loki 3100:3100
 curl -s http://localhost:3100/ready
 ```
 
+![Logs de pods en Loki](../../images/loki-pod-logs.png)
+![Logs de Talos en Loki](../../images/loki-talos-logs.png)
+
 ## Siguiente Paso
 
 Desplegar Grafana Alloy (`../grafana-alloy/`) para enviar los logs de los nodos y pods a Loki.

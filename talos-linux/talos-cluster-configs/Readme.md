@@ -129,6 +129,8 @@ kubectl get nodes
 | **talos-application-dt-01** | 192.168.253.120 | Worker app | custom, worker-patch-5, storage |
 | **talos-application-dt-02** | 192.168.253.121 | Worker app | custom, worker-patch-6, storage |
 
+![Nodos del cluster](../../images/talos-nodes.png)
+
 ### Patches Disponibles
 
 ```yaml

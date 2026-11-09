@@ -84,6 +84,8 @@ argocd-vault-plugin generate .
 
 *Resolución exitosa de `<path:secret/data/test#hello>` → `world` desde el sidecar AVP del repo-server, confirmando el pipeline completo: ArgoCD → HAProxy → OpenBao líder.*
 
+![Apps de ArgoCD en Synced/Healthy](../../images/argocd-apps-synced.png)
+
 ## Siguiente Paso
 
 Con ArgoCD operativo, las aplicaciones GitOps del resto de `infrastructure-applications/` (cilium, gateway-api, grafana-alloy, loki, longhorn, prometheus-stack, tempo, tetragon) se sincronizan a través de este controlador.

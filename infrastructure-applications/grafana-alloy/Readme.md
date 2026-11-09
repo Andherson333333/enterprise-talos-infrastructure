@@ -10,11 +10,11 @@ Wrapper chart de Grafana Alloy como colector unificado de telemetría: logs de p
 | Fuente | Entrada | Destino |
 |--------|---------|---------|
 | Logs de pods | Kubernetes API (`loki.source.kubernetes`) | Loki |
-| Logs del sistema Talos | Syslog TCP `:5140` (`json_lines`) | Loki |
+| Logs del sistema Talos | TCP `192.168.141.52:5140` (`json_lines`, `otelcol.receiver.tcplog`) | Loki |
 | Trazas de apps | OTLP gRPC `:4317` / HTTP `:4318` | Tempo |
 | Logs OTLP de apps | OTLP gRPC `:4317` / HTTP `:4318` | Loki |
 
-Labels agregados a los logs: `namespace`, `pod`, `container`, `app`, `node` y `cluster="test-cluster"`.
+Labels de logs de pods: `namespace`, `pod`, `container`, `app`, `node`, `cluster`. Labels de logs de Talos: `job="talos-system"`, `service`, `level`, `node`, `cluster`.
 
 | Destino | Endpoint |
 |---------|----------|
@@ -38,7 +38,7 @@ Labels agregados a los logs: `namespace`, `pod`, `container`, `app`, `node` y `c
 | Archivo | Detalle |
 |---------|---------|
 | `templates/configmap.yaml` | Config de Alloy (`config.alloy`) con el pipeline completo |
-| `templates/service.yaml` | Service `ClusterIP` `grafana-alloy`: OTLP `4317`/`4318` y UI `12345` |
+| `templates/service.yaml` | Service `ClusterIP` `grafana-alloy` (OTLP `4317`/`4318`, UI `12345`) + `LoadBalancer` `grafana-alloy-talos-logs` en `192.168.141.52:5140` (pool `syslog-pool`) |
 | `templates/https.yaml` | `HTTPRoute` de `alloy.local` (UI) vía `infra-gateway`, más redirect HTTP → HTTPS |
 
 ## Orden de Despliegue
@@ -58,7 +58,7 @@ helm upgrade --install grafana-alloy . -n grafana-alloy --create-namespace
 ```
 
 ### 3. Enviar logs del sistema Talos
-Los nodos Talos deben enviar sus logs por syslog TCP al puerto `5140` de Alloy (configuración `machine.logging` en los patches de `../../talos-linux/talos-cluster-configs/customs/`).
+Aplicar `customs/logging.yml` (destino `tcp://192.168.141.52:5140/`, formato `json_lines`) a todos los nodos y agregar a cada uno `extraTags: {node: <hostname>}` para identificarlo en Loki. `otelcol.receiver.tcplog` es experimental: requiere `alloy.alloy.stabilityLevel: experimental` en `values.yaml`.
 
 ## Estado de Preparación
 
@@ -83,6 +83,8 @@ kubectl get httproute -n grafana-alloy
 ```
 
 En Grafana → Explore → Loki: `{cluster="test-cluster"}`.
+
+![Flujos de Alloy hacia Loki y Tempo en Hubble](../../images/hubble-grafana-alloy.png)
 
 ## Siguiente Paso
 

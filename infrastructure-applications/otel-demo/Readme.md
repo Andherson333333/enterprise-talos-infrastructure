@@ -74,6 +74,9 @@ kubectl port-forward -n otel-demo svc/frontend-proxy 8080:8080
 
 Abrir `http://localhost:8080`. En Grafana → Explore → Tempo, buscar trazas del servicio `frontend`.
 
+![Pods del otel-demo en nodos de aplicación](../../images/otel-demo-pods.png)
+![Service graph del otel-demo](../../images/tempo-service-graph.png)
+
 ## Dependencias
 
 - **Grafana Alloy** (`../grafana-alloy/`) como receptor OTLP

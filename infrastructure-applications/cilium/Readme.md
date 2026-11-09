@@ -69,6 +69,8 @@ Rutas ECMP instaladas en FRR: `192.168.141.51` (infra-gateway, 3 nexthops infra)
 ![frr-01 ip route](../../images/frr-01.png)
 ![frr-02 ip route](../../images/frr-02.png)
 
+![Hubble UI - otel-demo](../../images/hubble-otel-demo.png)
+
 ## Verificación
 
 ```bash

@@ -54,25 +54,40 @@ data:
       forward_to = [loki.write.default.receiver]
     }
 
-    // --- Logs: Talos system logs via syslog TCP (json_lines, octet framing) ---
-    loki.source.syslog "talos_system" {
-      listener {
-        address               = "0.0.0.0:5140"
-        protocol              = "tcp"
-        idle_timeout          = "30s"
-        label_structured_data = true
-        use_rfc5424_message   = true
-        labels = {
-          job     = "talos-system",
-          cluster = "test-cluster",
-        }
+    // --- Logs: Talos service logs via TCP (json_lines) ---
+    otelcol.receiver.tcplog "talos" {
+      listen_address = "0.0.0.0:5140"
+      output {
+        logs = [otelcol.exporter.loki.talos.input]
       }
+    }
+
+    otelcol.exporter.loki "talos" {
       forward_to = [loki.process.talos.receiver]
     }
 
     loki.process "talos" {
+      // Unwrap {"body":"..."} added by otelcol.exporter.loki
+      stage.json {
+        expressions = { line = "body" }
+      }
+      stage.output {
+        source = "line"
+      }
+      // Talos fields as labels (node comes from extraTags)
+      stage.json {
+        source      = "line"
+        expressions = {
+          service = "\"talos-service\"",
+          level   = "\"talos-level\"",
+          node    = "node",
+        }
+      }
+      stage.labels {
+        values = { service = "", level = "", node = "" }
+      }
       stage.static_labels {
-        values = { cluster = "test-cluster" }
+        values = { job = "talos-system", cluster = "test-cluster" }
       }
       forward_to = [loki.write.default.receiver]
     }

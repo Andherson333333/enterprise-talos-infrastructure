@@ -26,3 +26,23 @@ spec:
       port: 12345
       targetPort: 12345
       protocol: TCP
+---
+# LoadBalancer: Talos nodes send their logs here (json_lines over TCP)
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-alloy-talos-logs
+  namespace: grafana-alloy
+  annotations:
+    io.cilium/lb-ipam-pool: "syslog-pool"
+    io.cilium/lb-ipam-ips: "192.168.141.52"
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: alloy
+    app.kubernetes.io/instance: grafana-alloy
+  ports:
+    - name: talos-logs
+      port: 5140
+      targetPort: 5140
+      protocol: TCP

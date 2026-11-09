@@ -79,6 +79,9 @@ kubectl port-forward -n tempo-system svc/tempo 3200:3200
 curl -s http://localhost:3200/ready
 ```
 
+![Trazas en Tempo](../../images/tempo-traces.png)
+![Service graph](../../images/tempo-service-graph-2.png)
+
 ## Siguiente Paso
 
 Desplegar Grafana Alloy (`../grafana-alloy/`) para enviar trazas a Tempo.

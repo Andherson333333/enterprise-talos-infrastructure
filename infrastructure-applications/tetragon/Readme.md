@@ -32,7 +32,7 @@ Wrapper chart de Tetragon para observabilidad de seguridad y enforcement en runt
 ```bash
 cd infrastructure-applications/tetragon/
 helm dependency update
-helm upgrade --install tetragon . -n kube-system
+helm upgrade --install tetragon . -n tetragon
 ```
 
 ## Estado de Preparación
@@ -45,7 +45,7 @@ Al completar el despliegue tendrás:
 ## Verificación
 
 ```bash
-kubectl get ds,deploy -n kube-system | grep tetragon
+kubectl get ds,deploy -n tetragon | grep tetragon
 ```
 
 ```bash
@@ -53,7 +53,7 @@ kubectl get crd | grep cilium.io | grep -i tracingpolic
 ```
 
 ```bash
-kubectl logs -n kube-system ds/tetragon -c export-stdout --tail 5
+kubectl logs -n tetragon ds/tetragon -c export-stdout --tail 5
 ```
 
 ## Dependencias
